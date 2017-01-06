@@ -71,6 +71,7 @@ class App extends React.Component {
     let items = this.state.items
     let totalItems = this.state.totalItems
     // console.log(items[0].sources.name === );
+    // Object.keys(items.sources)[0]
 
     // Filtering the API results
     if(this.state.filter) {
@@ -78,6 +79,7 @@ class App extends React.Component {
         item.public_title.toLowerCase()
         .includes(this.state.filter.toLowerCase()))
     }
+
     return (
       <div>
         {/* SEARCH */}
@@ -98,12 +100,12 @@ class App extends React.Component {
           // the elements in an array (i.e. amongst siblings) should have a unique key prop --> using the public_title below
           <div key={item.id}>
             <Title key={item.public_title} title={item} />
-            {/* <p>{JSON.stringify(item.sources)}</p>
+            <p>{JSON.stringify(item.sources)}</p>
             <p>
               {Object.keys(item.sources).map(source =>
                 source + " "
               )}
-            </p> */}
+            </p>
           </div>
         )}
         <p>{JSON.stringify(items)} test</p>

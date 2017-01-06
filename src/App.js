@@ -108,7 +108,7 @@ class App extends React.Component {
             </p>
           </div>
         )}
-        <p>{JSON.stringify(items)} test</p>
+        <p>{JSON.stringify(items)} gh-pages</p>
       </div>
     )
   }

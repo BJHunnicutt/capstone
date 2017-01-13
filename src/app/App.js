@@ -1,6 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router';
+
 // import d3 from 'd3';
-import './App.css';
+import '../styles/App.css';
 
 
 // CLASS COMPONENT
@@ -82,7 +84,16 @@ class App extends React.Component {
     }
 
     return (
-      <div>
+      <div className="app">
+        <header className="primary-header">
+          <ul>
+            <li><Link to="/">Home</Link></li>
+            <li><Link to="/test">Test Plot</Link></li>
+            <li><Link to="/nowhere">No Where</Link></li>
+          </ul>
+        </header>
+
+
         {/* SEARCH */}
         <label>{this.state.globalSearch}</label>
         <SearchInput  // Custom component - Search bar
@@ -94,6 +105,11 @@ class App extends React.Component {
         <label>Filter Search Results</label>
         <input type="text"
         onChange={this.filter.bind(this)} />
+
+
+        <div className="nested-plot">
+          {this.props.children}
+        </div>
 
         {/* DISPLAY FILTERED SEARCH RESULTS */}
         <h5>{totalItems}</h5>

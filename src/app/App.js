@@ -83,6 +83,7 @@ class App extends React.Component {
         .includes(this.state.filter.toLowerCase()))
     }
 
+
     return (
       <div className="app">
         <header className="primary-header">
@@ -96,6 +97,7 @@ class App extends React.Component {
 
         {/* SEARCH */}
         <label>{this.state.globalSearch}</label>
+
         <SearchInput  // Custom component - Search bar
           ref={component => this.globalSearch = component} // THis can also take a callback (here we're setting as the nested class component Input)
           update={this.update.bind(this)} // update now, not on change

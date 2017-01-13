@@ -5,7 +5,7 @@ import './styles/foundation.css';
 import App from './app/App.js';
 import Test from './page-two/test/Test.jsx'
 // import { Router, Route, Link, browserHistory, IndexRoute  } from 'react-router';
-import { Router, Route, browserHistory, IndexRoute } from 'react-router';
+import { NoMatch, Router, Route, browserHistory } from 'react-router';
 
 
 // // No Routes
@@ -29,5 +29,6 @@ ReactDOM.render((
     <Route path="/" component={App}>
       <Route path="test" component={Test} />
     </Route>
+    <Route path="*" component={NoMatch}/> {/* This catch-all route will match everything, it must be the last route specified in the child route array. */}
   </Router>
 ), document.getElementById('root'));

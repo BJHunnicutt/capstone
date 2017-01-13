@@ -29,6 +29,7 @@ ReactDOM.render((
     <Route path="/" component={App}>
       <Route path="test" component={Test} />
     </Route>
-    <Route path="*" component={NoMatch}/> {/* This catch-all route will match everything, it must be the last route specified in the child route array. */}
+    {/* This catch-all route will match everything, it must be the last route specified in the child route array. */}
+    <Route path="*" component={NoMatch}/>
   </Router>
 ), document.getElementById('root'));

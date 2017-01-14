@@ -2,8 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './styles/index.css';
 import './styles/foundation.css';
-import App from './app/App.js';
-import Test from './page-two/test/Test.jsx'
+import App from './containers/App.js';
+import Scatter from './containers/Scatter.jsx'
+import SearchPage from './components/searchPage.jsx'
 // import { Router, Route, Link, browserHistory, IndexRoute  } from 'react-router';
 import { NoMatch, Router, Route, browserHistory } from 'react-router';
 
@@ -26,8 +27,14 @@ import { NoMatch, Router, Route, browserHistory } from 'react-router';
 ReactDOM.render((
   <Router history={browserHistory} >
     {/* <IndexRoute component={App} /> */}
-    <Route path="/" component={App}>
-      <Route path="test" component={Test} />
+    <Route component={App}>
+      <Route component={SearchPage}>
+        <Route path="/" component={Scatter} />
+      </Route>
+
+
+      <Route path="search" component={SearchPage} />
+      <Route path="test" component={Scatter} />
     </Route>
     {/* This catch-all route will match everything, it must be the last route specified in the child route array. */}
     <Route path="*" component={NoMatch}/>

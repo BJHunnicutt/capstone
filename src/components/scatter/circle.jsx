@@ -18,7 +18,7 @@ export default class Circle extends React.Component {
 
     //Create circles
     d3.select(node)
-      .data([1])
+      // .data([1])
       .transition()
       .attr("cx", this.props.cx)
       .attr("cy", this.props.cy)

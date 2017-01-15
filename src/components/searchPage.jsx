@@ -135,3 +135,13 @@ SearchPage.defaultProps = {
 }
 
 export default SearchPage;
+
+
+
+// ----------
+// The newer "Stateless Functional Component" way
+// var Component = function(props) {
+//   return (
+//     <div>{props.foo}</div>
+//   );
+// };

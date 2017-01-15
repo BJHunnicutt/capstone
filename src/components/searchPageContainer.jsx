@@ -132,3 +132,28 @@ SearchPage.defaultProps = {
 }
 
 export default SearchPageContainer;
+
+
+
+
+// ----------
+// var UserListContainer = React.createClass({
+//   getInitialState: function() {
+//     return {
+//       users: []
+//     }
+//   },
+//
+//   componentDidMount: function() {
+//     var _this = this;
+//     axios.get('/path/to/user-api').then(function(response) {
+//       _this.setState({users: response.data})
+//     });
+//   },
+//
+//   render: function() {
+//     return (<UserList users={this.state.users} />);
+//   }
+// });
+//
+// module.exports = UserListContainer;

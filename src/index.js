@@ -25,6 +25,7 @@ import { NoMatch, Router, Route, browserHistory } from 'react-router';
 
 // Nested Routes
 ReactDOM.render((
+  // *don't use history={hashHistory}, browser history manages the url better
   <Router history={browserHistory} >
     {/* <IndexRoute component={App} /> */}
     <Route component={App}>

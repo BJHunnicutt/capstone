@@ -2,7 +2,12 @@ import React from 'react';
 // import d3 from 'd3';
 // import '../../styles/App.css';
 import SearchInput from '../views/searchBar.jsx';
+// Adding in redux
+import { connect } from 'react-redux';
+import store from '../../store';
+import { RECEIVE_SEARCH, REQUEST_SEARCH } from '../../actions/actions';
 
+import fetch from 'isomorphic-fetch'
 
 
 // CLASS COMPONENT
@@ -26,32 +31,57 @@ class SearchPage extends React.Component {
   }
 
   updateSearch(event){
+    let query = this.globalSearch.refs.input.value;
+    store.dispatch({
+      type: REQUEST_SEARCH,
+      query: query
+    });
+
     fetch('https://api.opentrials.net/v1/search?q=interventions.name%3A(' +
             this.globalSearch.refs.input.value + ')%20OR%20public_title%3A(' +
             this.globalSearch.refs.input.value + ')%20OR%20conditions.name%3A(' +
-            this.globalSearch.refs.input.value + ')&per_page=50')
+            this.globalSearch.refs.input.value + ')&per_page=100')
       .then( response => response.json())
+      // .then(json => store.dispatch({
+      //   type: RECEIVE_SEARCH,
+      //   query: query,
+      //   items: json.data.children.map(child => child.data),
+      //   // totalItems: response.total_count,
+      //   receivedAt: Date.now()
+      // }))
       .then( (response) => {
         this.setState({items: response.items})
         this.setState({totalItems: response.total_count})
+        store.dispatch({
+          type: RECEIVE_SEARCH,
+          query: query,
+          items: response.items,
+          totalItems: response.total_count,
+          receivedAt: Date.now()
+        })
+
       })
+      // .then((response) => store.dispatch({
+      //   type: RECEIVE_SEARCH,
+      //   items: response.items,
+      // }))
   }
 
   getLocations(){
-    let data = {
-      gender: '',
-      targetSampleSize: '',
-      status: '',
-      registrationDate: '',
-      completionDate: '',
-      publishedResults: '',
-      locations: [],
-      recruitmentStatus: '',
-      organisations: '',
-      url: '',
-      sources: [],
-    }
-    console.log(data);
+    // let data = {
+    //   gender: '',
+    //   targetSampleSize: '',
+    //   status: '',
+    //   registrationDate: '',
+    //   completionDate: '',
+    //   publishedResults: '',
+    //   locations: [],
+    //   recruitmentStatus: '',
+    //   organisations: '',
+    //   url: '',
+    //   sources: [],
+    // }
+    // console.log(data);
   }
 
   getGenders(){
@@ -71,6 +101,10 @@ class SearchPage extends React.Component {
     this.setState({filter: event.target.value}) // event.target.value is the result of an input field (in render below)
   }
 
+  showState() {
+    console.log("Current state: ", store.getState());
+  }
+
   render(){
     let items = this.state.items
     let totalItems = this.state.totalItems
@@ -84,6 +118,7 @@ class SearchPage extends React.Component {
         .includes(this.state.filter.toLowerCase()))
     }
 
+    // console.log("Current state: ", store.getState());
 
     return (
       <div className="search_page">
@@ -110,6 +145,8 @@ class SearchPage extends React.Component {
 
         {/* DISPLAY FILTERED SEARCH RESULTS -- DEV ONLY */}
         <h5>{totalItems}</h5>
+        <button className='button' onClick={this.showState}>console log state</button>
+
         {items.map(item =>
           // The elements in an array (i.e. amongst siblings) should have a unique key prop --> using the public_title below
           <div key={item.id}>
@@ -123,10 +160,11 @@ class SearchPage extends React.Component {
           </div>
         )}
         <p>{JSON.stringify(items)}</p>
+
       </div>
     )
   }
-} // closing App class
+} // closing SearchPage class
 
 const Title = (props) => <h4> {props.title.public_title} </h4>
 
@@ -134,14 +172,17 @@ SearchPage.defaultProps = {
   val: 0
 }
 
-export default SearchPage;
+// export default SearchPage;
 
 
+const mapStateToProps = function(store) {
+  return {
+    query: store.searchState.query,
+    items: store.searchState.items,
+    // trials: store.searchState.trials,
+    totalItems: store.searchState.totalItems,
+    receivedAt: store.searchState.receivedAt
+  };
+}
 
-// ----------
-// The newer "Stateless Functional Component" way
-// var Component = function(props) {
-//   return (
-//     <div>{props.foo}</div>
-//   );
-// };
+export default connect(mapStateToProps)(SearchPage);

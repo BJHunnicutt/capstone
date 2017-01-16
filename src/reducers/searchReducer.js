@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import {
-  SELECT_SEARCH, INVALIDATE_SEARCH, REQUEST_SEARCH, RECEIVE_SEARCH, FILTER_SEARCH
+  SELECT_SEARCH, INVALIDATE_SEARCH, REQUEST_SEARCH, RECEIVE_SEARCH
 } from '../actions/actionTypes'
 
 
@@ -35,7 +35,8 @@ function trials(state = {
       return Object.assign({}, state, {
         isFetching: false,
         didInvalidate: false,
-        trials: action.trials,
+        items: action.items,
+        totalItems: action.totalItems,
         lastUpdated: action.receivedAt
       })
     default:

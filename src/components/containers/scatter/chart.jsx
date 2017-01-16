@@ -4,7 +4,7 @@ import ScatterPlot from './scatter-plot';
 // Adding in redux
 import { connect } from 'react-redux';
 import store from '../../../store';
-import * as types from '../../../actions/actionTypes';
+import {GET_DATA_SCATTER} from '../../../actions/actions';
 
 
 const styles = {
@@ -37,7 +37,7 @@ class Chart extends React.Component{
   randomizeData() {
     // this.setState({ data: [] });
     store.dispatch({
-      type: types.GET_DATA_SCATTER,
+      type: GET_DATA_SCATTER,
       data: randomDataSet(),
     });
 

@@ -1,6 +1,11 @@
 // unfinished/src/components/chart.jsx
 import React from 'react';
 import ScatterPlot from './scatter-plot';
+// Adding in redux
+import { connect } from 'react-redux';
+import store from '../../../store';
+import * as types from '../../../actions/actionTypes';
+
 
 const styles = {
   width   : 500,
@@ -23,14 +28,18 @@ const randomDataSet = () => {
   return Array.apply(null, {length: numDataPoints}).map(() => [randomNum(), randomNum()]);
 }
 
-export default class Chart extends React.Component{
-  constructor(props) {
-    super(props);
-    this.state = { data: randomDataSet() };
-  }
+class Chart extends React.Component{
+  // constructor(props) {
+  //   super(props);
+  //   this.state = { data: randomDataSet() };
+  // }
 
   randomizeData() {
-    this.setState({ data: randomDataSet() });
+    // this.setState({ data: [] });
+    store.dispatch({
+      type: types.GET_DATA_SCATTER,
+      data: randomDataSet(),
+    });
 
   }
 
@@ -38,7 +47,7 @@ export default class Chart extends React.Component{
 
     return <div>
       <h1>Playing With React and D3</h1>
-      <ScatterPlot {...this.state} {...styles} />
+      <ScatterPlot {...this.props} {...styles} />
       <div className="controls">
         <button className="button btn randomize" onClick={() => this.randomizeData()}>
           Randomize Data
@@ -46,4 +55,12 @@ export default class Chart extends React.Component{
       </div>
     </div>
   }
+};
+
+const mapStateToProps = function(store) {
+  return {
+    data: store.scatterState.data
+  };
 }
+
+export default connect(mapStateToProps)(Chart);

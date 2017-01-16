@@ -8,4 +8,4 @@ export const FILTER_SEARCH = 'FILTER_SEARCH';
 export const CLEAR_SEARCH = 'CLEAR_SEARCH';
 
 // Scatter
-export const GET_DATA_SCATTER = 'GETDATA_SCATTER';
+export const GET_DATA_SCATTER = 'GET_DATA_SCATTER';

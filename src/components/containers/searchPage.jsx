@@ -1,7 +1,7 @@
 import React from 'react';
 // import d3 from 'd3';
 // import '../../styles/App.css';
-import SearchInput from './searchBar.jsx';
+import SearchInput from '../views/searchBar.jsx';
 
 
 

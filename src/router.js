@@ -6,7 +6,7 @@ import App from './components/containers/App.js';
 
 // Pages
 import Scatter from './components/views/Scatter.jsx'
-import SearchPage from './components/views/searchPage.jsx'
+import SearchPage from './components/containers/searchPage.jsx'
 
 
 // Nested Routes

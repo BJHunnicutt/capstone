@@ -8,16 +8,16 @@ import Header from '../views/header.jsx';
 
 // CLASS COMPONENT
 class App extends React.Component {
-  constructor(){
-    super(); // "To get our context"
-    this.state = {
-
-    }
-  }
-
-  update(event){
-
-  }
+  // constructor(){
+  //   super(); // "To get our context"
+  //   this.state = {
+  //
+  //   }
+  // }
+  //
+  // update(event){
+  //
+  // }
 
   render(){
 

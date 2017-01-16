@@ -1,4 +1,4 @@
-import * as types from '../actions/actionTypes';
+import { GET_DATA_SCATTER } from '../actions/actionTypes';
 import _ from 'lodash';
 
 
@@ -12,7 +12,7 @@ const initialState = {
 const scatterReducer = function(state = initialState, action) {
   switch(action.type) {
 
-    case types.GET_DATA_SCATTER:
+    case GET_DATA_SCATTER:
       return Object.assign({}, state, {
         data: action.data
       });

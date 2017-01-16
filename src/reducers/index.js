@@ -2,13 +2,13 @@ import { combineReducers } from 'redux';
 
 // Reducers
 import scatterReducer from './scatterReducer';
-// import widgetReducer from './widget-reducer';
+import searchReducer from './searchReducer';
 // import searchLayoutReducer from './search-layout-reducer';
 
 // Combine Reducers
 var reducers = combineReducers({
     scatterState: scatterReducer,
-    // widgetState: widgetReducer,
+    searchState: searchReducer,
     // searchLayoutState: searchLayoutReducer
 });
 

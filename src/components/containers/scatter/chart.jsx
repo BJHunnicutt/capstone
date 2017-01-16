@@ -5,6 +5,9 @@ import ScatterPlot from './scatter-plot';
 const styles = {
   width   : 500,
   height  : 300,
+  // Only works when you fully reload the page
+  // width : window.innerWidth / 2, // Testing out making the plot viewport responsive
+  // height : 0.6 * window.innerWidth / 2,
   padding : 30,
 };
 
@@ -32,6 +35,7 @@ export default class Chart extends React.Component{
   }
 
   render() {
+
     return <div>
       <h1>Playing With React and D3</h1>
       <ScatterPlot {...this.state} {...styles} />

@@ -6,8 +6,7 @@ import SearchInput from '../views/searchBar.jsx';
 import { connect } from 'react-redux';
 import store from '../../store';
 import { RECEIVE_SEARCH, REQUEST_SEARCH } from '../../actions/actions';
-
-import fetch from 'isomorphic-fetch'
+import { normalize, schema } from 'normalizr'
 
 
 // CLASS COMPONENT
@@ -28,6 +27,16 @@ class SearchPage extends React.Component {
     });
     // if (event.target == )
     this.updateSearch();
+  }
+
+  normalizeQuery(response) {
+    // THis is reformatting the response so it is easier to search
+      // - also allows multiple searches to be stored without duplicate trials
+    let myData = response;
+    let item = new schema.Entity('items');
+    let mySchema = { items: [ item ] }
+    let normalizedData = normalize(myData, mySchema);
+    return normalizedData
   }
 
   updateSearch(event){
@@ -55,7 +64,8 @@ class SearchPage extends React.Component {
         store.dispatch({
           type: RECEIVE_SEARCH,
           query: query,
-          items: response.items,
+          response: this.normalizeQuery(response), // The reordered json response
+          items: this.normalizeQuery(response), // An array of the trial IDs
           totalItems: response.total_count,
           receivedAt: Date.now()
         })
@@ -101,8 +111,8 @@ class SearchPage extends React.Component {
     this.setState({filter: event.target.value}) // event.target.value is the result of an input field (in render below)
   }
 
-  showState() {
-    console.log("Current state: ", store.getState());
+  showReduxStore() {
+    console.log("Current store: ", store.getState());
   }
 
   render(){
@@ -145,7 +155,7 @@ class SearchPage extends React.Component {
 
         {/* DISPLAY FILTERED SEARCH RESULTS -- DEV ONLY */}
         <h5>{totalItems}</h5>
-        <button className='button' onClick={this.showState}>console log state</button>
+        <button className='button' onClick={this.showReduxStore}>Log Redux Store</button>
 
         {items.map(item =>
           // The elements in an array (i.e. amongst siblings) should have a unique key prop --> using the public_title below

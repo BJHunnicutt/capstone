@@ -3,6 +3,9 @@ import {
   SELECT_SEARCH, INVALIDATE_SEARCH, REQUEST_SEARCH, RECEIVE_SEARCH
 } from '../actions/actionTypes'
 
+import { normalize, schema } from 'normalizr'
+import merge from 'lodash/merge'
+
 
 
 function selectedQuery(state = '', action) {
@@ -15,7 +18,22 @@ function selectedQuery(state = '', action) {
   }
 }
 
-function trials(state = {
+
+// Trying to reorder the data so its more easily searchable.
+function searchedTrials(state = {}, action) {
+  switch (action.type) {
+    case RECEIVE_SEARCH:
+      // Merge the already searched trials with the old ones
+      if (action.response && action.response.entities) {
+        return merge({}, state, action.response.entities)
+      }
+
+    default:
+      return state
+  }
+}
+
+function items(state = {
   isFetching: false,
   didInvalidate: false,
   items: []
@@ -35,7 +53,7 @@ function trials(state = {
       return Object.assign({}, state, {
         isFetching: false,
         didInvalidate: false,
-        items: action.items,
+        items: action.items.result.items,
         totalItems: action.totalItems,
         lastUpdated: action.receivedAt
       })
@@ -50,7 +68,7 @@ function trialsBySearch(state = {}, action) {
     case RECEIVE_SEARCH:
     case REQUEST_SEARCH:
       return Object.assign({}, state, {
-        [action.query]: trials(state[action.query], action)
+        [action.query]: items(state[action.query], action)
         // Same as:
         //   let nextState = {}
         //   nextState[action.query] = posts(state[action.query], action)
@@ -63,7 +81,8 @@ function trialsBySearch(state = {}, action) {
 
 const searchReducer = combineReducers({
   trialsBySearch,
-  selectedQuery
+  selectedQuery,
+  searchedTrials
 })
 
 export default searchReducer

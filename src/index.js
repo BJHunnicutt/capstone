@@ -2,11 +2,20 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './styles/index.css';
 import './styles/foundation.css';
-import App from './containers/App.js';
-import Scatter from './containers/Scatter.jsx'
-import SearchPage from './components/searchPage.jsx'
-// import { Router, Route, Link, browserHistory, IndexRoute  } from 'react-router';
-import { NoMatch, Router, Route, browserHistory } from 'react-router';
+
+import { Provider } from 'react-redux';
+import store from './store';
+import router from './router';
+
+// require('es6-promise').polyfill();  // ??
+
+
+// Imported Routes
+    // -- Provider is a top-level component that wrapps our entire application, including the Router. We pass it a reference to the store so we can use react-redux's connect() method for Component Containers.
+ReactDOM.render(
+  <Provider store={store}>{router}</Provider>,
+  document.getElementById('root')
+);
 
 
 // // No Routes
@@ -25,20 +34,20 @@ import { NoMatch, Router, Route, browserHistory } from 'react-router';
 // ), document.getElementById('root'));
 
 // Nested Routes
-ReactDOM.render((
-  // *don't use history={hashHistory}, browser history manages the url better
-  <Router history={browserHistory} >
-    {/* <IndexRoute component={App} /> */}
-    <Route component={App}>
-      <Route component={SearchPage}>
-        <Route path="/" component={Scatter} />
-      </Route>
-
-
-      <Route path="search" component={SearchPage} />
-      <Route path="test" component={Scatter} />
-    </Route>
-    {/* This catch-all route will match everything, it must be the last route specified in the child route array. */}
-    <Route path="*" component={NoMatch}/>
-  </Router>
-), document.getElementById('root'));
+// ReactDOM.render((
+//   // *don't use history={hashHistory}, browser history manages the url better
+//   <Router history={browserHistory} >
+//     {/* <IndexRoute component={App} /> */}
+//     <Route component={App}>
+//       <Route path="/" component={SearchPage}>
+//         <IndexRoute component={Scatter} />
+//       </Route>
+//
+//
+//       <Route path="search" component={SearchPage} />
+//       <Route path="test" component={Scatter} />
+//     </Route>
+//     {/* This catch-all route will match everything, it must be the last route specified in the child route array. */}
+//     <Route path="*" component={NoMatch}/>
+//   </Router>
+// ), document.getElementById('root'));

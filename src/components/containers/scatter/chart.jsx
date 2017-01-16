@@ -8,6 +8,7 @@ const styles = {
   padding : 30,
 };
 
+
 // The number of data points for the chart.
 const numDataPoints = 50;
 

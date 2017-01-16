@@ -2,11 +2,11 @@ import React from 'react';
 import { Router, Route, browserHistory, NoMatch, IndexRoute } from 'react-router';
 
 // Layouts
-import App from './containers/App.js';
+import App from './components/containers/App.js';
 
 // Pages
-import Scatter from './containers/Scatter.jsx'
-import SearchPage from './components/searchPage.jsx'
+import Scatter from './components/views/Scatter.jsx'
+import SearchPage from './components/views/searchPage.jsx'
 
 
 // Nested Routes

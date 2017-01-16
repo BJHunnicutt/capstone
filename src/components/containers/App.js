@@ -1,7 +1,7 @@
 import React from 'react';
 // import d3 from 'd3';
-import '../styles/App.css';
-import Header from '../components/header.jsx';
+import '../../styles/App.css';
+import Header from '../views/header.jsx';
 // import SearchPage from '../components/search_page.jsx';
 
 

@@ -1,9 +1,8 @@
 import { combineReducers } from 'redux'
 import {
-  SELECT_SEARCH, INVALIDATE_SEARCH, REQUEST_SEARCH, RECEIVE_SEARCH
+  SELECT_SEARCH, INVALIDATE_SEARCH, REQUEST_SEARCH, RECEIVE_SEARCH, FILTER_SEARCH
 } from '../actions/actionTypes'
 
-import { normalize, schema } from 'normalizr'
 import merge from 'lodash/merge'
 
 
@@ -11,8 +10,21 @@ import merge from 'lodash/merge'
 function selectedQuery(state = '', action) {
   switch (action.type) {
     case SELECT_SEARCH:
+      let newState = action.query
       // return Object.assign({}, state, { query: action.query });
-      return action.query;
+      return newState;
+    default:
+      return state
+  }
+}
+
+function filterSearch(state = '', action) {
+  switch (action.type) {
+    case FILTER_SEARCH:
+      // return Object.assign({}, state, { query: action.query });
+      // return action.filter;
+      let newState = action.filter;
+      return newState;
     default:
       return state
   }
@@ -26,6 +38,8 @@ function searchedTrials(state = {}, action) {
       // Merge the already searched trials with the old ones
       if (action.response && action.response.entities) {
         return merge({}, state, action.response.entities)
+      } else {
+        return state
       }
 
     default:
@@ -62,7 +76,7 @@ function items(state = {
   }
 }
 
-function trialsBySearch(state = {}, action) {
+function searchHistory(state = {}, action) {
   switch (action.type) {
     case INVALIDATE_SEARCH:
     case RECEIVE_SEARCH:
@@ -80,9 +94,10 @@ function trialsBySearch(state = {}, action) {
 }
 
 const searchReducer = combineReducers({
-  trialsBySearch,
+  searchHistory,
   selectedQuery,
-  searchedTrials
+  searchedTrials,
+  filterSearch
 })
 
 export default searchReducer

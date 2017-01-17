@@ -2,10 +2,11 @@ import React from 'react';
 // import d3 from 'd3';
 // import '../../styles/App.css';
 import SearchInput from '../views/searchBar.jsx';
+import SearchPageView from '../views/searchPageView.jsx';
 // Adding in redux
 import { connect } from 'react-redux';
 import store from '../../store';
-import { RECEIVE_SEARCH, REQUEST_SEARCH } from '../../actions/actions';
+import { RECEIVE_SEARCH, REQUEST_SEARCH, FILTER_SEARCH, SELECT_SEARCH } from '../../actions/actions';
 import { normalize, schema } from 'normalizr'
 
 
@@ -69,6 +70,10 @@ class SearchPage extends React.Component {
           totalItems: response.total_count,
           receivedAt: Date.now()
         })
+        store.dispatch({
+          type: SELECT_SEARCH,
+          query: query
+        });
 
       })
       // .then((response) => store.dispatch({
@@ -109,20 +114,46 @@ class SearchPage extends React.Component {
 
   filter(event){
     this.setState({filter: event.target.value}) // event.target.value is the result of an input field (in render below)
+
+    store.dispatch({
+      type: FILTER_SEARCH,
+      filter: event.target.value
+    });
   }
 
   showReduxStore() {
     console.log("Current store: ", store.getState());
+    // let searchTerm = store.getState().searchState.selectedQuery;
+    // console.log(store.getState().searchState.searchHistory[searchTerm].items);
+    // let currentTrials = this.getSearchResults();
+    // console.log(currentTrials);
+    // console.log(store.getState().searchState.selectedQuery !== '');
+  }
+
+  getSearchResults() {
+    let currentTrials =  [];
+    if (store.getState().searchState.selectedQuery !== '') {
+      let searchTerm = store.getState().searchState.selectedQuery;
+      let currentTrialIDs = store.getState().searchState.searchHistory[searchTerm].items;
+      console.log('im in');
+      currentTrials = currentTrialIDs.map(id => {
+        return store.getState().searchState.searchedTrials.items[id]
+      })
+    }
+    return currentTrials
   }
 
   render(){
-    let items = this.state.items
-    let totalItems = this.state.totalItems
+    // let items = this.getSearchResults();
+    // console.log('items ', items);
+    // console.log('test ', test);
+    let items = this.state.items;
+    let totalItems = this.state.totalItems;
     // console.log(items[0].sources.name === );
     // Object.keys(items.sources)[0]
-
+    // let updateS = store.subscribe(this.render)
     // Filtering the API results
-    if(this.state.filter) {
+    if(this.state.filter ) {
       items = items.filter( item =>
         item.public_title.toLowerCase()
         .includes(this.state.filter.toLowerCase()))
@@ -134,7 +165,7 @@ class SearchPage extends React.Component {
       <div className="search_page">
 
         {/* SEARCH */}
-        <label>{this.state.globalSearch}</label>
+        <label>Search by Treatment or Condition</label>
         <SearchInput  // Custom component - Search bar
           ref={component => this.globalSearch = component} // THis can also take a callback (here we're setting as the nested class component Input)
           update={this.update.bind(this)} // update now, not on change
@@ -155,7 +186,7 @@ class SearchPage extends React.Component {
 
         {/* DISPLAY FILTERED SEARCH RESULTS -- DEV ONLY */}
         <h5>{totalItems}</h5>
-        <button className='button' onClick={this.showReduxStore}>Log Redux Store</button>
+        <button className='button' onClick={this.showReduxStore.bind(this)}>Log Redux Store</button>
 
         {items.map(item =>
           // The elements in an array (i.e. amongst siblings) should have a unique key prop --> using the public_title below
@@ -170,6 +201,11 @@ class SearchPage extends React.Component {
           </div>
         )}
         <p>{JSON.stringify(items)}</p>
+
+        {/* <SearchPageView  // Custom component - Search bar
+          ref={component => this.globalSearch = component} // THis can also take a callback (here we're setting as the nested class component Input)
+          update={this.update.bind(this)} // update now, not on change
+        /> */}
 
       </div>
     )
@@ -187,11 +223,10 @@ SearchPage.defaultProps = {
 
 const mapStateToProps = function(store) {
   return {
-    query: store.searchState.query,
-    items: store.searchState.items,
-    // trials: store.searchState.trials,
-    totalItems: store.searchState.totalItems,
-    receivedAt: store.searchState.receivedAt
+    // query: store.searchState.query,
+    // items: store.searchState.items,
+    // totalItems: store.searchState.totalItems,
+    // receivedAt: store.searchState.receivedAt
   };
 }
 

@@ -1,72 +1,9 @@
 import React from 'react';
-import SearchInput from './searchPage.jsx';
+import SearchInput from './searchBar.jsx';
 
 
 // CLASS COMPONENT
-class SearchPageContainer extends React.Component {
-  constructor(){
-    super(); // "To get our context"
-    this.state = {
-      items: [],
-      totalItems: 0,
-      globalSearch: 'Search By Treatment'
-    }
-  }
-
-  update(event){
-    // console.log(event.target)
-    this.setState({
-      globalSearch: this.globalSearch.refs.input.value,
-    });
-    // if (event.target == )
-    this.updateSearch();
-  }
-
-  updateSearch(event){
-    fetch('https://api.opentrials.net/v1/search?q=interventions.name%3A(' +
-            this.globalSearch.refs.input.value + ')%20OR%20public_title%3A(' +
-            this.globalSearch.refs.input.value + ')%20OR%20conditions.name%3A(' +
-            this.globalSearch.refs.input.value + ')&per_page=50')
-      .then( response => response.json())
-      .then( (response) => {
-        this.setState({items: response.items})
-        this.setState({totalItems: response.total_count})
-      })
-  }
-
-  getLocations(){
-    let data = {
-      gender: '',
-      targetSampleSize: '',
-      status: '',
-      registrationDate: '',
-      completionDate: '',
-      publishedResults: '',
-      locations: [],
-      recruitmentStatus: '',
-      organisations: '',
-      url: '',
-      sources: [],
-    }
-    console.log(data);
-  }
-
-  getGenders(){
-
-  }
-
-
-
-  componentDidUpdate(){
-    // Getting an API Query
-    // fetch('http://swapi.co/api/people/?format=json')
-
-  }
-
-
-  filter(event){
-    this.setState({filter: event.target.value}) // event.target.value is the result of an input field (in render below)
-  }
+class SearchPageView extends React.Component {
 
   render(){
     let items = this.state.items
@@ -127,11 +64,11 @@ class SearchPageContainer extends React.Component {
 
 const Title = (props) => <h4> {props.title.public_title} </h4>
 
-SearchPage.defaultProps = {
+SearchPageView.defaultProps = {
   val: 0
 }
 
-export default SearchPageContainer;
+export default SearchPageView;
 
 
 

@@ -20,9 +20,6 @@
  * @providesModule fixedDataTableCellGroupLayout
  */
 
-#data-table {
-  /*width: 60vw;*/
-}
 
 .fixedDataTableCellGroupLayout_cellGroup {
   -webkit-backface-visibility: hidden;
@@ -64,8 +61,6 @@
   overflow: hidden;
   position: absolute;
   white-space: normal;
-
-  /*width: 60vw;*/
 }
 
 .fixedDataTableCellLayout_lastChild {

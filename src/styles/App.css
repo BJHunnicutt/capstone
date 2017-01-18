@@ -6,6 +6,11 @@
   font-weight: 300;
 }
 
+#search-table-wrapper {
+  width: 40vw;
+  display: inline-block;
+}
+
 .App {
   text-align: center;
 }

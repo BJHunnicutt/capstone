@@ -3,6 +3,8 @@ import React from 'react';
 // import '../../styles/App.css';
 import SearchInput from '../views/searchBar.jsx';
 import SearchPageView from '../views/searchPageView.jsx';
+import SearchTable from '../views/searchTable.js';
+
 // Adding in redux
 import { connect } from 'react-redux';
 import store from '../../store';
@@ -212,6 +214,9 @@ class SearchPage extends React.Component {
         {/* Corresponding View Component */}
         <SearchPageView  {...this.props} />
 
+        <div id="search-table-wrapper">
+          <SearchTable/>
+        </div>
 
         {/* Render the plot */}
         <div className="nested-plot">

@@ -3,8 +3,8 @@ import React from 'react';
 import ScatterPlot from './scatter-plot';
 // Adding in redux
 import { connect } from 'react-redux';
-import store from '../../../store';
-import {GET_DATA_SCATTER} from '../../../actions/actions';
+// import store from '../../../store';   // Magic. FOR DISPATCH: You can just use this.props. instead of store. because of the <Provider> in src/index.js
+import { GET_DATA_SCATTER } from '../../../actions/actions';
 
 
 const styles = {
@@ -19,10 +19,8 @@ const styles = {
 
 // The number of data points for the chart.
 const numDataPoints = 50;
-
 // A function that returns a random number from 0 to 1000
 const randomNum     = () => Math.floor(Math.random() * 1000);
-
 // A function that creates an array of 50 elements of (x, y) coordinates.
 const randomDataSet = () => {
   return Array.apply(null, {length: numDataPoints}).map(() => [randomNum(), randomNum()]);
@@ -36,7 +34,7 @@ class Chart extends React.Component{
 
   randomizeData() {
     // this.setState({ data: [] });
-    store.dispatch({
+    this.props.dispatch({
       type: GET_DATA_SCATTER,
       data: randomDataSet(),
     });
@@ -46,7 +44,7 @@ class Chart extends React.Component{
   render() {
 
     return <div>
-      <h1>Playing With React and D3</h1>
+      <h1> ... </h1>
       <ScatterPlot {...this.props} {...styles} />
       <div className="controls">
         <button className="button btn randomize" onClick={() => this.randomizeData()}>

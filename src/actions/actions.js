@@ -1,3 +1,4 @@
+import store from '../store';
 
 // Scatter Actions
 export const GET_DATA_SCATTER = 'GET_DATA_SCATTER';
@@ -17,7 +18,8 @@ export const REQUEST_SEARCH = 'REQUEST_SEARCH';
 export const RECEIVE_SEARCH = 'RECEIVE_SEARCH';
 export const FILTER_SEARCH = 'FILTER_SEARCH';
 export const INVALIDATE_SEARCH = 'INVALIDATE_SEARCH';
-
+export const GET_RESULTS = 'GET_RESULTS';
+export const FAILED_SEARCH = 'FAILED_SEARCH';
 
 // export function selectSearch(query) {
 //   return {
@@ -49,9 +51,17 @@ export const INVALIDATE_SEARCH = 'INVALIDATE_SEARCH';
 //   }
 // }
 //
-// export function filterSearch(filter) {
-//   return {
-//     type: FILTER_SEARCH,
-//     filter
-//   }
-// }
+export function filterSearch(filter) {
+  return {
+    type: FILTER_SEARCH,
+    filter
+  }
+}
+
+export function getSearchResults(filter) {
+  return {
+    type: GET_RESULTS,
+    ids: store.getState().searchState.searchHistory[store.getState().searchState.selectedQuery].items,
+    trials: store.getState().searchState.searchedTrials.items
+  }
+}

@@ -6,8 +6,18 @@ import SearchPageView from '../views/searchPageView.jsx';
 // Adding in redux
 import { connect } from 'react-redux';
 import store from '../../store';
-import { RECEIVE_SEARCH, REQUEST_SEARCH, FILTER_SEARCH, SELECT_SEARCH } from '../../actions/actions';
+import { RECEIVE_SEARCH, REQUEST_SEARCH, FILTER_SEARCH, SELECT_SEARCH, GET_RESULTS, FAILED_SEARCH, GET_DATA_SCATTER } from '../../actions/actions';
 import { normalize, schema } from 'normalizr'
+
+
+// The number of data points for the chart.
+const numDataPoints = 50;
+// A function that returns a random number from 0 to 1000
+const randomNum     = () => Math.floor(Math.random() * 1000);
+// A function that creates an array of 50 elements of (x, y) coordinates.
+const randomDataSet = () => {
+  return Array.apply(null, {length: numDataPoints}).map(() => [randomNum(), randomNum()]);
+}
 
 
 // CLASS COMPONENT
@@ -62,6 +72,7 @@ class SearchPage extends React.Component {
       .then( (response) => {
         this.setState({items: response.items})
         this.setState({totalItems: response.total_count})
+        // Save the response
         store.dispatch({
           type: RECEIVE_SEARCH,
           query: query,
@@ -70,16 +81,32 @@ class SearchPage extends React.Component {
           totalItems: response.total_count,
           receivedAt: Date.now()
         })
+        // Save the search (helps with accessing the searchHistory store)
         store.dispatch({
           type: SELECT_SEARCH,
-          query: query
+          query: query,
+        })
+        // Save a formatted version of the most recent search
+        let ids = store.getState().searchState.searchHistory[store.getState().searchState.selectedQuery].items;
+        let trials = store.getState().searchState.searchedTrials.items;
+        store.dispatch({
+          type: GET_RESULTS,
+          ids: ids,
+          trials: trials
+        })
+        //
+        store.dispatch({
+          type: GET_DATA_SCATTER,
+          data: randomDataSet(),
         });
-
-      })
-      // .then((response) => store.dispatch({
-      //   type: RECEIVE_SEARCH,
-      //   items: response.items,
-      // }))
+        // Catch errors (kind of, the errors still log to the console, but it keeps working)
+      }).catch(error => {
+        console.log(error, "error... write an action for the dispatch later");
+        store.dispatch({
+          type: FAILED_SEARCH,
+          error: error
+        })
+      });
   }
 
   getLocations(){
@@ -100,17 +127,12 @@ class SearchPage extends React.Component {
   }
 
   getGenders(){
-
   }
-
-
 
   componentDidUpdate(){
     // Getting an API Query
     // fetch('http://swapi.co/api/people/?format=json')
-
   }
-
 
   filter(event){
     this.setState({filter: event.target.value}) // event.target.value is the result of an input field (in render below)
@@ -122,7 +144,17 @@ class SearchPage extends React.Component {
   }
 
   showReduxStore() {
+    // if (Object.values(store.getState().searchState.searchedTrials.items).length !== 0) {
+    //   let ids = store.getState().searchState.searchHistory[store.getState().searchState.selectedQuery].items;
+    //   let trials = store.getState().searchState.searchedTrials.items;
+    //   store.dispatch({
+    //     type: GET_RESULTS,
+    //     ids: ids,
+    //     trials: trials
+    //   });
+    // }
     console.log("Current store: ", store.getState());
+    // console.log(store.getState().searchState.searchHistory[store.getState().searchState.selectedQuery].items);
     // let searchTerm = store.getState().searchState.selectedQuery;
     // console.log(store.getState().searchState.searchHistory[searchTerm].items);
     // let currentTrials = this.getSearchResults();
@@ -177,6 +209,9 @@ class SearchPage extends React.Component {
         <input type="text"
         onChange={this.filter.bind(this)} />
 
+        {/* Corresponding View Component */}
+        <SearchPageView  {...this.props} />
+
 
         {/* Render the plot */}
         <div className="nested-plot">
@@ -192,20 +227,16 @@ class SearchPage extends React.Component {
           // The elements in an array (i.e. amongst siblings) should have a unique key prop --> using the public_title below
           <div key={item.id}>
             <Title key={item.public_title} title={item} />
-            <p>{JSON.stringify(item.sources)}</p>
+            {/* <p>{JSON.stringify(item.sources)}</p>
             <p>
               {Object.keys(item.sources).map(source =>
                 source + " "
               )}
-            </p>
+            </p> */}
           </div>
         )}
-        <p>{JSON.stringify(items)}</p>
-
-        {/* <SearchPageView  // Custom component - Search bar
-          ref={component => this.globalSearch = component} // THis can also take a callback (here we're setting as the nested class component Input)
-          update={this.update.bind(this)} // update now, not on change
-        /> */}
+        {/* <p>{JSON.stringify(items)}</p> */}
+        <p>{JSON.stringify(store.getState().searchState.searchedTrials.items)}</p>
 
       </div>
     )
@@ -223,9 +254,10 @@ SearchPage.defaultProps = {
 
 const mapStateToProps = function(store) {
   return {
-    // query: store.searchState.query,
-    // items: store.searchState.items,
-    // totalItems: store.searchState.totalItems,
+    query: store.searchState.selectedQuery,
+    items: store.searchState.searchedTrials.items,
+    searchHistory: store.searchState.searchHistory,
+    totalItems: store.searchState.currentResults.items,
     // receivedAt: store.searchState.receivedAt
   };
 }

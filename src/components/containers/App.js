@@ -26,7 +26,7 @@ class App extends React.Component {
         <Header />
 
         {/* Render the plot */}
-        <div className="nested-page">
+        <div id="content">
           {this.props.children}
         </div>
 

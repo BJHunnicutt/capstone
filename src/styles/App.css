@@ -1,3 +1,11 @@
+@import url('https://fonts.googleapis.com/css?family=Work+Sans:100,200,300,400,500,600');   /* Thin, Extra-Light, Light*/
+@import url('https://fonts.googleapis.com/css?family=Raleway:200,300');
+
+#root {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 300;
+}
+
 .App {
   text-align: center;
 }
@@ -21,4 +29,15 @@
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+#primary-header {
+  /*position: fixed;*/
+  width: 100%;
+  z-index: 10000;
+}
+
+#content {
+  position: relative;
+  top: 5vw;
 }

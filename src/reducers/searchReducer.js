@@ -6,7 +6,7 @@ import {
 import merge from 'lodash/merge'
 
 
-
+// Save the last search (may change to current viewed)
 function selectedQuery(state = '', action) {
   switch (action.type) {
     case SELECT_SEARCH:
@@ -18,6 +18,7 @@ function selectedQuery(state = '', action) {
   }
 }
 
+// Save any filters on the data (not used yet)
 function filterSearch(state = '', action) {
   switch (action.type) {
     case FILTER_SEARCH:
@@ -30,6 +31,7 @@ function filterSearch(state = '', action) {
   }
 }
 
+// Make an array of just the currently viewed trials
 function currentResults(state = {
   ids: [],
   trials: {},
@@ -56,7 +58,8 @@ function currentResults(state = {
 
 
 
-// Trying to reorder the data so its more easily searchable.
+// Reordered the search results with normalizr so its more easily searchable
+// --> an object of all trials (from all searches, non-duplicated) by id
 function searchedTrials(state = {items: {}}, action) {
   switch (action.type) {
     case RECEIVE_SEARCH:
@@ -72,6 +75,7 @@ function searchedTrials(state = {items: {}}, action) {
   }
 }
 
+// Save API response and response state
 function items(state = {
   isFetching: false,
   didInvalidate: false,
@@ -101,6 +105,7 @@ function items(state = {
   }
 }
 
+// Saves each search query and the ids of the trials returned
 function searchHistory(state = {}, action) {
   switch (action.type) {
     case INVALIDATE_SEARCH:

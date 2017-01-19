@@ -2,7 +2,7 @@ import React from 'react';
 import { Router, Route, browserHistory, NoMatch, IndexRoute } from 'react-router';
 
 // Layouts
-import App from './components/containers/App.js';
+import App from './App.js';
 
 // Pages
 import Scatter from './components/views/Scatter.jsx'

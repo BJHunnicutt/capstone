@@ -1,9 +1,9 @@
 import React from 'react';
 // import d3 from 'd3';
-import Header from '../views/header.jsx';
+import Header from './components/views/header.jsx';
 // import SearchPage from '../components/search_page.jsx';
 
-import store from '../../store'; //Just to log the store
+import store from './store'; //Just to log the store
 
 
 

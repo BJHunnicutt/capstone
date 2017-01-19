@@ -7,7 +7,7 @@ import SearchPageView from '../views/searchPageView.jsx';
 // Adding in redux
 import { connect } from 'react-redux';
 import store from '../../store';
-import { RECEIVE_SEARCH, REQUEST_SEARCH, FILTER_SEARCH, SELECT_SEARCH, GET_RESULTS, FAILED_SEARCH, GET_DATA_SCATTER } from '../../actions/actions';
+import { RECEIVE_SEARCH, REQUEST_SEARCH, FILTER_SEARCH, SELECT_SEARCH, GET_RESULTS, GET_DATA_SCATTER } from '../../actions/actions'; //FAILED_SEARCH,
 import { normalize, schema } from 'normalizr'
 
 
@@ -100,13 +100,14 @@ class SearchPage extends React.Component {
           data: randomDataSet(),
         })
         // Catch errors (kind of, the errors still log to the console, but it keeps working)
-      }).catch(error => {
-        console.log(error, "error... write an action for the dispatch later");
-        store.dispatch({
-          type: FAILED_SEARCH,
-          error: error
-        })
-      });
+      })
+      // .catch(error => {
+      //   console.log(error, "error... write an action for the dispatch later");
+      //   store.dispatch({
+      //     type: FAILED_SEARCH,
+      //     error: error
+      //   })
+      // });
   }
 
   getLocations(){
@@ -143,31 +144,12 @@ class SearchPage extends React.Component {
     });
   }
 
-  showReduxStore() {
-    // if (Object.values(store.getState().searchState.searchedTrials.items).length !== 0) {
-    //   let ids = store.getState().searchState.searchHistory[store.getState().searchState.selectedQuery].items;
-    //   let trials = store.getState().searchState.searchedTrials.items;
-    //   store.dispatch({
-    //     type: GET_RESULTS,
-    //     ids: ids,
-    //     trials: trials
-    //   });
-    // }
-    console.log("Current store: ", store.getState());
-    // console.log(store.getState().searchState.searchHistory[store.getState().searchState.selectedQuery].items);
-    // let searchTerm = store.getState().searchState.selectedQuery;
-    // console.log(store.getState().searchState.searchHistory[searchTerm].items);
-    // let currentTrials = this.getSearchResults();
-    // console.log(currentTrials);
-    // console.log(store.getState().searchState.selectedQuery !== '');
-  }
 
   getSearchResults() {
     let currentTrials =  [];
     if (store.getState().searchState.selectedQuery !== '') {
       let searchTerm = store.getState().searchState.selectedQuery;
       let currentTrialIDs = store.getState().searchState.searchHistory[searchTerm].items;
-      console.log('im in');
       currentTrials = currentTrialIDs.map(id => {
         return store.getState().searchState.searchedTrials.items[id]
       })
@@ -185,35 +167,49 @@ class SearchPage extends React.Component {
     //     .includes(this.state.filter.toLowerCase()))
     // }
 
+    var cyan = {
+      'backgroundColor': 'cyan'
+    };
+
     return (
       <div className="search_page">
+        <div className="row">
+          <div className="large-6 large-centered columns">
 
-        {/* SEARCH */}
-        <label>Search by Treatment or Condition</label>
-        <SearchInput  // Custom component - Search bar
-          ref={component => this.globalSearch = component} // THis can also take a callback (here we're setting as the nested class component Input)
-          update={this.update.bind(this)} // update now, not on change
-        />
-
-
-        {/* FILTER SEARCH RESULTS */}
-        <label>Filter Search Results</label>
-        <input type="text"
-        onChange={this.filter.bind(this)} />
-
-        {/* Corresponding View Component */}
-
-        <SearchPageView {...this.props} />
+              {/* SEARCH */}
+              <label>Search by Treatment or Condition</label>
+              <SearchInput  // Custom component - Search bar
+                ref={component => this.globalSearch = component} // THis can also take a callback (here we're setting as the nested class component Input)
+                update={this.update.bind(this)} // update now, not on change
+              />
 
 
-        {/* Render the plot */}
-        <div className="nested-plot">
-          {this.props.children}
+              {/* FILTER SEARCH RESULTS */}
+              <label>Filter Search Results</label>
+              <input type="text"
+              onChange={this.filter.bind(this)} />
+          </div>
+        </div>
+        <hr/>
+
+        <div className="row search-result" >
+
+          <div className="large-6 medium-6 small-12 columns">
+              {/* Corresponding View Component */}
+              <SearchPageView {...this.props} />
+          </div>
+
+          <div className="large-6 medium-6 small-12 columns">
+              {/* Render the plot */}
+              <div className="nested-plot">
+                {this.props.children}
+              </div>
+          </div>
         </div>
 
+
         {/* DISPLAY FILTERED SEARCH RESULTS -- DEV ONLY */}
-        {/* <button className='button' onClick={this.showReduxStore.bind(this)}>Log Redux Store</button>
-          <h5>{totalItems}</h5>
+        {/* <h5>{totalItems}</h5>
           {items.map(item =>
           // The elements in an array (i.e. amongst siblings) should have a unique key prop --> using the public_title below
           <div key={item.id}>

@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 // import { StickyTable, Row, Cell } from 'react-sticky-table';
 import {Table, Column, Cell} from 'fixed-data-table-2';
 const Dimensions = require('react-dimensions');
+const {StyleSheet, css} = require('aphrodite');
+// import { Link } from 'react-router';
+
 
 const rows = [
   {id: '', public_title: '', gender: ' ', organisations: [{name:''}], has_published_results: '', registration_date: '', target_sample_size: ' ', conditions: [{name:''}]},
@@ -15,6 +18,30 @@ const rows = [
   // .... and more organisations.name
 ];
 
+// STYLING -EX
+const styles = StyleSheet.create({
+ wrapperStyles: {
+    // marginTop: '1rem',
+    // marginLeft: '1rem',
+    // marginRight: '3rem',
+    // border: 'none',
+    // overflow:'hidden',
+    // height: '100%'
+  },
+  newTableHeader: {
+    // fontFamily: 'Courier',
+    // color: '#000',
+    // fontSize: '12px',
+    // lineHeight: '1',
+    // background: '#CCFFEE',
+    // border: 'none',
+  },
+  newTableCell: {
+    // background: 'white',
+    // borderBottom: '1px solid #d3d3d3',
+  }
+});
+
 // export default (props) => {
 export default class SearchTable extends Component {
   // constructor(props) {
@@ -22,10 +49,8 @@ export default class SearchTable extends Component {
   // }
 
   render() {
-
     // const {height, width, containerHeight, containerWidth, ...props} = this.props;
     const {containerWidth, ...props} = this.props;
-
     // Conditional base dataset depending on API response
     let searchedItems;
     if (props.totalItems.resultsReceived === false) {
@@ -33,6 +58,7 @@ export default class SearchTable extends Component {
     } else {
       searchedItems = props.totalItems.items;
     }
+
 
     // Trial Titles array (because the table code below gets confused about nested data)
     let titles = [];
@@ -57,8 +83,18 @@ export default class SearchTable extends Component {
         organizations.push("N/A")
       }
     }
-    // console.log(organizations);
 
+    // Trial Titles array (because the table code below gets confused about nested data)
+    let dates = [];
+    let d;
+    for (let item of searchedItems) {
+      if (item.length !== '') {
+        d = new Date(item.registration_date)
+        dates.push(d)
+      }
+    }
+
+    // Date.parse(searchedItems[rowIndex].registration_date).getUTCFullYear()
 
     return (
         <div>
@@ -76,6 +112,7 @@ export default class SearchTable extends Component {
           </div> */}
 
         <Table
+           className={css(styles.wrapperStyles)} // STYLING
            rowHeight={40}
            rowsCount={searchedItems.length}
            width={containerWidth}
@@ -86,10 +123,10 @@ export default class SearchTable extends Component {
            touchScrollEnabled={true}
            {...props}>
            <Column
-             columnKey="Column1"
+             columnKey="Index Column"
              header={<Cell>  </Cell>}
              cell={({rowIndex, ...props}) => (
-               <Cell {...props}>
+               <Cell className={css(styles.newTableCell)} {...props}>
                 {rowIndex + 1}
                </Cell>
              )}
@@ -98,21 +135,23 @@ export default class SearchTable extends Component {
              fixed={true}
            />
            <Column
-             columnKey="Column2"
-             header={<Cell>Title</Cell>}
+             columnKey="Title Column"
+             header={<Cell className={css(styles.newTableHeader)}>Title</Cell>}
              cell={({rowIndex, ...props}) => (
-               <Cell {...props}>
-                {searchedItems[rowIndex].public_title}
+               <Cell className={css(styles.newTableCell)} {...props}>
+                  <a href={"https://explorer.opentrials.net/trials/" + searchedItems[rowIndex].id} target={"_blank"}>
+                    {searchedItems[rowIndex].public_title}
+                  </a>
                </Cell>
              )}
              width={300}
             //  flexGrow={1}
            />
            {/* <Column
-             columnKey="Column3"
+             columnKey="Publication Status Column"
              header={<Cell>Published?</Cell>}
              cell={({rowIndex, ...props}) => (
-               <Cell {...props}>
+               <Cell className={css(styles.newTableCell)} {...props}>
                 {searchedItems[rowIndex].has_published_results ? 'Yes' : 'No'}
                </Cell>
              )}
@@ -120,10 +159,10 @@ export default class SearchTable extends Component {
             //  flexGrow={1}
            /> */}
            <Column
-             columnKey="Column4"
+             columnKey="Conditions Column"
              header={<Cell>Conditions</Cell>}
              cell={({rowIndex, ...props}) => (
-               <Cell {...props}>
+               <Cell className={css(styles.newTableCell)} {...props}>
                  {conditions[rowIndex]}
                </Cell>
              )}
@@ -131,10 +170,10 @@ export default class SearchTable extends Component {
             //  flexGrow={1}
            />
            <Column
-             columnKey="Column5"
+             columnKey="Gender Column"
              header={<Cell>Gender</Cell>}
              cell={({rowIndex, ...props}) => (
-               <Cell {...props}>
+               <Cell className={css(styles.newTableCell)} {...props}>
                 {searchedItems[rowIndex].gender ? searchedItems[rowIndex].gender : 'N/A'}
                  {/* Data for column 3: {rows[rowIndex][2]} */}
                </Cell>
@@ -143,10 +182,10 @@ export default class SearchTable extends Component {
             //  flexGrow={1}
            />
            <Column
-             columnKey="Column6"
+             columnKey="Sample Size Column"
              header={<Cell>Sample Size</Cell>}
              cell={({rowIndex, ...props}) => (
-               <Cell {...props}>
+               <Cell className={css(styles.newTableCell)} {...props}>
                 {searchedItems[rowIndex].target_sample_size ? searchedItems[rowIndex].target_sample_size : 'N/A'}
                </Cell>
              )}
@@ -154,11 +193,22 @@ export default class SearchTable extends Component {
             //  flexGrow={1}
            />
            <Column
-             columnKey="Column7"
+             columnKey="Sponsor Column"
              header={<Cell>Sponsor</Cell>}
              cell={({rowIndex, ...props}) => (
-               <Cell {...props}>
+               <Cell className={css(styles.newTableCell)} {...props}>
                 {organizations[rowIndex]}
+               </Cell>
+             )}
+             width={200}
+            //  flexGrow={1}
+           />
+           <Column
+             columnKey="Date Column"
+             header={<Cell>Start Date</Cell>}
+             cell={({rowIndex, ...props}) => (
+               <Cell className={css(styles.newTableCell)} {...props}>
+                  {dates[rowIndex].toDateString()}
                </Cell>
              )}
              width={200}
@@ -190,4 +240,4 @@ module.exports = Dimensions({
 
 // Touch Scroll
 // http://schrodinger.github.io/fixed-data-table-2/example-touch-scroll.html
-// module.exports = SearchTable;
+// https://facebook.github.io/fixed-data-table/example-object-data.html

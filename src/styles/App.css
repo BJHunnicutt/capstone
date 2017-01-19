@@ -7,7 +7,7 @@
 }
 
 #search-table-wrapper {
-  width: 75vw;
+  width: 100%;
   /*display: inline-block;*/
 }
 
@@ -44,5 +44,11 @@
 
 #content {
   position: relative;
-  top: 5vw;
+  /*top: 5vw;*/
 }
+
+/*button.redux-store {
+  background-color: blue;
+  display: inline-block;
+  z-index: 1000;
+}*/

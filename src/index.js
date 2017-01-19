@@ -4,6 +4,7 @@ import router from './router';
 // Styles
 import './styles/index.css';
 import './styles/foundation.css';
+import './styles/App.css';
 import './styles/fixed-data-table-2.css';
 
 // REDUX

@@ -167,9 +167,9 @@ class SearchPage extends React.Component {
     //     .includes(this.state.filter.toLowerCase()))
     // }
 
-    var cyan = {
-      'backgroundColor': 'cyan'
-    };
+    // var cyan = {
+    //   'backgroundColor': 'cyan'
+    // };
 
     return (
       <div className="search_page">

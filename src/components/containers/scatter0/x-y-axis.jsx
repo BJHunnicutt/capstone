@@ -4,7 +4,7 @@ import Axis   from './axis';
 
 export default (props) => {
   const xSettings = {
-    translate: `translate(0, ${props.height - props.padding})`,
+    translate: `translate(0, ${props.h - props.padding})`,
     scale: props.xScale,
     orient: 'bottom'
   };

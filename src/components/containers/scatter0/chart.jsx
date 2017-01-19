@@ -1,111 +1,115 @@
 // unfinished/src/components/chart.jsx
 import React from 'react';
-import ScatterPlot from './scatter-plot';
+// import d3 from 'd3';
+import BarPlot from './bar-plot';
 // Adding in redux
 import { connect } from 'react-redux';
-// import store from '../../../store';   // Magic. FOR DISPATCH: You can just use this.props. instead of store. because of the <Provider> in src/index.js
-import { GET_DATA_SCATTER } from '../../../actions/actions';
+import store from '../../../store';   // Magic. FOR DISPATCH: You can just use this.props. instead of store. because of the <Provider> in src/index.js
+import { GET_DATA_BAR } from '../../../actions/actions';
+// import $ from 'jquery'
+// import d3 from 'd3';
 
-import d3    from 'd3';
+import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
 
+// const data = [
+//     {year: 2005, unpublished: 4000, published: 2400, amt: 2400},
+//     {year: 2006, unpublished: 3000, published: 1398, amt: 2210},
+//     {year: 2007, unpublished: 2000, published: 9800, amt: 2290},
+//     {year: 2008, unpublished: 2780, published: 3908, amt: 2000},
+//     {year: 2009, unpublished: 1890, published: 4800, amt: 2181},
+//     {year: 2010, unpublished: 2390, published: 3800, amt: 2500},
+//     {year: 2011, unpublished: 3490, published: 4300, amt: 2100},
+// ];
 
-//Width and height
-var w = 400;
-var h = 300;
+//Width, height & padding
+
+const styles = {
+  w  : 350,
+  h : 300,
+  // Only works when you fully reload the page
+  // width : window.innerWidth / 2, // Testing out making the plot viewport responsive
+  // height : 0.6 * window.innerWidth / 2,
+  padding : 30,
+};
+
+const randomNum = () => Math.floor(Math.random() * 100);
 
 //Original data
-var dataset = [
-  [
-    { x: 0, y: 5 },
-    { x: 1, y: 4 },
-    { x: 2, y: 2 },
-    { x: 3, y: 7 },
-    { x: 4, y: 23 }
-  ],
-  [
-    { x: 0, y: 10 },
-    { x: 1, y: 12 },
-    { x: 2, y: 19 },
-    { x: 3, y: 23 },
-    { x: 4, y: 17 }
-  ],
-  [
-    { x: 0, y: 22 },
-    { x: 1, y: 28 },
-    { x: 2, y: 32 },
-    { x: 3, y: 35 },
-    { x: 4, y: 43 }
+var getDataset = () => {
+  var dataRaw = [
+      { year: 2005, unpublished: randomNum(), published: randomNum() },
+      { year: 2006, unpublished: randomNum(), published: randomNum() },
+      { year: 2007, unpublished: randomNum(), published: randomNum() },
+      { year: 2008, unpublished: randomNum(), published: randomNum() },
+      { year: 2009, unpublished: randomNum(), published: randomNum() }
+
   ]
-];
 
-//Set up stack method
-var stack = d3.layout.stack();
+  // // OMG THIS WORKS: copying data this way clones it so it doesnt mutate the original data
+  // var newObject = $.extend(true, {}, dataRaw);
+  //
+  // // THIS MUTATES THE ORIGINAL ... if I copy the store, no matter how carefully I create the new copy, the original in the redux store is mutated when I use stack()
+  // let newData = [];
+  //
+  // for (var i = 0, len = dataRaw.length; i < len; i++) {
+  //   let set = dataRaw[i];
+  //   let newSet = {};
+  //   for (var key in set) {
+  //     if (!(key in newSet)) {
+  //       return newSet[key] = set[key];
+  //     }
+  //   }
+  //   Object.assign({}, newData, {data: action.data})
+  //   return newData[i] = newSet;
+  // }
 
-//Data, stacked
-stack(dataset);
+  // var stack = d3.layout.stack();
+  // //Data, stacked
+  // var dataset = stack(dataRaw);
 
-//Set up scales
-var xScale = d3.scale.ordinal()
-  .domain(d3.range(dataset[0].length))
-  .rangeRoundBands([0, w], 0.05);
+  return dataRaw
+};
+const data = getDataset();
 
-var yScale = d3.scale.linear()
-  .domain([0,
-    d3.max(dataset, function(d) {
-      return d3.max(d, function(d) {
-        return d.y0 + d.y;
-      });
-    })
-  ])
-  .range([0, h]);
-
-//Easy colors accessible via a 10-step ordinal scale
-var colors = d3.scale.category10();
-
-//Create SVG element
-var svg = d3.select("body")
-      .append("svg")
-      .attr("width", w)
-      .attr("height", h);
-
-// Add a group for each row of data
-var groups = svg.selectAll("g")
-  .data(dataset)
-  .enter()
-  .append("g")
-  .style("fill", function(d, i) {
-    return colors(i);
-  });
-
-// Add a rect for each data value
-var rects = groups.selectAll("rect")
-  .data(function(d) { return d; })
-  .enter()
-  .append("rect")
-  .attr("x", function(d, i) {
-    return xScale(i);
-  })
-  .attr("y", function(d) {
-    return yScale(d.y0);
-  })
-  .attr("height", function(d) {
-    return yScale(d.y);
-  })
-  .attr("width", xScale.rangeBand());
 
 
 class Chart extends React.Component{
   // constructor(props) {
   //   super(props);
-  //   this.state = { data: randomDataSet() };
+  //   this.state = { data: dataset };
   // }
 
+
+  randomizeData() {
+    // this.setState({ data: [] });
+    this.props.dispatch({
+      type: GET_DATA_BAR,
+      data: getDataset(),
+    });
+  }
 
 
   render() {
 
     return <div className='stacked-bar'>
-      <h1> ... </h1>
+      {/* <h1> ... </h1> */}
+      <BarChart width={400} height={400} data={store.getState().scatterState.dataBar}
+            margin={{top: 20, right: 30, left: 0, bottom: 5}}>
+         <XAxis dataKey="year"/>
+         <YAxis/>
+         {/* <CartesianGrid strokeDasharray="3 3"/> */}
+         <Tooltip/>
+         <Legend />
+         <Bar dataKey="unpublished" stackId="a" fill="gold" />
+         <Bar dataKey="published" stackId="a" fill="gray" />
+      </BarChart>
+      {/* <BarPlot {...this.props} {...styles} /> */}
+      <div className="controls">
+        <button className="button btn randomize" onClick={() => this.randomizeData()}>
+          Randomize Data
+        </button>
+      </div>
+
 
 
     </div>
@@ -114,7 +118,7 @@ class Chart extends React.Component{
 
 const mapStateToProps = function(store) {
   return {
-    data: store.scatterState.data
+    data: store.scatterState.dataBar
   };
 }
 

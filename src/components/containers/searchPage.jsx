@@ -3,7 +3,6 @@ import React from 'react';
 // import '../../styles/App.css';
 import SearchInput from '../views/searchBar.jsx';
 import SearchPageView from '../views/searchPageView.jsx';
-import SearchTable from '../views/searchTable.js';
 
 // Adding in redux
 import { connect } from 'react-redux';
@@ -20,7 +19,6 @@ const randomNum     = () => Math.floor(Math.random() * 1000);
 const randomDataSet = () => {
   return Array.apply(null, {length: numDataPoints}).map(() => [randomNum(), randomNum()]);
 }
-
 
 // CLASS COMPONENT
 class SearchPage extends React.Component {
@@ -100,7 +98,7 @@ class SearchPage extends React.Component {
         store.dispatch({
           type: GET_DATA_SCATTER,
           data: randomDataSet(),
-        });
+        })
         // Catch errors (kind of, the errors still log to the console, but it keeps working)
       }).catch(error => {
         console.log(error, "error... write an action for the dispatch later");
@@ -178,22 +176,14 @@ class SearchPage extends React.Component {
   }
 
   render(){
-    // let items = this.getSearchResults();
-    // console.log('items ', items);
-    // console.log('test ', test);
-    let items = this.state.items;
-    let totalItems = this.state.totalItems;
-    // console.log(items[0].sources.name === );
-    // Object.keys(items.sources)[0]
-    // let updateS = store.subscribe(this.render)
-    // Filtering the API results
-    if(this.state.filter ) {
-      items = items.filter( item =>
-        item.public_title.toLowerCase()
-        .includes(this.state.filter.toLowerCase()))
-    }
-
-    // console.log("Current state: ", store.getState());
+    // TO DISPLAY FILTERED SEARCH RESULTS -- DEV ONLY (in return)
+    // let items = this.state.items;
+    // let totalItems = this.state.totalItems;
+    // if(this.state.filter ) {
+    //   items = items.filter( item =>
+    //     item.public_title.toLowerCase()
+    //     .includes(this.state.filter.toLowerCase()))
+    // }
 
     return (
       <div className="search_page">
@@ -212,47 +202,34 @@ class SearchPage extends React.Component {
         onChange={this.filter.bind(this)} />
 
         {/* Corresponding View Component */}
-        <SearchPageView  {...this.props} />
 
-        <div id="search-table-wrapper">
-          <SearchTable/>
-        </div>
+        <SearchPageView {...this.props} />
+
 
         {/* Render the plot */}
         <div className="nested-plot">
           {this.props.children}
         </div>
 
-
         {/* DISPLAY FILTERED SEARCH RESULTS -- DEV ONLY */}
-        <h5>{totalItems}</h5>
-        <button className='button' onClick={this.showReduxStore.bind(this)}>Log Redux Store</button>
-
-        {items.map(item =>
+        {/* <button className='button' onClick={this.showReduxStore.bind(this)}>Log Redux Store</button>
+          <h5>{totalItems}</h5>
+          {items.map(item =>
           // The elements in an array (i.e. amongst siblings) should have a unique key prop --> using the public_title below
           <div key={item.id}>
-            <Title key={item.public_title} title={item} />
-            {/* <p>{JSON.stringify(item.sources)}</p>
-            <p>
-              {Object.keys(item.sources).map(source =>
-                source + " "
-              )}
-            </p> */}
+            <h4> {item.public_title} </h4>
           </div>
         )}
-        {/* <p>{JSON.stringify(items)}</p> */}
-        <p>{JSON.stringify(store.getState().searchState.searchedTrials.items)}</p>
+        <p>{JSON.stringify(store.getState().searchState.searchedTrials.items)}</p> */}
 
       </div>
     )
   }
-} // closing SearchPage class
+} // closing Class
 
-const Title = (props) => <h4> {props.title.public_title} </h4>
-
-SearchPage.defaultProps = {
-  val: 0
-}
+// SearchPage.defaultProps = {
+//   val: 0
+// }
 
 // export default SearchPage;
 
@@ -262,7 +239,7 @@ const mapStateToProps = function(store) {
     query: store.searchState.selectedQuery,
     items: store.searchState.searchedTrials.items,
     searchHistory: store.searchState.searchHistory,
-    totalItems: store.searchState.currentResults.items,
+    totalItems: store.searchState.currentResults,
     // receivedAt: store.searchState.receivedAt
   };
 }

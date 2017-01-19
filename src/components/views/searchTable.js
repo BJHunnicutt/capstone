@@ -4,80 +4,168 @@ import {Table, Column, Cell} from 'fixed-data-table-2';
 const Dimensions = require('react-dimensions');
 
 const rows = [
-  ['a1', 'b1', 'c1'],
-  ['a2', 'b2', 'c2'],
-  ['a3', 'b3', 'c3'],
-  ['a1', 'b1', 'c1'],
-  ['a2', 'b2', 'c2'],
-  ['a3', 'b3', 'c3'],
-  ['a1', 'b1', 'c1'],
-  ['a2', 'b2', 'c2'],
-  ['a3', 'b3', 'c3'],
-  ['a1', 'b1', 'c1'],
-  ['a2', 'b2', 'c2'],
-  ['a3', 'b3', 'c3'],
-  ['a1', 'b1', 'c1'],
-  ['a2', 'b2', 'c2'],
-  ['a3', 'b3', 'c3'],
-  // .... and more
+  {id: '', public_title: '', gender: ' ', organisations: [{name:''}], has_published_results: '', registration_date: '', target_sample_size: ' ', conditions: [{name:''}]},
+  {id: '', public_title: '', gender: ' ', organisations: [{name:''}], has_published_results: '', registration_date: '', target_sample_size: ' ', conditions: [{name:''}]},
+  {id: '', public_title: '', gender: ' ', organisations: [{name:''}], has_published_results: '', registration_date: '', target_sample_size: ' ', conditions: [{name:''}]},
+  {id: '', public_title: '', gender: ' ', organisations: [{name:''}], has_published_results: '', registration_date: '', target_sample_size: ' ', conditions: [{name:''}]},
+  {id: '', public_title: '', gender: ' ', organisations: [{name:''}], has_published_results: '', registration_date: '', target_sample_size: ' ', conditions: [{name:''}]},
+  {id: '', public_title: '', gender: ' ', organisations: [{name:''}], has_published_results: '', registration_date: '', target_sample_size: ' ', conditions: [{name:''}]},
+  {id: '', public_title: '', gender: ' ', organisations: [{name:''}], has_published_results: '', registration_date: '', target_sample_size: ' ', conditions: [{name:''}]},
+  {id: '', public_title: '', gender: ' ', organisations: [{name:''}], has_published_results: '', registration_date: '', target_sample_size: ' ', conditions: [{name:''}]}
+  // .... and more organisations.name
 ];
 
 // export default (props) => {
 export default class SearchTable extends Component {
-  constructor(props) {
-   super(props);
-}
+  // constructor(props) {
+  //   super(props);
+  // }
 
   render() {
-    const {height, width, containerHeight, containerWidth, ...props} = this.props;
+
+    // const {height, width, containerHeight, containerWidth, ...props} = this.props;
+    const {containerWidth, ...props} = this.props;
+
+    // Conditional base dataset depending on API response
+    let searchedItems;
+    if (props.totalItems.resultsReceived === false) {
+      searchedItems = rows;
+    } else {
+      searchedItems = props.totalItems.items;
+    }
+
+    // Trial Titles array (because the table code below gets confused about nested data)
+    let titles = [];
+    for (let item of searchedItems) {
+      titles.push(item.public_title.length)
+    }
+    //Trial Conditions
+    let conditions = [];
+    for (let item of searchedItems) {
+      let cs = item.conditions
+      for (let name of cs) {
+        conditions.push(name.name)
+      }
+    }
+    //Trial Organizations
+    let organizations = [];
+    for (let item of searchedItems) {
+      let os = item.organisations
+      if (os.length !== 0) {
+        organizations.push(os[0].name)
+      } else {
+        organizations.push("N/A")
+      }
+    }
+    // console.log(organizations);
+
 
     return (
+        <div>
+          {/* <p>{searchedItems.length}</p>
+          <p>{searchedItems[0].public_title}</p> */}
+          {/* <p>{JSON.stringify(props.totalItems[0])}</p> */}
+          {/* <p>{props.totalItems[0].public_title}</p> */}
+          {/* {console.log("RENDERING: ", props.totalItems.items[0].public_title)} */}
+          {/* <p className="titleddd">{props.totalItems[0].public_title}</p> */}
+          {/* <div> {props.totalItems.items.map(item =>
+              <div key={item.id}>
+                <h4> {item.public_title} </h4>
+              </div>
+              )}
+          </div> */}
+
         <Table
            rowHeight={40}
-           rowsCount={rows.length}
+           rowsCount={searchedItems.length}
            width={containerWidth}
-           height={400}
+           maxHeight={400}
            headerHeight={50}
+           rowHeightGetter={(rowIndex) => Math.max(40, titles[rowIndex]*1.1)}
+
            touchScrollEnabled={true}
            {...props}>
            <Column
              columnKey="Column1"
-             header={<Cell>Col 1</Cell>}
-             cell={<Cell>Column 1</Cell>}
-             width={100}
-            //  flexGrow={1}
+             header={<Cell>  </Cell>}
+             cell={({rowIndex, ...props}) => (
+               <Cell {...props}>
+                {rowIndex + 1}
+               </Cell>
+             )}
+             width={30}
+
              fixed={true}
            />
            <Column
              columnKey="Column2"
-             header={<Cell>Col 2</Cell>}
-             cell={<Cell>Column 2 static content</Cell>}
-             width={200}
-            //  flexGrow={1}
-           />
-           <Column
-             columnKey="Column3"
-             header={<Cell>Col 3</Cell>}
+             header={<Cell>Title</Cell>}
              cell={({rowIndex, ...props}) => (
                <Cell {...props}>
-                 Data for column 3: {rows[rowIndex][2]}
+                {searchedItems[rowIndex].public_title}
+               </Cell>
+             )}
+             width={300}
+            //  flexGrow={1}
+           />
+           {/* <Column
+             columnKey="Column3"
+             header={<Cell>Published?</Cell>}
+             cell={({rowIndex, ...props}) => (
+               <Cell {...props}>
+                {searchedItems[rowIndex].has_published_results ? 'Yes' : 'No'}
+               </Cell>
+             )}
+             width={200}
+            //  flexGrow={1}
+           /> */}
+           <Column
+             columnKey="Column4"
+             header={<Cell>Conditions</Cell>}
+             cell={({rowIndex, ...props}) => (
+               <Cell {...props}>
+                 {conditions[rowIndex]}
                </Cell>
              )}
              width={200}
             //  flexGrow={1}
            />
            <Column
-             columnKey="Column4"
-             header={<Cell>Col 4</Cell>}
+             columnKey="Column5"
+             header={<Cell>Gender</Cell>}
              cell={({rowIndex, ...props}) => (
                <Cell {...props}>
-                 Data for column 4: {rows[rowIndex][2]}
+                {searchedItems[rowIndex].gender ? searchedItems[rowIndex].gender : 'N/A'}
+                 {/* Data for column 3: {rows[rowIndex][2]} */}
+               </Cell>
+             )}
+             width={100}
+            //  flexGrow={1}
+           />
+           <Column
+             columnKey="Column6"
+             header={<Cell>Sample Size</Cell>}
+             cell={({rowIndex, ...props}) => (
+               <Cell {...props}>
+                {searchedItems[rowIndex].target_sample_size ? searchedItems[rowIndex].target_sample_size : 'N/A'}
+               </Cell>
+             )}
+             width={125}
+            //  flexGrow={1}
+           />
+           <Column
+             columnKey="Column7"
+             header={<Cell>Sponsor</Cell>}
+             cell={({rowIndex, ...props}) => (
+               <Cell {...props}>
+                {organizations[rowIndex]}
                </Cell>
              )}
              width={200}
             //  flexGrow={1}
            />
         </Table>
+      </div>
 
     );
   } // Closing Render

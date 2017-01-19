@@ -4,7 +4,7 @@ import router from './router';
 // Styles
 import './styles/index.css';
 import './styles/foundation.css';
-import './styles/fixed-data-table.css';
+import './styles/fixed-data-table-2.css';
 
 // REDUX
 import { Provider } from 'react-redux';

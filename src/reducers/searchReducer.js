@@ -35,7 +35,8 @@ function filterSearch(state = '', action) {
 function currentResults(state = {
   ids: [],
   trials: {},
-  items: []
+  items: [],
+  resultsReceived: false
 }, action) {
   switch (action.type) {
     case GET_RESULTS:
@@ -49,7 +50,8 @@ function currentResults(state = {
       return Object.assign({}, state, {
         ids: action.ids,
         trials: {},
-        items: itms
+        items: itms,
+        resultsReceived: true
     })
   default:
     return state

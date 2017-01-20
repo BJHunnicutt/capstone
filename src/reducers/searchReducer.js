@@ -7,12 +7,16 @@ import merge from 'lodash/merge'
 
 
 // Save the last search (may change to current viewed)
-function selectedQuery(state = '', action) {
+function selectedQuery(state = {
+  query: '',
+  totalItems: 0,
+}, action) {
   switch (action.type) {
     case SELECT_SEARCH:
-      let newState = action.query
-      // return Object.assign({}, state, { query: action.query });
-      return newState;
+    return Object.assign({}, state, {
+      query: action.query,
+      totalItems: action.totalItems
+    })
     default:
       return state
   }
@@ -40,19 +44,21 @@ function currentResults(state = {
 }, action) {
   switch (action.type) {
     case GET_RESULTS:
+      let itms = [], results = false;
       if (action.ids.length > 0) {
-        var itms = []
+        itms = []
         action.ids.map(id => {
           return itms.push(action.trials[id])
         })
+        results = true;
       }
 
       return Object.assign({}, state, {
         ids: action.ids,
         trials: {},
         items: itms,
-        resultsReceived: true
-    })
+        resultsReceived: results,
+      })
   default:
     return state
   }

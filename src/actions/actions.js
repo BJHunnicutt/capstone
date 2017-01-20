@@ -3,6 +3,7 @@ import store from '../store';
 // Scatter Actions
 export const GET_DATA_SCATTER = 'GET_DATA_SCATTER';
 export const GET_DATA_BAR = 'GET_DATA_BAR';
+export const SEARCH_DATA_GENDER = 'SEARCH_DATA_GENDER';
 
 // export function getDataScatter(data) {
 //   return {

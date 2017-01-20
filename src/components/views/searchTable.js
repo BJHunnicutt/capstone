@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import {Table, Column, Cell} from 'fixed-data-table-2';
 const Dimensions = require('react-dimensions');
 const {StyleSheet, css} = require('aphrodite');
+
 // import { Link } from 'react-router';
 
 
@@ -49,50 +50,50 @@ export default class SearchTable extends Component {
   // }
 
   render() {
-    // const {height, width, containerHeight, containerWidth, ...props} = this.props;
-    const {containerWidth, ...props} = this.props;
-    // Conditional base dataset depending on API response
-    let searchedItems;
-    if (props.totalItems.resultsReceived === false) {
-      searchedItems = rows;
-    } else {
-      searchedItems = props.totalItems.items;
-    }
 
-
-    // Trial Titles array (because the table code below gets confused about nested data)
-    let titles = [];
-    for (let item of searchedItems) {
-      titles.push(item.public_title.length)
-    }
-    //Trial Conditions
-    let conditions = [];
-    for (let item of searchedItems) {
-      let cs = item.conditions
-      for (let name of cs) {
-        conditions.push(name.name)
-      }
-    }
-    //Trial Organizations
-    let organizations = [];
-    for (let item of searchedItems) {
-      let os = item.organisations
-      if (os.length !== 0) {
-        organizations.push(os[0].name)
+      // const {height, width, containerHeight, containerWidth, ...props} = this.props;
+      const {containerWidth, ...props} = this.props;
+      // Conditional base dataset depending on API response
+      let searchedItems;
+      if (props.totalItems.resultsReceived === false) {
+        searchedItems = rows;
       } else {
-        organizations.push("N/A")
+        searchedItems = props.totalItems.items;
       }
-    }
 
-    // Trial Titles array (because the table code below gets confused about nested data)
-    let dates = [];
-    let d;
-    for (let item of searchedItems) {
-      if (item.length !== '') {
-        d = new Date(item.registration_date)
-        dates.push(d)
+
+      let titles = []; let conditions = []; let organizations = []; let dates = [];
+
+
+      // Trial Titles array (because the table code below gets confused about nested data)
+      for (let item of searchedItems) {
+        titles.push(item.public_title.length)
       }
-    }
+      //Trial Conditions
+      for (let item of searchedItems) {
+        let cs = item.conditions
+        for (let name of cs) {
+          conditions.push(name.name)
+        }
+      }
+      //Trial Organizations
+      for (let item of searchedItems) {
+        let os = item.organisations
+        if (os.length !== 0) {
+          organizations.push(os[0].name)
+        } else {
+          organizations.push("N/A")
+        }
+      }
+
+      // Trial Titles array (because the table code below gets confused about nested data)
+      let d;
+      for (let item of searchedItems) {
+        if (item.length !== '') {
+          d = new Date(item.registration_date)
+          dates.push(d)
+        }
+      }
 
     // Date.parse(searchedItems[rowIndex].registration_date).getUTCFullYear()
 
@@ -160,7 +161,7 @@ export default class SearchTable extends Component {
            /> */}
            <Column
              columnKey="Conditions Column"
-             header={<Cell>Conditions</Cell>}
+             header={<Cell>Primary Condition</Cell>}
              cell={({rowIndex, ...props}) => (
                <Cell className={css(styles.newTableCell)} {...props}>
                  {conditions[rowIndex]}

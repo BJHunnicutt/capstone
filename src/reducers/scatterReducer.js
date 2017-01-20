@@ -1,6 +1,6 @@
-import { GET_DATA_SCATTER, GET_DATA_BAR } from '../actions/actions';
+import { GET_DATA_SCATTER, GET_DATA_BAR} from '../actions/actions'; //, SEARCH_DATA_GENDER 
 import _ from 'lodash';
-import d3 from 'd3';
+// import d3 from 'd3';
 
 
 // Copy data this way
@@ -9,13 +9,18 @@ import d3 from 'd3';
     //
 
   const data = [
-        {year: 2005, unpublished: 4000, published: 2400, amt: 2400},
-        {year: 2006, unpublished: 3000, published: 1398, amt: 2210},
-        {year: 2007, unpublished: 2000, published: 9800, amt: 2290},
-        {year: 2008, unpublished: 2780, published: 3908, amt: 2000},
-        {year: 2009, unpublished: 1890, published: 4800, amt: 2181},
-        {year: 2010, unpublished: 2390, published: 3800, amt: 2500},
-        {year: 2011, unpublished: 3490, published: 4300, amt: 2100},
+        {year: 2006, unpublished: 0, published: 0, male: 0, female: 0, both: 0},
+        {year: 2007, unpublished: 0, published: 0, male: 0, female: 0, both: 0},
+        {year: 2008, unpublished: 0, published: 0, male: 0, female: 0, both: 0},
+        {year: 2009, unpublished: 0, published: 0, male: 0, female: 0, both: 0},
+        {year: 2010, unpublished: 0, published: 0, male: 0, female: 0, both: 0},
+        {year: 2011, unpublished: 0, published: 0, male: 0, female: 0, both: 0},
+        {year: 2012, unpublished: 0, published: 0, male: 0, female: 0, both: 0},
+        {year: 2013, unpublished: 0, published: 0, male: 0, female: 0, both: 0},
+        {year: 2014, unpublished: 0, published: 0, male: 0, female: 0, both: 0},
+        {year: 2015, unpublished: 0, published: 0, male: 0, female: 0, both: 0},
+        {year: 2016, unpublished: 0, published: 0, male: 0, female: 0, both: 0},
+        {year: 2017, unpublished: 0, published: 0, male: 0, female: 0, both: 0},
     ];
 
 // var stack = d3.layout.stack();
@@ -47,5 +52,21 @@ const scatterReducer = function(state = initialState, action) {
   }
 
 }
+//
+// // Saves each search query and the ids of the trials returned
+// function searchSummary(state = {}, action) {
+//   switch (action.type) {
+//     case SEARCH_DATA_GENDER:
+//       return Object.assign({}, state, {
+//         [action.query]: items(state[action.query], action)
+//         // Same as:
+//         //   let nextState = {}
+//         //   nextState[action.query] = posts(state[action.query], action)
+//         //   return Object.assign({}, state, nextState)
+//       })
+//     default:
+//       return state
+//   }
+// }
 
 export default scatterReducer;

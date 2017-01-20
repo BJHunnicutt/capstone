@@ -23,7 +23,7 @@ export default (props) => {
       <div id="search-table-wrapper">
         <SearchTable {...props}/>
       </div>
-      }
+      
     </div>
   )
 }

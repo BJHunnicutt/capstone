@@ -1,7 +1,7 @@
 // unfinished/src/components/chart.jsx
 import React from 'react';
 // import d3 from 'd3';
-import BarPlot from './bar-plot';
+// import BarPlot from './bar-plot';
 // Adding in redux
 import { connect } from 'react-redux';
 import store from '../../../store';   // Magic. FOR DISPATCH: You can just use this.props. instead of store. because of the <Provider> in src/index.js
@@ -9,7 +9,7 @@ import { GET_DATA_BAR } from '../../../actions/actions';
 // import $ from 'jquery'
 // import d3 from 'd3';
 
-import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
+import {BarChart, Bar, XAxis, YAxis, Tooltip, Legend} from 'recharts'; //CartesianGrid,
 
 // const data = [
 //     {year: 2005, unpublished: 4000, published: 2400, amt: 2400},
@@ -69,7 +69,7 @@ var getDataset = () => {
 
   return dataRaw
 };
-const data = getDataset();
+// const data = getDataset();
 
 
 
@@ -91,17 +91,26 @@ class Chart extends React.Component{
 
   render() {
 
+    // // Only display the tooltip if theres data
+    // let tooltipVisibility = false;
+    // if (store.getState().searchState.selectedQuery.query !== "") {
+    //   tooltipVisibility = 'visible'
+    // }
+    // console.log(tooltipVisibility);
+    // console.log(store.getState().searchState.selectedQuery.query);
+
     return <div className='stacked-bar'>
       {/* <h1> ... </h1> */}
-      <BarChart width={400} height={400} data={store.getState().scatterState.dataBar}
-            margin={{top: 20, right: 30, left: 0, bottom: 5}}>
+      <BarChart width={styles.w} height={styles.h} data={store.getState().scatterState.dataBar}
+            margin={{top: 0, right: 30, left: 0, bottom: 5}}>
          <XAxis dataKey="year"/>
          <YAxis/>
          {/* <CartesianGrid strokeDasharray="3 3"/> */}
-         <Tooltip/>
+         <Tooltip isAnimationActive={false} animationDuration={50} animationEasing='ease' cursor={false}/>
          <Legend />
-         <Bar dataKey="unpublished" stackId="a" fill="gold" />
-         <Bar dataKey="published" stackId="a" fill="gray" />
+         <Bar dataKey="unpublished" animationDuration={100} stackId="a" fill="gold" />
+         <Bar dataKey="published" isAnimationActive={false} stackId="a" fill="lightblue" />
+         <Bar dataKey="ongoing" isAnimationActive={false} stackId="a" fill="lightgray" />
       </BarChart>
       {/* <BarPlot {...this.props} {...styles} /> */}
       <div className="controls">
@@ -115,6 +124,19 @@ class Chart extends React.Component{
     </div>
   }
 };
+
+//
+// class ConditionalTooltip extends React.Component {
+//   render(){
+//     // console.log("vis", this.props.visible);
+//     // const visible = this.props.visible;
+//     // if (visible) {
+//       return <Tooltip isAnimationActive={false} animationDuration={50} animationEasing='ease' cursor={false}/>;
+//     // }
+//     // return null;
+//   }
+// }
+
 
 const mapStateToProps = function(store) {
   return {

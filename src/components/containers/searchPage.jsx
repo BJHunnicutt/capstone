@@ -3,11 +3,13 @@ import React from 'react';
 // import '../../styles/App.css';
 import SearchInput from '../views/searchBar.jsx';
 import SearchPageView from '../views/searchPageView.jsx';
+import $ from 'jquery'
+import _ from 'lodash'
 
 // Adding in redux
 import { connect } from 'react-redux';
 import store from '../../store';
-import { RECEIVE_SEARCH, REQUEST_SEARCH, FILTER_SEARCH, SELECT_SEARCH, GET_RESULTS, GET_DATA_SCATTER } from '../../actions/actions'; //FAILED_SEARCH,
+import { RECEIVE_SEARCH, REQUEST_SEARCH, FILTER_SEARCH, SELECT_SEARCH, GET_RESULTS, GET_DATA_SCATTER, GET_DATA_BAR } from '../../actions/actions'; //FAILED_SEARCH,
 import { normalize, schema } from 'normalizr'
 
 
@@ -70,8 +72,8 @@ class SearchPage extends React.Component {
       //   receivedAt: Date.now()
       // }))
       .then( (response) => {
-        this.setState({items: response.items})
-        this.setState({totalItems: response.total_count})
+        this.setState({items: response.items});
+        this.setState({totalItems: response.total_count});
         // Save the response
         store.dispatch({
           type: RECEIVE_SEARCH,
@@ -80,25 +82,27 @@ class SearchPage extends React.Component {
           items: this.normalizeQuery(response), // An array of the trial IDs
           totalItems: response.total_count,
           receivedAt: Date.now()
-        })
+        });
         // Save the search (helps with accessing the searchHistory store)
         store.dispatch({
           type: SELECT_SEARCH,
           query: query,
-        })
+          totalItems: response.total_count,
+        });
         // Save a formatted version of the most recent search
-        let ids = store.getState().searchState.searchHistory[store.getState().searchState.selectedQuery].items;
+        let ids = store.getState().searchState.searchHistory[store.getState().searchState.selectedQuery.query].items;
         let trials = store.getState().searchState.searchedTrials.items;
         store.dispatch({
           type: GET_RESULTS,
           ids: ids,
           trials: trials
-        })
+        });
         //
         store.dispatch({
           type: GET_DATA_SCATTER,
           data: randomDataSet(),
-        })
+        });
+        this.summarizeSearch();
         // Catch errors (kind of, the errors still log to the console, but it keeps working)
       })
       // .catch(error => {
@@ -127,8 +131,110 @@ class SearchPage extends React.Component {
     // console.log(data);
   }
 
-  getGenders(){
+  getYear(date){
+    let d = new Date(date);
+    return d.getFullYear();
   }
+
+  summarizeSearch(){
+
+    if (store.getState().searchState.selectedQuery.totalItems !== 0) {
+      // Immutably copy the search results
+      var newObject = $.extend(true, {}, store.getState().searchState.currentResults.items);
+      // var newObject = store.getState().searchState.currentResults.items;  // DOOOON'T do it
+      // newObject.test = 'banana';
+
+
+      // loop through the search results and get the total trials for each gender
+      let sumData={};
+
+      for (let trial in newObject) {
+        if (true) {
+
+          let year = this.getYear(newObject[trial].registration_date);
+          if (!sumData[year]) {
+            sumData[year] = {}
+          }
+          let attr = 'total';
+          sumData[year][attr] ? (sumData[year][attr] += 1) : (sumData[year][attr] = 1)
+          if (newObject[trial].gender === 'female') {
+            let attr = 'female';
+            sumData[year][attr] ? (sumData[year][attr] += 1) : (sumData[year][attr] = 1)
+          } else if (newObject[trial].gender === 'male') {
+            let attr = 'male';
+            sumData[year][attr] ? (sumData[year][attr] += 1) : (sumData[year][attr] = 1)
+          } else if (newObject[trial].gender === 'both') {
+            let attr = 'both';
+            sumData[year][attr] ? (sumData[year][attr] += 1) : (sumData[year][attr] = 1)
+          } else if (newObject[trial].gender === undefined) {
+            let attr = 'na';
+            sumData[year][attr] ? (sumData[year][attr] += 1) : (sumData[year][attr] = 1)
+          } else {
+            console.log('failure to identify gender of '+ newObject[trial].id +' in searchPage summarizeSearch()');
+          }
+        }
+      }
+
+      // loop through the search results and get the total trials published/unpublished
+      for (let trial in newObject) {
+        if (true) {
+          let year = this.getYear(newObject[trial].registration_date);
+          if (!sumData[year]) {
+            sumData[year] = {}
+          }
+          if (newObject[trial].has_published_results === true) {
+            let attr = 'published';
+            sumData[year][attr] ? (sumData[year][attr] += 1) : (sumData[year][attr] = 1)
+          } else if ((newObject[trial].status === 'ongoing') ) { //&& (parseInt(year, 10) > 2013)
+            let attr = 'ongoing';
+            sumData[year][attr] ? (sumData[year][attr] += 1) : (sumData[year][attr] = 1)
+          } else if (newObject[trial].has_published_results === false) {
+            let attr = 'unpublished';
+            sumData[year][attr] ? (sumData[year][attr] += 1) : (sumData[year][attr] = 1)
+          } else if (newObject[trial].publications.length === 0) {
+            let attr = 'unpublished';
+            sumData[year][attr] ? (sumData[year][attr] += 1) : (sumData[year][attr] = 1)
+          } else if (newObject[trial].publications.length > 0) {
+            let attr = 'published';
+            sumData[year][attr] ? (sumData[year][attr] += 1) : (sumData[year][attr] = 1)
+          } else {
+            console.log('failure to identify publication status of '+ newObject[trial].id +' in searchPage summarizeSearch()');
+          }
+        }
+      }
+
+      console.log("sumData: ", sumData);
+
+      let summaryData = []
+        // {year: 2006, unpublished: 0, published: 0, male: 0, female: 0, both: 0, na: 0},
+      // ]
+      let currentYear = new Date();
+      currentYear = this.getYear(currentYear);
+      let firstTrialYear = parseInt(Object.keys(sumData)[0], 10);
+      let yearsInDataset = _.range(firstTrialYear, currentYear + 1);
+      let attrs = ['unpublished', 'published', 'ongoing', 'male', 'female','both', 'na', 'total']
+
+      for (var i = 0; i < yearsInDataset.length; i++) {
+          let year = yearsInDataset[i];
+          let yearData = {};
+          yearData.year = year;
+          for (let attr of attrs) {
+            if (sumData[year]) {
+              sumData[year][attr] ? (yearData[attr] = sumData[year][attr]) : (yearData[attr] = 0);
+            } else {
+              yearData[attr] = 0;
+            }
+          }
+          summaryData[i] = yearData;
+      }
+      console.log("summaryData: ", summaryData);
+      this.props.dispatch({
+        type: GET_DATA_BAR,
+        data: summaryData,
+      });
+
+    } // closing if there was a search query
+  } // closing summarizeSearch()
 
   componentDidUpdate(){
     // Getting an API Query
@@ -147,8 +253,8 @@ class SearchPage extends React.Component {
 
   getSearchResults() {
     let currentTrials =  [];
-    if (store.getState().searchState.selectedQuery !== '') {
-      let searchTerm = store.getState().searchState.selectedQuery;
+    if (store.getState().searchState.selectedQuery.query !== '') {
+      let searchTerm = store.getState().searchState.selectedQuery.query;
       let currentTrialIDs = store.getState().searchState.searchHistory[searchTerm].items;
       currentTrials = currentTrialIDs.map(id => {
         return store.getState().searchState.searchedTrials.items[id]
@@ -232,7 +338,7 @@ class SearchPage extends React.Component {
 
 const mapStateToProps = function(store) {
   return {
-    query: store.searchState.selectedQuery,
+    query: store.searchState.selectedQuery.query,
     items: store.searchState.searchedTrials.items,
     searchHistory: store.searchState.searchHistory,
     totalItems: store.searchState.currentResults,

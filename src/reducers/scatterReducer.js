@@ -1,4 +1,4 @@
-import { GET_DATA_SCATTER, GET_DATA_BAR} from '../actions/actions'; //, SEARCH_DATA_GENDER, CLEAR_STATE, SHOW_PUBLICATIONS
+import { GET_DATA_SCATTER, GET_DATA_BAR, CLEAR_STATE} from '../actions/actions'; //, SEARCH_DATA_GENDER, CLEAR_STATE, SHOW_PUBLICATIONS
 import _ from 'lodash';
 // import d3 from 'd3';
 
@@ -36,7 +36,7 @@ const initialState = {
 
 
 
-const scatterReducer = function(state = initialState, action) {
+const rootReducer = function(state = initialState, action) {
   switch(action.type) {
 
     case GET_DATA_SCATTER:
@@ -75,11 +75,11 @@ const scatterReducer = function(state = initialState, action) {
 // }
 
 // To reset all default states
-// const rootReducer = (state, action) => {
-//   if (action.type === CLEAR_STATE) {
-//     state = undefined
-//   }
-//   return scatterReducer(state, action)
-// }
+const scatterReducer = (state, action) => {
+  if (action.type === CLEAR_STATE) {
+    state = undefined
+  }
+  return rootReducer(state, action)
+}
 
 export default scatterReducer;

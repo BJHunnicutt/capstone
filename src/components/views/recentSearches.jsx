@@ -167,6 +167,7 @@ export default (props) => {
           <div>
             <label>Recent Searches</label>
             <ul>{ Object.keys(props.searchHistory).map(renderHistory(props, updateDisplay)) }</ul>
+            <button className='button clear-history-btn' onClick={props.clearSearches}>clear search history</button>
           </div>
         ) : (null)}
       </div>

@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import {
-  SELECT_SEARCH, FINALIZE_SEARCH, REQUEST_SEARCH, RECEIVE_SEARCH, FILTER_SEARCH, GET_RESULTS, SEARCH_TOO_BROAD //, CLEAR_STATE
+  SELECT_SEARCH, FINALIZE_SEARCH, REQUEST_SEARCH, RECEIVE_SEARCH, FILTER_SEARCH, GET_RESULTS, SEARCH_TOO_BROAD, CLEAR_STATE
 } from '../actions/actions'
 
 import merge from 'lodash/merge'
@@ -151,7 +151,7 @@ function searchHistory(state = {}, action) {
   }
 }
 
-const searchReducer = combineReducers({
+const rootReducer = combineReducers({
   searchHistory,
   selectedQuery,
   searchedTrials,
@@ -160,11 +160,11 @@ const searchReducer = combineReducers({
 })
 
 // To reset all default states
-// const rootReducer = (state, action) => {
-//   if (action.type === CLEAR_STATE) {
-//     state = undefined
-//   }
-//   return searchReducer(state, action)
-// }
+const searchReducer = (state, action) => {
+  if (action.type === CLEAR_STATE) {
+    state = undefined
+  }
+  return rootReducer(state, action)
+}
 
 export default searchReducer

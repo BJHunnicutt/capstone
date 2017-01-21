@@ -10,7 +10,7 @@ import _ from 'lodash'
 // Adding in redux
 import { connect } from 'react-redux';
 import store from '../../store';
-import { RECEIVE_SEARCH, REQUEST_SEARCH, FILTER_SEARCH, SELECT_SEARCH, GET_RESULTS, GET_DATA_SCATTER, GET_DATA_BAR, SEARCH_TOO_BROAD, FINALIZE_SEARCH } from '../../actions/actions'; //FAILED_SEARCH,
+import { RECEIVE_SEARCH, REQUEST_SEARCH, FILTER_SEARCH, SELECT_SEARCH, GET_RESULTS, GET_DATA_SCATTER, GET_DATA_BAR, SEARCH_TOO_BROAD, FINALIZE_SEARCH, CLEAR_STATE } from '../../actions/actions'; //FAILED_SEARCH,
 import { normalize, schema } from 'normalizr';
 
 const maxItems = 1000;
@@ -35,16 +35,22 @@ class SearchPage extends React.Component {
     }
   }
 
+  clearHistory(event) {
+    console.log('clear search history');
+    store.dispatch({
+      type: CLEAR_STATE,
+    });
+  }
+
   update(event){
     // Clean up Query
-    let query = this.globalSearch.refs.input.value;
+    let query = this.globalSearch.refs.input.value; //
+    this.globalSearch.refs.input.value = ''; // Clear the search input field when the search is activated
 
     let cleanQuery = query.replace(/[^a-zA-Z ]/g, "");  //Remove everything except letters
     let validQuery = cleanQuery !== '';
-    // console.log('cleanQuery: ',cleanQuery);
-    // console.log('valid: ', validQuery);
 
-    if (validQuery) {
+    if (validQuery) { // Only perform the search if there is something other than symbols in the query
       this.setState({
         globalSearch: cleanQuery,
       });
@@ -368,7 +374,7 @@ class SearchPage extends React.Component {
                   <input type="text" onChange={this.filter.bind(this)} />
               </div>
               <div className="large-4 end columns" >
-                  <RecentSearches {...this.props} />
+                  <RecentSearches {...this.props} clearSearches={this.clearHistory.bind(this)} />
               </div>
             </div>
           </div>

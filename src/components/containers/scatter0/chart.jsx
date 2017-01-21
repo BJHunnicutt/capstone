@@ -118,9 +118,6 @@ class Chart extends React.Component{
     // console.log(tooltipVisibility);
     // console.log(store.getState().searchState.selectedQuery.query);
 
-    const publicationChart = store.getState().scatterState.showingPublication;
-
-
     return (
       <div className='results-chart'>
         {/* <h1> ... </h1> */}

@@ -3,6 +3,7 @@ import React from 'react';
 // import '../../styles/App.css';
 import SearchInput from '../views/searchBar.jsx';
 import SearchPageView from '../views/searchPageView.jsx';
+import RecentSearches from '../views/recentSearches.jsx'
 import $ from 'jquery'
 import _ from 'lodash'
 
@@ -10,7 +11,7 @@ import _ from 'lodash'
 import { connect } from 'react-redux';
 import store from '../../store';
 import { RECEIVE_SEARCH, REQUEST_SEARCH, FILTER_SEARCH, SELECT_SEARCH, GET_RESULTS, GET_DATA_SCATTER, GET_DATA_BAR, SEARCH_TOO_BROAD, FINALIZE_SEARCH } from '../../actions/actions'; //FAILED_SEARCH,
-import { normalize, schema } from 'normalizr'
+import { normalize, schema } from 'normalizr';
 
 const maxItems = 1000;
 
@@ -35,12 +36,24 @@ class SearchPage extends React.Component {
   }
 
   update(event){
-    // console.log(event.target)
-    this.setState({
-      globalSearch: this.globalSearch.refs.input.value,
-    });
-    // if (event.target == )
-    this.updateSearch();
+    // Clean up Query
+    let query = this.globalSearch.refs.input.value;
+
+    let cleanQuery = query.replace(/[^a-zA-Z ]/g, "");  //Remove everything except letters
+    let validQuery = cleanQuery !== '';
+    // console.log('cleanQuery: ',cleanQuery);
+    // console.log('valid: ', validQuery);
+
+    if (validQuery) {
+      this.setState({
+        globalSearch: cleanQuery,
+      });
+      this.updateSearch(cleanQuery);
+
+    } else {
+      console.log("Invalid Search, please enter a treatment or condition");
+    }
+
   }
 
   normalizeQuery(response) {
@@ -53,10 +66,10 @@ class SearchPage extends React.Component {
     return normalizedData
   }
 
-  updateSearch(page = 1, query = null, callback = false){
+  updateSearch(query = null, page = 1, callback = false){
 
     // Keep fetching until the total items in the search are accessed (100 at a time limit)
-    if (query !== null) { // Query will only not equal null if this is a callback from fetchSearch()
+    if (store.getState().searchState.selectedQuery.query === query) { // Query will only not equal null if this is a callback from fetchSearch()
       let itemsInSearch = store.getState().searchState.searchHistory[store.getState().searchState.selectedQuery.query].totalItems;
       let itemsAcquired = store.getState().searchState.searchHistory[store.getState().searchState.selectedQuery.query].items.length;
 
@@ -85,7 +98,7 @@ class SearchPage extends React.Component {
       }
 
     } else { // Fetch the search (this happens on the first call)
-      this.fetchSearch(page);
+      this.fetchSearch(page, query);
     }
 
 
@@ -118,10 +131,10 @@ class SearchPage extends React.Component {
       query: query
     });
 
-    fetch('https://api.opentrials.net/v1/search?q=interventions.name%3A(' +
+    fetch('https://api.opentrials.net/v1/search?q=intervention%3A(' +
             // this.globalSearch.refs.input.value + ')%20OR%20public_title%3A(' +
-            this.globalSearch.refs.input.value + ')%20OR%20conditions.name%3A(' +
-            this.globalSearch.refs.input.value + ')&page='+ page +'&per_page=100')
+            query + ')%20OR%20condition%3A(' +
+            query + ')&page='+ page +'&per_page=100')
       .then( response => response.json())
       // .then(json => store.dispatch({
       //   type: RECEIVE_SEARCH,
@@ -160,7 +173,7 @@ class SearchPage extends React.Component {
           type: GET_DATA_SCATTER,
           data: randomDataSet(),
         });
-        this.updateSearch(page, query); //Keep fetching until the total items in the search are accessed (100 at a time limit)
+        this.updateSearch(query, page); //Keep fetching until the total items in the search are accessed (100 at a time limit)
         // Catch errors (kind of, the errors still log to the console, but it keeps working)
       })
       // .catch(error => {
@@ -338,40 +351,43 @@ class SearchPage extends React.Component {
     return (
       <div className="search_page">
         <div className="row">
-          <div className="large-6 large-centered columns">
+          <div className="large-12 columns search-wrapper">
+            <div className="row">
+              <div className="large-5 columns search-wrapper">
 
-              {/* SEARCH */}
-              <label>Search by Treatment or Condition</label>
-              <SearchInput  // Custom component - Search bar
-                ref={component => this.globalSearch = component} // THis can also take a callback (here we're setting as the nested class component Input)
-                update={this.update.bind(this)} // update now, not on change
-              />
+                  {/* SEARCH */}
+                  <label>Search by Treatment or Condition</label>
+                  <SearchInput  // Custom component - Search bar
+                    ref={component => this.globalSearch = component} // THis can also take a callback (here we're setting as the nested class component Input)
+                    update={this.update.bind(this)} // update now, not on change
+                  />
 
 
-              {/* FILTER SEARCH RESULTS */}
-              <label>Filter Search Results</label>
-              <input type="text"
-              onChange={this.filter.bind(this)} />
-
-              <SearchInput />
-              
+                  {/* FILTER SEARCH RESULTS */}
+                  <label>Filter Search Results</label>
+                  <input type="text" onChange={this.filter.bind(this)} />
+              </div>
+              <div className="large-4 end columns" >
+                  <RecentSearches {...this.props} />
+              </div>
+            </div>
           </div>
+
         </div>
+
         <hr/>
 
         <div className="row search-result" >
+          <div className="large-6 medium-6 small-12 columns">
+              {/* Corresponding View Component */}
+              <SearchPageView {...this.props} />
+          </div>
           <div className="large-6 medium-6 small-12 columns">
               {/* Render the plot */}
               <div className="nested-plot">
                 {this.props.children}
               </div>
           </div>
-
-          <div className="large-6 medium-6 small-12 columns">
-              {/* Corresponding View Component */}
-              <SearchPageView {...this.props} />
-          </div>
-
         </div>
 
 

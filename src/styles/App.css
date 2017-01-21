@@ -47,6 +47,13 @@
   /*top: 5vw;*/
 }
 
+.search-wrapper {
+
+}
+
+li {
+  list-style: none;
+}
 /*button.redux-store {
   background-color: blue;
   display: inline-block;

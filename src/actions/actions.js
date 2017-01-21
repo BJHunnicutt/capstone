@@ -1,9 +1,13 @@
 import store from '../store';
 
+// Reset to defaults
+export const CLEAR_STATE = 'CLEAR_STATE'
+
 // Scatter Actions
 export const GET_DATA_SCATTER = 'GET_DATA_SCATTER';
 export const GET_DATA_BAR = 'GET_DATA_BAR';
 export const SEARCH_DATA_GENDER = 'SEARCH_DATA_GENDER';
+export const SHOW_PUBLICATIONS = 'SHOW_PUBLICATIONS'
 
 // export function getDataScatter(data) {
 //   return {
@@ -19,10 +23,10 @@ export const SELECT_SEARCH = 'SELECT_SEARCH';
 export const REQUEST_SEARCH = 'REQUEST_SEARCH';
 export const RECEIVE_SEARCH = 'RECEIVE_SEARCH';
 export const FILTER_SEARCH = 'FILTER_SEARCH';
-export const INVALIDATE_SEARCH = 'INVALIDATE_SEARCH';
+export const FINALIZE_SEARCH = 'FINALIZE_SEARCH';
 export const GET_RESULTS = 'GET_RESULTS';
 export const FAILED_SEARCH = 'FAILED_SEARCH';
-
+export const SEARCH_TOO_BROAD = 'SEARCH_TOO_BROAD'
 // export function selectSearch(query) {
 //   return {
 //     type: SELECT_SEARCH,

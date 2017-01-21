@@ -131,7 +131,7 @@ export default class SearchTable extends Component {
                 {rowIndex + 1}
                </Cell>
              )}
-             width={30}
+             width={40}
 
              fixed={true}
            />

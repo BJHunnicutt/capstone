@@ -1,4 +1,4 @@
-import { GET_DATA_SCATTER, GET_DATA_BAR} from '../actions/actions'; //, SEARCH_DATA_GENDER 
+import { GET_DATA_SCATTER, GET_DATA_BAR} from '../actions/actions'; //, SEARCH_DATA_GENDER, CLEAR_STATE, SHOW_PUBLICATIONS
 import _ from 'lodash';
 // import d3 from 'd3';
 
@@ -9,18 +9,18 @@ import _ from 'lodash';
     //
 
   const data = [
-        {year: 2006, unpublished: 0, published: 0, male: 0, female: 0, both: 0},
-        {year: 2007, unpublished: 0, published: 0, male: 0, female: 0, both: 0},
-        {year: 2008, unpublished: 0, published: 0, male: 0, female: 0, both: 0},
-        {year: 2009, unpublished: 0, published: 0, male: 0, female: 0, both: 0},
-        {year: 2010, unpublished: 0, published: 0, male: 0, female: 0, both: 0},
-        {year: 2011, unpublished: 0, published: 0, male: 0, female: 0, both: 0},
-        {year: 2012, unpublished: 0, published: 0, male: 0, female: 0, both: 0},
-        {year: 2013, unpublished: 0, published: 0, male: 0, female: 0, both: 0},
-        {year: 2014, unpublished: 0, published: 0, male: 0, female: 0, both: 0},
-        {year: 2015, unpublished: 0, published: 0, male: 0, female: 0, both: 0},
-        {year: 2016, unpublished: 0, published: 0, male: 0, female: 0, both: 0},
-        {year: 2017, unpublished: 0, published: 0, male: 0, female: 0, both: 0},
+        {year: 2006, unpublished: 0, published: 0, ongoing: 0, male: 0, female: 0, both: 0, na: 0},
+        {year: 2007, unpublished: 0, published: 0, ongoing: 0, male: 0, female: 0, both: 0, na: 0},
+        {year: 2008, unpublished: 0, published: 0, ongoing: 0, male: 0, female: 0, both: 0, na: 0},
+        {year: 2009, unpublished: 0, published: 0, ongoing: 0, male: 0, female: 0, both: 0, na: 0},
+        {year: 2010, unpublished: 0, published: 0, ongoing: 0, male: 0, female: 0, both: 0, na: 0},
+        {year: 2011, unpublished: 0, published: 0, ongoing: 0, male: 0, female: 0, both: 0, na: 0},
+        {year: 2012, unpublished: 0, published: 0, ongoing: 0, male: 0, female: 0, both: 0, na: 0},
+        {year: 2013, unpublished: 0, published: 0, ongoing: 0, male: 0, female: 0, both: 0, na: 0},
+        {year: 2014, unpublished: 0, published: 0, ongoing: 0, male: 0, female: 0, both: 0, na: 0},
+        {year: 2015, unpublished: 0, published: 0, ongoing: 0, male: 0, female: 0, both: 0, na: 0},
+        {year: 2016, unpublished: 0, published: 0, ongoing: 0, male: 0, female: 0, both: 0, na: 0},
+        {year: 2017, unpublished: 0, published: 0, ongoing: 0, male: 0, female: 0, both: 0, na: 0},
     ];
 
 // var stack = d3.layout.stack();
@@ -30,6 +30,7 @@ const initialState = {
   // below is just creating a linear plot: [[0,0],[1,1], ...]
   data: _.range(50).map(function (x, i) { return [x,i] }),
   dataBar: data,
+  showingPublication: true,
 };
 
 
@@ -46,6 +47,10 @@ const scatterReducer = function(state = initialState, action) {
       return Object.assign({}, state, {
         dataBar: action.data
       })
+    // case SHOW_PUBLICATIONS:
+    //   return Object.assign({}, state, {
+    //     showingPublication: action.showingPublication
+    //   })
 
     default:
       return state
@@ -67,6 +72,14 @@ const scatterReducer = function(state = initialState, action) {
 //     default:
 //       return state
 //   }
+// }
+
+// To reset all default states
+// const rootReducer = (state, action) => {
+//   if (action.type === CLEAR_STATE) {
+//     state = undefined
+//   }
+//   return scatterReducer(state, action)
 // }
 
 export default scatterReducer;

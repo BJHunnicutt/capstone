@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import {
-  SELECT_SEARCH, INVALIDATE_SEARCH, REQUEST_SEARCH, RECEIVE_SEARCH, FILTER_SEARCH, GET_RESULTS
+  SELECT_SEARCH, FINALIZE_SEARCH, REQUEST_SEARCH, RECEIVE_SEARCH, FILTER_SEARCH, GET_RESULTS, SEARCH_TOO_BROAD //, CLEAR_STATE
 } from '../actions/actions'
 
 import merge from 'lodash/merge'
@@ -10,13 +10,18 @@ import merge from 'lodash/merge'
 function selectedQuery(state = {
   query: '',
   totalItems: 0,
+  tooManyResults: false,
 }, action) {
   switch (action.type) {
     case SELECT_SEARCH:
-    return Object.assign({}, state, {
-      query: action.query,
-      totalItems: action.totalItems
-    })
+      return Object.assign({}, state, {
+        query: action.query,
+        totalItems: action.totalItems
+      })
+    case SEARCH_TOO_BROAD:
+      return Object.assign({}, state, {
+        tooManyResults: action.tooManyResults,
+      })
     default:
       return state
   }
@@ -84,27 +89,42 @@ function searchedTrials(state = {items: {}}, action) {
 }
 
 // Save API response and response state
+function mergeItems(state, action) {
+  switch (action.type) {
+    case RECEIVE_SEARCH:
+      var newState = state.concat(action.items.result.items);
+      return newState;
+
+      // // Merge the already searched trials with the old ones
+      // if (action.items.result.items) {
+      //   return merge([], state, action.items.result.items)
+      // } else {
+      //   return state
+      // }
+    default:
+      return state
+  }
+}
+
+// Save API response and response state
 function items(state = {
   isFetching: false,
-  didInvalidate: false,
   items: []
 }, action) {
 
   switch (action.type) {
-    case INVALIDATE_SEARCH:
+    case FINALIZE_SEARCH:
       return Object.assign({}, state, {
-        didInvalidate: true
+        isFetching: action.isFetching,
       })
     case REQUEST_SEARCH:
       return Object.assign({}, state, {
         isFetching: true,
-        didInvalidate: false
       })
     case RECEIVE_SEARCH:
       return Object.assign({}, state, {
-        isFetching: false,
-        didInvalidate: false,
-        items: action.items.result.items,
+        // items: action.items.result.items,
+        items: mergeItems(state.items, action),
         totalItems: action.totalItems,
         lastUpdated: action.receivedAt
       })
@@ -116,7 +136,7 @@ function items(state = {
 // Saves each search query and the ids of the trials returned
 function searchHistory(state = {}, action) {
   switch (action.type) {
-    case INVALIDATE_SEARCH:
+    case FINALIZE_SEARCH:
     case RECEIVE_SEARCH:
     case REQUEST_SEARCH:
       return Object.assign({}, state, {
@@ -138,5 +158,13 @@ const searchReducer = combineReducers({
   filterSearch,
   currentResults
 })
+
+// To reset all default states
+// const rootReducer = (state, action) => {
+//   if (action.type === CLEAR_STATE) {
+//     state = undefined
+//   }
+//   return searchReducer(state, action)
+// }
 
 export default searchReducer

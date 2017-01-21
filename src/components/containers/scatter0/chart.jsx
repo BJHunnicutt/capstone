@@ -9,7 +9,7 @@ import { GET_DATA_BAR } from '../../../actions/actions';
 // import $ from 'jquery'
 // import d3 from 'd3';
 
-import {BarChart, Bar, XAxis, YAxis, Tooltip, Legend} from 'recharts'; //CartesianGrid,
+import {BarChart, Bar, XAxis, YAxis, Tooltip, Legend} from 'recharts'; //CartesianGrid, ResponsiveContainer
 
 // const data = [
 //     {year: 2005, unpublished: 4000, published: 2400, amt: 2400},
@@ -24,12 +24,16 @@ import {BarChart, Bar, XAxis, YAxis, Tooltip, Legend} from 'recharts'; //Cartesi
 //Width, height & padding
 
 const styles = {
-  w  : 350,
-  h : 300,
+  width  : 500,
+  height : 400,
   // Only works when you fully reload the page
   // width : window.innerWidth / 2, // Testing out making the plot viewport responsive
   // height : 0.6 * window.innerWidth / 2,
   padding : 30,
+  top: 25,
+  right: 50,
+  bottom: 0,
+  left: 0,
 };
 
 const randomNum = () => Math.floor(Math.random() * 100);
@@ -74,10 +78,24 @@ var getDataset = () => {
 
 
 class Chart extends React.Component{
-  // constructor(props) {
-  //   super(props);
-  //   this.state = { data: dataset };
-  // }
+  constructor(props) {
+    super(props);
+    this.state = {
+      genderVisible: false,
+      publicationVisible: true,
+      buttonText: 'View Gender Distribution'
+    };
+    this.onClickSwap = this.onClickSwap.bind(this)
+  }
+  // This conditional showing method is based on this: http://stackoverflow.com/questions/29913387/show-hide-components-in-reactjs
+  onClickSwap(event){  //THis is a custom method to allow events to update our state data
+    this.setState({
+      genderVisible: !this.state.genderVisible,
+      publicationVisible: !this.state.publicationVisible,
+      buttonText: this.state.buttonText === "View Gender Distribution" ? "View Publication Rates" : "View Gender Distribution"
+    })
+  }
+
 
 
   randomizeData() {
@@ -87,6 +105,7 @@ class Chart extends React.Component{
       data: getDataset(),
     });
   }
+
 
 
   render() {
@@ -99,33 +118,78 @@ class Chart extends React.Component{
     // console.log(tooltipVisibility);
     // console.log(store.getState().searchState.selectedQuery.query);
 
-    return <div className='stacked-bar'>
-      {/* <h1> ... </h1> */}
-      <BarChart width={styles.w} height={styles.h} data={store.getState().scatterState.dataBar}
-            margin={{top: 0, right: 30, left: 0, bottom: 5}}>
-         <XAxis dataKey="year"/>
-         <YAxis/>
-         {/* <CartesianGrid strokeDasharray="3 3"/> */}
-         <Tooltip isAnimationActive={false} animationDuration={50} animationEasing='ease' cursor={false}/>
-         <Legend />
-         <Bar dataKey="unpublished" animationDuration={100} stackId="a" fill="gold" />
-         <Bar dataKey="published" isAnimationActive={false} stackId="a" fill="lightblue" />
-         <Bar dataKey="ongoing" isAnimationActive={false} stackId="a" fill="lightgray" />
-      </BarChart>
-      {/* <BarPlot {...this.props} {...styles} /> */}
-      <div className="controls">
-        <button className="button btn randomize" onClick={() => this.randomizeData()}>
-          Randomize Data
-        </button>
+    const publicationChart = store.getState().scatterState.showingPublication;
+
+
+    return (
+      <div className='results-chart'>
+        {/* <h1> ... </h1> */}
+
+         {this.state.genderVisible ? (
+           <GenderBarChart {...styles} />
+         ) : (null)}
+         {this.state.publicationVisible ? (
+           <PublicationBarChart {...styles} />
+         ) : (null)}
+
+
+
+        {/* {publicationChart ? (
+          <PublicationBarChart {...styles} {...this.props} />
+        ) : (
+          <GenderBarChart {...styles} {...this.props}/>
+        )} */}
+
+        <div className="controls">
+          <button className="button btn gender-btn" onClick={this.onClickSwap}>
+            {this.state.buttonText}
+          </button>
+        </div>
       </div>
-
-
-
-    </div>
+    )
   }
 };
 
-//
+
+// STATELESS FUNCTION COMPONENT
+// const PublicationBarChart = (props) => {
+class PublicationBarChart extends React.Component {
+  render() {
+  return (
+    <BarChart width={styles.width} height={styles.height} data={store.getState().scatterState.dataBar}
+          margin={{top: styles.top, right: styles.right, bottom: styles.bottom, left: styles.left}}>
+       <XAxis dataKey="year" label='years'/>
+       <YAxis label='trials'/>
+       {/* <CartesianGrid strokeDasharray="3 3"/> */}
+       <Tooltip isAnimationActive={false} animationDuration={50} animationEasing='ease' cursor={false}/>
+       <Legend />
+       <Bar dataKey="unpublished" animationDuration={100} stackId="a" fill="tomato" />
+       <Bar dataKey="published" isAnimationActive={false} stackId="a" fill="yellowgreen" />
+       <Bar dataKey="ongoing" isAnimationActive={false} stackId="a" fill="lightgray" />
+    </BarChart>
+  )}
+}
+
+// const GenderBarChart = (props) => {
+class GenderBarChart extends React.Component {
+  render() {
+  return (
+    <BarChart width={styles.width} height={styles.height} data={store.getState().scatterState.dataBar}
+          margin={{top: styles.top, right: styles.right, bottom: styles.bottom, left: styles.left}}>
+       <XAxis dataKey="year" label='years'/>
+       <YAxis label='trials'/>
+       {/* <CartesianGrid strokeDasharray="3 3"/> */}
+       <Tooltip isAnimationActive={false} animationDuration={50} animationEasing='ease' cursor={false} />
+       <Legend />
+       <Bar dataKey="female" animationDuration={100} stackId="a" fill="gold" />
+       <Bar dataKey="both" animationDuration={100} stackId="a" fill="yellowgreen" />
+       <Bar dataKey="male" isAnimationActive={false} stackId="a" fill="darkcyan" />
+       <Bar dataKey="na" isAnimationActive={false} stackId="a" fill="lightgray" />
+    </BarChart>
+  )}
+}
+
+
 // class ConditionalTooltip extends React.Component {
 //   render(){
 //     // console.log("vis", this.props.visible);
@@ -140,7 +204,8 @@ class Chart extends React.Component{
 
 const mapStateToProps = function(store) {
   return {
-    data: store.scatterState.dataBar
+    data: store.scatterState.dataBar,
+    showPublications: store.scatterState.showPublications
   };
 }
 

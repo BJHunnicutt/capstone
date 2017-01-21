@@ -9,9 +9,10 @@ import _ from 'lodash'
 // Adding in redux
 import { connect } from 'react-redux';
 import store from '../../store';
-import { RECEIVE_SEARCH, REQUEST_SEARCH, FILTER_SEARCH, SELECT_SEARCH, GET_RESULTS, GET_DATA_SCATTER, GET_DATA_BAR } from '../../actions/actions'; //FAILED_SEARCH,
+import { RECEIVE_SEARCH, REQUEST_SEARCH, FILTER_SEARCH, SELECT_SEARCH, GET_RESULTS, GET_DATA_SCATTER, GET_DATA_BAR, SEARCH_TOO_BROAD, FINALIZE_SEARCH } from '../../actions/actions'; //FAILED_SEARCH,
 import { normalize, schema } from 'normalizr'
 
+const maxItems = 1000;
 
 // The number of data points for the chart.
 const numDataPoints = 50;
@@ -52,17 +53,75 @@ class SearchPage extends React.Component {
     return normalizedData
   }
 
-  updateSearch(event){
-    let query = this.globalSearch.refs.input.value;
+  updateSearch(page = 1, query = null, callback = false){
+
+    // Keep fetching until the total items in the search are accessed (100 at a time limit)
+    if (query !== null) { // Query will only not equal null if this is a callback from fetchSearch()
+      let itemsInSearch = store.getState().searchState.searchHistory[store.getState().searchState.selectedQuery.query].totalItems;
+      let itemsAcquired = store.getState().searchState.searchHistory[store.getState().searchState.selectedQuery.query].items.length;
+
+      console.log('itemsInSearch: ', itemsInSearch);
+      console.log('itemsAcquired: ', itemsAcquired);
+
+
+      // If there are more items to get from the API for this search
+      if (itemsInSearch > itemsAcquired) {
+
+        // If the search returns more than maxResults (defined at the top of this file)
+        if (store.getState().searchState.selectedQuery.tooManyResults && (page === maxItems/100)) {
+          console.log('too many results, the most recent 1000 are shown');
+          this.finalizeSearchResults(query);
+          return null;
+
+        } else {
+          page += 1; // Get the next page of API requests
+          this.fetchSearch(page, query);
+        }
+
+      // If all items are received, dispatch an action to say so
+      } else { // Stop if all items are received, and dispatch an action to say so
+        this.finalizeSearchResults(query);
+        return null;
+      }
+
+    } else { // Fetch the search (this happens on the first call)
+      this.fetchSearch(page);
+    }
+
+
+  }
+
+  finalizeSearchResults(query){
+    // Save a formatted version of the most recent search
+    let ids = store.getState().searchState.searchHistory[store.getState().searchState.selectedQuery.query].items;
+    let trials = store.getState().searchState.searchedTrials.items;
+    store.dispatch({
+      type: FINALIZE_SEARCH,
+      query: query,
+      isFetching: false,
+    });
+    store.dispatch({
+      type: GET_RESULTS,
+      query: query,
+      ids: ids,
+      trials: trials
+    });
+    this.summarizeSearch();
+    return null
+  }
+
+
+  fetchSearch(page, query = this.globalSearch.refs.input.value){
+    // let query = this.globalSearch.refs.input.value;
     store.dispatch({
       type: REQUEST_SEARCH,
       query: query
     });
 
     fetch('https://api.opentrials.net/v1/search?q=interventions.name%3A(' +
-            this.globalSearch.refs.input.value + ')%20OR%20public_title%3A(' +
+            // this.globalSearch.refs.input.value + ')%20OR%20public_title%3A(' +
             this.globalSearch.refs.input.value + ')%20OR%20conditions.name%3A(' +
-            this.globalSearch.refs.input.value + ')&per_page=100')
+            this.globalSearch.refs.input.value + ')&page='+ page +'&per_page=100')
       .then( response => response.json())
       // .then(json => store.dispatch({
       //   type: RECEIVE_SEARCH,
@@ -72,6 +131,13 @@ class SearchPage extends React.Component {
       //   receivedAt: Date.now()
       // }))
       .then( (response) => {
+        // Don't save the Search if there are too many results
+        if (response.total_count > maxItems) {
+          store.dispatch({
+            type: SEARCH_TOO_BROAD,
+            tooManyResults: true,
+          })
+        }
         this.setState({items: response.items});
         this.setState({totalItems: response.total_count});
         // Save the response
@@ -89,20 +155,12 @@ class SearchPage extends React.Component {
           query: query,
           totalItems: response.total_count,
         });
-        // Save a formatted version of the most recent search
-        let ids = store.getState().searchState.searchHistory[store.getState().searchState.selectedQuery.query].items;
-        let trials = store.getState().searchState.searchedTrials.items;
-        store.dispatch({
-          type: GET_RESULTS,
-          ids: ids,
-          trials: trials
-        });
         //
         store.dispatch({
           type: GET_DATA_SCATTER,
           data: randomDataSet(),
         });
-        this.summarizeSearch();
+        this.updateSearch(page, query); //Keep fetching until the total items in the search are accessed (100 at a time limit)
         // Catch errors (kind of, the errors still log to the console, but it keeps working)
       })
       // .catch(error => {
@@ -203,7 +261,7 @@ class SearchPage extends React.Component {
         }
       }
 
-      console.log("sumData: ", sumData);
+      // console.log("sumData: ", sumData);
 
       let summaryData = []
         // {year: 2006, unpublished: 0, published: 0, male: 0, female: 0, both: 0, na: 0},
@@ -227,7 +285,7 @@ class SearchPage extends React.Component {
           }
           summaryData[i] = yearData;
       }
-      console.log("summaryData: ", summaryData);
+      // console.log("summaryData: ", summaryData);
       this.props.dispatch({
         type: GET_DATA_BAR,
         data: summaryData,
@@ -294,23 +352,26 @@ class SearchPage extends React.Component {
               <label>Filter Search Results</label>
               <input type="text"
               onChange={this.filter.bind(this)} />
+
+              <SearchInput />
+              
           </div>
         </div>
         <hr/>
 
         <div className="row search-result" >
-
-          <div className="large-6 medium-6 small-12 columns">
-              {/* Corresponding View Component */}
-              <SearchPageView {...this.props} />
-          </div>
-
           <div className="large-6 medium-6 small-12 columns">
               {/* Render the plot */}
               <div className="nested-plot">
                 {this.props.children}
               </div>
           </div>
+
+          <div className="large-6 medium-6 small-12 columns">
+              {/* Corresponding View Component */}
+              <SearchPageView {...this.props} />
+          </div>
+
         </div>
 
 

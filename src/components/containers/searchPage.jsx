@@ -47,7 +47,7 @@ class SearchPage extends React.Component {
     let query = this.globalSearch.refs.input.value; //
     this.globalSearch.refs.input.value = ''; // Clear the search input field when the search is activated
 
-    let cleanQuery = query.replace(/[^a-zA-Z ]/g, "");  //Remove everything except letters
+    let cleanQuery = query.replace(/[^a-zA-Z\" ]/g, "");  //Remove everything except letters
     let validQuery = cleanQuery !== '';
 
     if (validQuery) { // Only perform the search if there is something other than symbols in the query
@@ -138,7 +138,7 @@ class SearchPage extends React.Component {
     });
 
     fetch('https://api.opentrials.net/v1/search?q=intervention%3A(' +
-            // this.globalSearch.refs.input.value + ')%20OR%20public_title%3A(' +
+            // query + ')%20OR%20public_title%3A(' +
             query + ')%20OR%20condition%3A(' +
             query + ')&page='+ page +'&per_page=100')
       .then( response => response.json())

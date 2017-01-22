@@ -62,20 +62,34 @@ export default class SearchTable extends Component {
       }
 
 
-      let titles = []; let conditions = []; let organizations = []; let dates = [];
+      let textLength = []; let conditions = []; let conditionList = ''; let interventionList = ''; let interventions = []; let organizations = []; let dates = [];
 
-
-      // Trial Titles array (because the table code below gets confused about nested data)
-      for (let item of searchedItems) {
-        titles.push(item.public_title.length)
-      }
       //Trial Conditions
       for (let item of searchedItems) {
-        let cs = item.conditions
-        for (let name of cs) {
-          conditions.push(name.name)
+        let cs = item.conditions;
+        let first = true;
+        for (let c of cs) {
+          first ? conditionList = conditionList.concat(c.name) : conditionList = conditionList.concat(', ', c.name);
+          first = false;
+        }
+        conditions.push(conditionList);
+        conditionList = '';
+      }
+
+      //Trial Interventions
+      for (let item of searchedItems) {
+        if (item.id !== "") {
+          let is = item.interventions;
+          let first = true;
+          for (let i of is) {
+            first ? interventionList = interventionList.concat(i.name) : interventionList = interventionList.concat(', ', i.name);
+            first = false;
+          }
+          interventions.push(interventionList);
+          interventionList = '';
         }
       }
+
       //Trial Organizations
       for (let item of searchedItems) {
         let os = item.organisations
@@ -86,7 +100,7 @@ export default class SearchTable extends Component {
         }
       }
 
-      // Trial Titles array (because the table code below gets confused about nested data)
+      // Date array (because the table code below gets confused about nested data)
       let d;
       for (let item of searchedItems) {
         if (item.length !== '') {
@@ -94,6 +108,40 @@ export default class SearchTable extends Component {
           dates.push(d)
         }
       }
+
+      // Finding the longest thing the title, the list of conditions or the list of interventions --> dtmns row height
+      let i = 0;
+      for (let item of searchedItems) {
+        // if (item.id !== "") {
+        //   let longest = 0;
+        //   if (item.public_title.length > interventions[i].length) {
+        //      longest = item.public_title.length
+        //      if (!(item.public_title.length > conditions[i].length)) {
+        //        longest = conditions[i].length
+        //      }
+        //    } else {
+        //      longest = interventions[i].length
+        //      if (!(interventions[i].length > conditions[i].length)) {
+        //        longest = conditions[i].length
+        //      }
+        //    }
+        //   textLength.push(longest)
+        //   console.log('longest: ', longest, ' title: ', item.public_title.length, ' int: ', interventions[i].length, ' cond: ', conditions[i].length);
+        // } else {
+        //   textLength.push(item.public_title.length)
+        // }
+        // i += 1;
+        textLength.push(item.public_title.length)
+        if (item.id !== "") {
+          if (conditions[i].length >= item.public_title.length && conditions[i].length > 30) {
+            conditions[i] = (conditions[i].substring(0, (item.public_title.length - 35)) + "...");
+          } else if (interventions[i].length >= item.public_title.length && interventions[i].length > 40) {
+            interventions[i] = (interventions[i].substring(0, (item.public_title.length - 20)) + "...");
+          }
+        }
+        i += 1;
+      }
+
 
     // Date.parse(searchedItems[rowIndex].registration_date).getUTCFullYear()
 
@@ -119,7 +167,7 @@ export default class SearchTable extends Component {
            width={containerWidth}
            maxHeight={400}
            headerHeight={50}
-           rowHeightGetter={(rowIndex) => Math.max(40, titles[rowIndex]*1.1)}
+           rowHeightGetter={(rowIndex) => Math.max(40, textLength[rowIndex]*1.1)}
 
            touchScrollEnabled={true}
            {...props}>
@@ -161,13 +209,24 @@ export default class SearchTable extends Component {
            /> */}
            <Column
              columnKey="Conditions Column"
-             header={<Cell>Primary Condition</Cell>}
+             header={<Cell>Conditions Tested</Cell>}
              cell={({rowIndex, ...props}) => (
                <Cell className={css(styles.newTableCell)} {...props}>
                  {conditions[rowIndex]}
                </Cell>
              )}
-             width={200}
+             width={175}
+            //  flexGrow={1}
+           />
+           <Column
+             columnKey="Treatments Column"
+             header={<Cell>Treatments Tested</Cell>}
+             cell={({rowIndex, ...props}) => (
+               <Cell className={css(styles.newTableCell)} {...props}>
+                 {interventions[rowIndex]}
+               </Cell>
+             )}
+             width={225}
             //  flexGrow={1}
            />
            <Column

@@ -59,6 +59,11 @@ button.clear-history-btn {
   background-color: darkred;
 }
 
+/*div.public_fixedDataTableCell_main:hover, div.public_fixedDataTableCell_cellContent:hover, div.public_fixedDataTableCell_wrap1:hover, div.public_fixedDataTableCell_wrap2:hover, div.public_fixedDataTableCell_wrap3:hover{
+  background-color: red;
+  z-index: 1000;
+}*/
+
 /*button.redux-store {
   background-color: blue;
   display: inline-block;

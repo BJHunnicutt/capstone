@@ -4,14 +4,17 @@ import {VictoryPie, VictoryLabel, VictoryBar, VictoryGroup, VictoryStack} from '
 // import {ComposedChart, Line, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
 // import Chart from '../containers/scatter/chart.jsx';
 
-const data01 = [{name: 'Group A', value: 400}, {name: 'Group B', value: 300}, {name: 'Group C', value: 100}]
-const data02 = [{name: 'A1', value: 100}, {name: 'A2', value: 300}]
 
 export default class ComparisonChart extends React.Component {
 
 
 
 	render () {
+    // const sampleData = [
+    // {year: 2006, unpublished: 0, published: 0, ongoing: 0, male: 0, female: 0, both: 0, na: 0},
+    // {year: 2006, unpublished: 0, published: 0,  ongoing: 0, male: 0, female: 0, both: 0, na: 0},
+    // ];
+
     // console.log("props:", props);
     // console.log("this.props:", this.props);
 

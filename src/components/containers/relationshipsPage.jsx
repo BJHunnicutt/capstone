@@ -18,14 +18,14 @@ class RelationshipsPage extends React.Component {
 
 	componentDidMount() {
 		d3.csv(allData, (data) => {
-			console.log('d3csv: ', data);
+			// console.log('d3csv: ', data);
 			this.setUpRelationships(data);
 		});
 
 	}
 
 	setUpRelationships(data) {
-		console.log('outsided3csv: ', data);
+		// console.log('outsided3csv: ', data);
 
 
 

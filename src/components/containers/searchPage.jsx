@@ -4,6 +4,7 @@ import React from 'react';
 import SearchInput from '../views/searchBar.jsx';
 import SearchPageView from '../views/searchPageView.jsx';
 import RecentSearches from '../views/recentSearches.jsx'
+import cumulativeSummary from './cumulativeSummary.jsx'
 import $ from 'jquery'
 import _ from 'lodash'
 
@@ -126,6 +127,11 @@ class SearchPage extends React.Component {
       trials: trials
     });
     this.summarizeSearch();
+
+
+    console.log(cumulativeSummary(query));
+    // Should call the cummulative summary action here.
+
     return null
   }
 

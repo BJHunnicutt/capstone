@@ -63,6 +63,10 @@ button.clear-history-btn {
   background-color: darkred;
 }
 
+.comparison-panel svg {
+  overflow: visible;
+}
+
 /*button.redux-store {
   position: absolute;
   top: 15px;

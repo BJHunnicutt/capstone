@@ -6,7 +6,10 @@ import ComparisonChart from '../views/comparisonChart.jsx'
 
 
 const randomNum = () => Math.floor(Math.random() * 100);
-
+const getYear = (years) => {
+  var rand = years[Math.floor(Math.random() * years.length)];
+  return rand;
+}
 
 class ComparisonsPage extends React.Component {
   constructor(props){
@@ -24,14 +27,16 @@ class ComparisonsPage extends React.Component {
       const chartProps = {
         key: props.num
       };
-      return <ComparisonChart {...chartProps} radius={props.radius}/>
+      return <ComparisonChart {...chartProps} {...props}/>
     }
   }
 
   getData() {
-    let dataArray = [{num: 1, radius: randomNum()},
-      {num: 2, radius: randomNum()},
-      {num: 3, radius: randomNum()}];
+    let dataArray = [
+      {num: 1, radius: randomNum(), year: getYear([2012, 2013, 2014])},
+      {num: 2, radius: randomNum(), year: getYear([2012, 2013, 2014])},
+      {num: 3, radius: randomNum(), year: getYear([2012, 2013, 2014])}
+    ];
     return dataArray;
   }
 

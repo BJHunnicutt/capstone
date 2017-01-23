@@ -46,7 +46,6 @@ var getDataset = () => {
       { year: 2007, unpublished: randomNum(), published: randomNum() },
       { year: 2008, unpublished: randomNum(), published: randomNum() },
       { year: 2009, unpublished: randomNum(), published: randomNum() }
-
   ]
 
   // // OMG THIS WORKS: copying data this way clones it so it doesnt mutate the original data

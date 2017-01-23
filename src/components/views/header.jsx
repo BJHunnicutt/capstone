@@ -13,8 +13,8 @@ export default (props) => {
                   <div className="top-bar-left">
                     <ul className="menu">
                       <li><Link to="/capstone/">Search</Link></li>
-                      <li><Link to="/capstone/test">Comparisons</Link></li>
-                      <li><Link to="/capstone/search">Relationships</Link></li>
+                      <li><Link to="/capstone/comparisons">Comparisons</Link></li>
+                      <li><Link to="/capstone/relationships">Relationships</Link></li>
                     </ul>
                   </div>
             </div>

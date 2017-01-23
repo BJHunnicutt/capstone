@@ -7,7 +7,8 @@ import App from './App.js';
 // Pages
 import Scatter from './components/views/Scatter.jsx'
 import SearchPage from './components/containers/searchPage.jsx'
-
+import ComparisonsPage from './components/containers/comparisonsPage.jsx'
+import RelationshipsPage from './components/containers/relationshipsPage.jsx'
 
 // Nested Routes
 export default (
@@ -20,8 +21,8 @@ export default (
       </Route>
 
 
-      <Route path="capstone/search" component={SearchPage} />
-      <Route path="capstone/test" component={Scatter} />
+      <Route path="capstone/comparisons" component={ComparisonsPage} />
+      <Route path="capstone/relationships" component={RelationshipsPage} />
     </Route>
     {/* This catch-all route will match everything, it must be the last route specified in the child route array. */}
     <Route path="*" component={NoMatch}/>

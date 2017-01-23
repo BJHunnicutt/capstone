@@ -13,7 +13,7 @@ import store from '../../store';
 import { RECEIVE_SEARCH, REQUEST_SEARCH, FILTER_SEARCH, SELECT_SEARCH, GET_RESULTS, GET_DATA_SCATTER, GET_DATA_BAR, SEARCH_TOO_BROAD, FINALIZE_SEARCH, CLEAR_STATE } from '../../actions/actions'; //FAILED_SEARCH,
 import { normalize, schema } from 'normalizr';
 
-const maxItems = 1000;
+const maxItems = 5000;
 
 // The number of data points for the chart.
 const numDataPoints = 50;
@@ -47,7 +47,7 @@ class SearchPage extends React.Component {
     let query = this.globalSearch.refs.input.value; //
     this.globalSearch.refs.input.value = ''; // Clear the search input field when the search is activated
 
-    let cleanQuery = query.replace(/[^a-zA-Z\" ]/g, "");  //Remove everything except letters
+    let cleanQuery = query.replace(/[^a-zA-Z' ]/g, "");  //Remove everything except letters
     let validQuery = cleanQuery !== '';
 
     if (validQuery) { // Only perform the search if there is something other than symbols in the query

@@ -25,6 +25,7 @@ import React  from 'react';
 import Circle   from './circle';
 
 const renderCircles = (props) => {
+
   return (coords, index) => { //coords are being passed as props below in .map(renderCircles(props))
     const circleProps = {
       cx: props.xScale(coords[0]),

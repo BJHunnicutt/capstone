@@ -6,6 +6,10 @@
   font-weight: 300;
 }
 
+body {
+  /*background-color: #e6e6e6;*/
+}
+
 #search-table-wrapper {
   width: 100%;
   /*display: inline-block;*/
@@ -58,6 +62,12 @@ li {
 button.clear-history-btn {
   background-color: darkred;
 }
+
+/*button.redux-store {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}*/
 
 /*div.public_fixedDataTableCell_main:hover, div.public_fixedDataTableCell_cellContent:hover, div.public_fixedDataTableCell_wrap1:hover, div.public_fixedDataTableCell_wrap2:hover, div.public_fixedDataTableCell_wrap3:hover{
   background-color: red;

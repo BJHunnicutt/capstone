@@ -24,16 +24,16 @@ import {BarChart, Bar, XAxis, YAxis, Tooltip, Legend} from 'recharts'; //Cartesi
 //Width, height & padding
 
 const styles = {
-  width  : 500,
+  // width  : 500,
   height : 400,
   // Only works when you fully reload the page
-  // width : window.innerWidth / 2, // Testing out making the plot viewport responsive
-  // height : 0.6 * window.innerWidth / 2,
+  width : window.innerWidth / 2.2, // Testing out making the plot viewport responsive
+  height : 0.6 * window.innerWidth / 2,
   padding : 30,
   top: 25,
-  right: 50,
+  right: 0, // Add padding here to see the x label
   bottom: 0,
-  left: 0,
+  left: -35,
 };
 
 const randomNum = () => Math.floor(Math.random() * 100);

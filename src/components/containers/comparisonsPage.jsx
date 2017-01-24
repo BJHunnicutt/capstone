@@ -34,8 +34,9 @@ class ComparisonsPage extends React.Component {
 
   handleChange(e) {
     // console.log("pos: ", pos.target.value)
+
     this.setState({
-      year: e.target.value
+      year: parseInt(e.target.value, 10)
     });
   }
 
@@ -136,6 +137,7 @@ class ComparisonsPage extends React.Component {
         lineData[i].y = -0.001;
       } else {
         lineData[i].total = 0;
+        lineData[i].y = -0.001;
       }
     }
 
@@ -289,7 +291,7 @@ class ComparisonsPage extends React.Component {
           </div>
         </div>
 
-
+        {/* <h6>{this.store.year}</h6> */}
         <button className="button" onClick={this.toggleData.bind(this)}>Swap the year!</button>
       </g>
 

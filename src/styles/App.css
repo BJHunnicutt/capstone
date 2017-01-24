@@ -1,9 +1,22 @@
 @import url('https://fonts.googleapis.com/css?family=Work+Sans:100,200,300,400,500,600');   /* Thin, Extra-Light, Light*/
 @import url('https://fonts.googleapis.com/css?family=Raleway:200,300');
+@import url('https://fonts.googleapis.com/css?family=Exo:100,200|Megrim');
 
 #root {
   font-family: 'Raleway', sans-serif;
-  font-weight: 300;
+  /*font-family: 'Exo', sans-serif;*/
+  /*font-family: 'Work Sans', sans-serif;*/
+  font-weight: 200;
+}
+
+.f1 {
+  font-family: 'Raleway', sans-serif;
+}
+.f2 {
+  font-family: 'Exo', sans-serif;
+}
+.f3 {
+  font-family: 'Megrim', cursive;
 }
 
 body {
@@ -15,7 +28,7 @@ body {
   /*display: inline-block;*/
 }
 
-.App {
+/*.App {
   text-align: center;
 }
 
@@ -38,16 +51,60 @@ body {
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}*/
+
+/* -------------------------- HEADER -------------------------------- */
+.top-bar, .top-bar a {
+  background-color: rgb(50, 56, 61);
+  color: white;
 }
 
-#primary-header {
-  /*position: fixed;*/
+.top-bar li a {
+  background-color: rgb(50, 56, 61);
+  color: white;
+  font-size: 15pt;
+  line-height: 1;
+}
+
+.top-bar a:hover {
+  color: khaki;
+}
+
+ul.menu {
+  background-color: rgb(50, 56, 61);
+  text-align: right;
+}
+
+
+header hr {
+  margin: 4px;
+}
+
+header h3 {
+  padding-top: 5px;
+  color: white;
+  font-size: 25pt;
+  margin: 0;
+  line-height: 1;
+  /*font-family: 'Kumar One', cursive;*/
+  /*font-family: 'Bungee Shade', cursive;*/
+  /*font-family: 'Monoton', cursive;*/
+  font-family: 'Megrim', cursive;
+  /*font-family: 'Codystar', cursive;*/
+  /*-webkit-text-stroke: 1px rgb(129, 111, 66);*/
+}
+/* -------------------------- END HEADER -------------------------------- */
+
+
+/*header#primary-header {
+  background-color: cyan;
   width: 100%;
   z-index: 10000;
-}
+}*/
 
 #content {
   position: relative;
+  padding: 2%;
   /*top: 5vw;*/
 }
 

@@ -17,7 +17,7 @@ export default class ComparisonChart extends React.Component {
     // ];
 
     // console.log("props:", props);
-    // console.log("this.props:", this.props);
+    // console.log("this.props:", this.props.lineData);
 
     let publishedRadiusScale = (this.props.pieData[this.props.year].status[0].trials / (this.props.maxPieSize+1)) * 155;
     let unpublishedRadiusScale = (this.props.pieData[this.props.year].status[1].trials / (this.props.maxPieSize+1)) * 155;
@@ -154,7 +154,7 @@ export default class ComparisonChart extends React.Component {
             />
           </VictoryStack>
 
-          <VictoryAxis
+          {/* <VictoryAxis
             tickValues={this.props.allYears}
           />
           <VictoryAxis dependentAxis
@@ -163,7 +163,8 @@ export default class ComparisonChart extends React.Component {
             orientation="left"
             standalone={false}
             style={{}}
-          />
+          /> */}
+
           {/* <VictoryLine
             style={{
               data: {stroke: "gray", strokeWidth: 2}
@@ -190,7 +191,7 @@ export default class ComparisonChart extends React.Component {
             ]}
           /> */}
           <VictoryVoronoiTooltip
-            flyoutComponent={<CustomFlyout/>}
+            // flyoutComponent={<CustomFlyout/>}
             labels={(d) => `Cumulative Trials \n published: ${d.published} \n unpublished: ${d.unpublished} \n ongoing: ${d.ongoing} \ntotal: ${d.total}`}
             // data={[
             //   {year: 2012, y: -0.001, published: 1, unpublished: 1, total: 2},
@@ -199,6 +200,7 @@ export default class ComparisonChart extends React.Component {
             // ]}
             data={this.props.lineData}
             x="year"
+            y={(datum) => datum.y}
           />
         </VictoryChart>
       </div>

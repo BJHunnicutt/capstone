@@ -370,7 +370,7 @@ class SearchPage extends React.Component {
         <div className="row">
           <div className="large-12 columns search-wrapper">
             <div className="row">
-              <div className="large-5 columns search-wrapper">
+              <div className="large-5 medium-5 small-12 columns search-wrapper">
 
                   {/* SEARCH */}
                   <label>Search by Treatment or Condition</label>
@@ -384,7 +384,7 @@ class SearchPage extends React.Component {
                   <label>Filter Search Results</label>
                   <input type="text" onChange={this.filter.bind(this)} />
               </div>
-              <div className="large-4 end columns" >
+              <div className="large-5 medium-5 small-12 end columns" >
                   <RecentSearches {...this.props} clearSearches={this.clearHistory.bind(this)} />
               </div>
             </div>

@@ -9,6 +9,7 @@ import Scatter from './components/views/Scatter.jsx'
 import SearchPage from './components/containers/searchPage.jsx'
 import ComparisonsPage from './components/containers/comparisonsPage.jsx'
 import RelationshipsPage from './components/containers/relationshipsPage.jsx'
+import Homepage from './components/views/homepage.jsx'
 
 // Nested Routes
 export default (
@@ -16,7 +17,11 @@ export default (
   <Router history={browserHistory} >
     {/* <IndexRoute component={App} /> */}
     <Route component={App}>
-      <Route path="capstone" component={SearchPage}>
+      <Route path="capstone" component={Homepage}>
+        <IndexRoute component={SearchPage} />
+      </Route>
+
+      <Route path="capstone/search" component={SearchPage}>
         <IndexRoute component={Scatter} />
       </Route>
 

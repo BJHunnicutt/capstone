@@ -20,7 +20,7 @@ class App extends React.Component {
 
         {/* Render the header */}
         <Header />
-
+        
         {/* Render the plot */}
         <div className='row' id="content" >
           {this.props.children}

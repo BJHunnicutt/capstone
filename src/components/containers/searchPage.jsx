@@ -11,7 +11,7 @@ import _ from 'lodash'
 // Adding in redux
 import { connect } from 'react-redux';
 import store from '../../store';
-import { RECEIVE_SEARCH, REQUEST_SEARCH, FILTER_SEARCH, SELECT_SEARCH, GET_RESULTS, GET_DATA_SCATTER, GET_DATA_BAR, SEARCH_TOO_BROAD, FINALIZE_SEARCH, CLEAR_STATE } from '../../actions/actions'; //FAILED_SEARCH,
+import { RECEIVE_SEARCH, REQUEST_SEARCH, FILTER_SEARCH, SELECT_SEARCH, GET_RESULTS, GET_DATA_SCATTER, GET_DATA_BAR, SEARCH_TOO_BROAD, FINALIZE_SEARCH, CLEAR_STATE, GET_CUMULATIVE_DATA } from '../../actions/actions'; //FAILED_SEARCH,
 import { normalize, schema } from 'normalizr';
 
 const maxItems = 5000;
@@ -126,11 +126,16 @@ class SearchPage extends React.Component {
       ids: ids,
       trials: trials
     });
-    this.summarizeSearch();
+    this.summarizeSearch(); // This dispatches GET_DATA_BAR
 
-
-    console.log(cumulativeSummary(query));
-    // Should call the cummulative summary action here.
+    // Get a cumulative summary of the data (it is similar to summarizeSearch() except each year = that year plus all previous years)
+    let cumulativeData = cumulativeSummary(query);
+    store.dispatch({
+      type: GET_CUMULATIVE_DATA,
+      query: query,
+      cumulativeSummary: cumulativeData,
+    });
+    // console.log(cumulativeSummary(query));
 
     return null
   }

@@ -6,8 +6,9 @@ import {VictoryPie, VictoryScatter, VictoryArea, VictoryAxis, VictoryTooltip, Vi
 
 
 export default class ComparisonChart extends React.Component {
-
-
+  componentDidMount() {
+    // console.log("this.props:", this.props);
+  }
 
 	render () {
     // const sampleData = [
@@ -18,152 +19,188 @@ export default class ComparisonChart extends React.Component {
     // console.log("props:", props);
     // console.log("this.props:", this.props);
 
+    let publishedRadiusScale = (this.props.pieData[this.props.year].status[0].trials / (this.props.maxPieSize+1)) * 155;
+    let unpublishedRadiusScale = (this.props.pieData[this.props.year].status[1].trials / (this.props.maxPieSize+1)) * 155;
+    let ongoingRadiusScale = (this.props.pieData[this.props.year].status[2].trials / (this.props.maxPieSize+1)) * 155;
+    // console.log("scale ", this.props.year, publishedRadiusScale, unpublishedRadiusScale, ongoingRadiusScale);
+
+
   	return (
-        <div className="comparison-panel large-3 medium-3 small-12 end columns">
-          <svg viewBox="0 0 400 400" >
-            <VictoryLabel x={0} y={15}
-              style={{
-                fontSize: 16}}
-              text={"Dinosaurs"}
-            />
-            <VictoryLabel x={300} y={15}
-              style={{
-                fontSize: 40,
-                fontWeight: 400}}
-              text={this.props.year}
-            />
-            <VictoryPie
-              // standalone={false}
-              data={[
-                {month: "September", profit: 35000, loss: 2000},
-                {month: "October", profit: 42000, loss: 8000},
-                {month: "November", profit: 55000, loss: 5000}
-              ]}
-              x="month"
-              y={(datum) => datum.profit - datum.loss}
-              startAngle={0} endAngle={120}
-              label={false}
-              // labelComponent={<VictoryTooltip/>}
-              style={{ labels: { fontSize: 18, fill: "white"}}}
-              padding={{top: (1*this.props.radius), bottom: 1*this.props.radius}} // More scaling = smaller pie
-              // cornerRadius={50}
-            />
-            <VictoryPie
-              // standalone={false}
-              width={400} height={400}
-              data={[
-                {x: "A", y: 33},
-                {x: "B", y: 33},
-                {x: "C", y: 33}
-              ]}
-              colorScale={"cool"}
-              innerRadius={20} labelRadius={140-this.props.radius}
-              startAngle={120} endAngle={240}
-              padding={{top: 1*this.props.radius, bottom: 1*this.props.radius}} // More scaling = smaller pie
-              style={{ labels: { fontSize: 20, fill: "white"}}}
-            />
-            <VictoryPie
-              standalone={true}
-              title={"Word"}
-              width={400} height={400}
-              data={[
-                {x: "A", y: 33},
-                {x: "B", y: 33},
-                {x: "C", y: 33}
-              ]}
-              colorScale={"warm"}
-              innerRadius={20} labelRadius={100}
-              startAngle={240} endAngle={360}
-              style={{ labels: { fontSize: 20, fill: "white"}}}
-            />
-            <VictoryLabel
-              textAnchor="middle" verticalAnchor="middle"
-              x={200} y={200}
-              style={{fontSize: 30}}
-              text="Label"
-            />
-          </svg>
+      <div className="comparison-panel large-3 medium-3 small-12 end columns">
+        <h6>{this.props.query}</h6>
+        <svg viewBox="0 0 400 400" >
+          <VictoryLabel x={0} y={15}
+            style={{
+              fontSize: 16}}
+            text={"Dinosaurs"}
+          />
+          <VictoryLabel x={300} y={0}
+            style={{
+              fontSize: 40,
+              fontWeight: 400}}
+            text={this.props.year}
+          />
+          <VictoryPie
+            name={"Published"}
+            // standalone={false}
+            // data={[
+            //   {gender: "female", fraction_trials: 33, fraction_size: 33}, //this.props.pieData[this.props.year].gender = [{},{},{}]
+            //   {gender: "both", fraction_trials: 33, fraction_size: 33},
+            //   {gender: "male", fraction_trials: 33, fraction_size: 33}
+            // ]}
+            data={this.props.pieData[this.props.year].published}
+            x="gender"
+            y={(datum) => datum.trials}
+            startAngle={0} endAngle={120}
+            label={false}
+            // labelComponent={<VictoryTooltip/>}
+            style={{ labels: { fontSize: 18, fill: "white"}}}
+            padding={{top: 175-publishedRadiusScale, bottom: 175-publishedRadiusScale}} // More scaling = smaller pie
+            // cornerRadius={50}
+          />
+          <VictoryPie
+            name={"Unpublished"}
+            // standalone={false}
+            width={400} height={400}
+            // data={[
+            //   {gender: "female", fraction_trials: 33, fraction_size: 33}, //this.props.pieData[this.props.year] = [{},{},{}]
+            //   {gender: "both", fraction_trials: 33, fraction_size: 33},
+            //   {gender: "male", fraction_trials: 33, fraction_size: 33}
+            // ]}
+            data={this.props.pieData[this.props.year].unpublished}
+            x="gender"
+            y={(datum) => datum.trials}
+            colorScale={"cool"}
+            // innerRadius={20}
+            labelRadius={unpublishedRadiusScale}
+            startAngle={120} endAngle={240}
+            padding={{top: 175-unpublishedRadiusScale, bottom: 175-unpublishedRadiusScale}} // More scaling = smaller pie
+            style={{ labels: { fontSize: 20, fill: "white"}}}
+          />
+          <VictoryPie
+            name={"Ongoing"}
+            standalone={true}
+            title={"Word"}
+            width={400} height={400}
+            // data={[
+            //   {gender: "female", fraction_trials: 133, fraction_size: 33}, //this.props.pieData[this.props.year] = [{},{},{}]
+            //   {gender: "both", fraction_trials: 33, fraction_size: 33},
+            //   {gender: "male", fraction_trials: 23, fraction_size: 23},
+            //   {gender: "na", fraction_trials: 110, fraction_size: 10}
+            // ]}
+            data={this.props.pieData[this.props.year].ongoing}
+            colorScale={"warm"}
+            x="gender"
+            y={(datum) => datum.trials}
+            // innerRadius={20}
+            labelRadius={100}
+            startAngle={240} endAngle={360}
+            padding={{top: 175-ongoingRadiusScale, bottom: 175-ongoingRadiusScale}} // More scaling = smaller pie
 
-           <VictoryChart 
-             domain={{x: [2012, 2014], y: [0, 6]}}>
-            <VictoryStack
-              className={"test"}
-              colorScale={["gold", "orange", "tomato"]}
-            >
-              <VictoryArea name="published"
-                data={[
-                  {title: "one", year: 2012, profit: 1},
-                  {title: "two", year: 2013, profit: 2},
-                  {title: "three", year: 2014, profit: 2}
-                ]}
-                x="year"
-                y={(datum) => datum.profit}
-              />
-              <VictoryArea name="unpublished"
+            style={{ labels: { fontSize: 20, fill: "white"}}}
+          />
+          <VictoryLabel
+            textAnchor="middle" verticalAnchor="middle"
+            x={200} y={200}
+            style={{fontSize: 30}}
+            text="Label"
+          />
+        </svg>
 
-                data={[
-                  {title: "one", year: 2012, profit: 1},
-                  {title: "two",year: 2013, profit: 1},
-                  {title: "three", year: 2014, profit: 2}
-                ]}
-                style={{
-                  // data: {fill: "tomato", opacity: 0.7},
-                  // labels: {fontSize: 12},
-                  // parent: {border: "1px solid #ccc"}
-                }}
-                x="year"
-                y={(datum) => datum.profit}
-              />
-            </VictoryStack>
+         <VictoryChart
+           domain={{x: [this.props.startYear, this.props.endYear], y: [0, this.props.maxHeight]}}>
+          <VictoryStack
+            colorScale={["gold", "orange", "tomato"]}
+          >
+            <VictoryArea name="published"
+              // data={[
+              //   {title: "one", year: 2012, published: 1},
+              //   {title: "two", year: 2013, published: 2},
+              //   {title: "three", year: 2014, published: 2}
+              // ]}
+              data={this.props.lineData}
 
-            <VictoryAxis
-              tickValues={[2012, 2013, 2014]}
-            />
-            <VictoryAxis dependentAxis
-              // domain={[0, 60000]}
-              // offsetX={50}
-              orientation="left"
-              standalone={false}
-              style={{}}
-            />
-            {/* <VictoryLine
-              style={{
-                data: {stroke: "gray", strokeWidth: 2}
-              }}
-              data={[
-                {x: this.props.year, y: -1},
-                {x: this.props.year, y: 5} // MAKE THIS THE YEAR INDICATOR
-              ]}
-            /> */}
-
-            <VictoryScatter // !!!!! Current Year indicator !
-              data={[
-                {x: this.props.year, y: -1.2},
-              ]}
-              symbol={"triangleUp"}
-              size={10}
-            />
-
-            {/* <VictoryLine //Fake linechart to make a tooltip work
-              data={[
-                {x: 2012, y: 0},
-                {x: 2013, y: 4},
-                {x: 2014, y: 2}
-              ]}
-            /> */}
-            <VictoryVoronoiTooltip
-              flyoutComponent={<CustomFlyout/>}
-              labels={(d) => `Cumulative Trials \n published: ${d.published} \n unpublished: ${d.unpublised} \n total: ${d.total}`}
-              data={[
-                {year: 2012, y: -0.001, published: 1, unpublised: 1, total: 2},
-                {year: 2013, y: -0.001, published: 2, unpublised: 1, total: 3},
-                {year: 2014, y: -0.001, published: 2, unpublised: 2, total: 4}
-              ]}
               x="year"
+              y={(datum) => datum.published}
             />
+            <VictoryArea name="unpublished"
 
-          </VictoryChart>
+              // data={[
+              //   {title: "one", year: 2012, unpublished: 1},
+              //   {title: "two",year: 2013, unpublished: 1},
+              //   {title: "three", year: 2014, unpublished: 2}
+              // ]}
+              data={this.props.lineData}
 
+              style={{
+                // data: {fill: "tomato", opacity: 0.7},
+                // labels: {fontSize: 12},
+                // parent: {border: "1px solid #ccc"}
+              }}
+              x="year"
+              y={(datum) => datum.unpublished}
+            />
+            <VictoryArea name="ongoing"
+
+              // data={[
+              //   {title: "one", year: 2012, ongoing: 1},
+              //   {title: "two",year: 2013, ongoing: 1},
+              //   {title: "three", year: 2014, ongoing: 2}
+              // ]}
+              data={this.props.lineData}
+
+              x="year"
+              y={(datum) => datum.ongoing}
+            />
+          </VictoryStack>
+
+          <VictoryAxis
+            tickValues={this.props.allYears}
+          />
+          <VictoryAxis dependentAxis
+            // domain={[0, 60000]}
+            // offsetX={50}
+            orientation="left"
+            standalone={false}
+            style={{}}
+          />
+          {/* <VictoryLine
+            style={{
+              data: {stroke: "gray", strokeWidth: 2}
+            }}
+            data={[
+              {x: this.props.year, y: -1},
+              {x: this.props.year, y: 5} // MAKE THIS THE YEAR INDICATOR
+            ]}
+          /> */}
+
+          <VictoryScatter // !!!!! Current Year indicator !
+            data={[
+              {x: this.props.year, y: -20},
+            ]}
+            symbol={"triangleUp"}
+            size={10}
+          />
+
+          {/* <VictoryLine //Fake linechart to make a tooltip work
+            data={[
+              {x: 2012, y: 0},
+              {x: 2013, y: 4},
+              {x: 2014, y: 2}
+            ]}
+          /> */}
+          <VictoryVoronoiTooltip
+            flyoutComponent={<CustomFlyout/>}
+            labels={(d) => `Cumulative Trials \n published: ${d.published} \n unpublished: ${d.unpublished} \n ongoing: ${d.ongoing} \ntotal: ${d.total}`}
+            // data={[
+            //   {year: 2012, y: -0.001, published: 1, unpublished: 1, total: 2},
+            //   {year: 2013, y: -0.001, published: 2, unpublished: 1, total: 3},
+            //   {year: 2014, y: -0.001, published: 2, unpublished: 2, total: 4}
+            // ]}
+            data={this.props.lineData}
+            x="year"
+          />
+        </VictoryChart>
       </div>
     );
   }

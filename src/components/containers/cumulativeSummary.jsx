@@ -24,11 +24,13 @@ const summarizeCumulativeSearch = () => {
   if (store.getState().searchState.selectedQuery.totalItems !== 0) {
     // Immutably copy the search results
     var newObject = $.extend(true, {}, store.getState().searchState.currentResults.items);
+    var query = store.getState().searchState.selectedQuery.query;
     // var newObject = store.getState().searchState.currentResults.items;  // DOOOON'T do it
     // newObject.test = 'banana';
 
     let baseYear = {
       year: 0,
+      query: query,
       published: {
         total: {trials: 0, participants: 0, unreported: 0},
         female: {trials: 0, participants: 0, unreported: 0},
@@ -216,7 +218,7 @@ const summarizeCumulativeSearch = () => {
 
     // console.log("sumData: ", sumData);
 
-    let summaryData = []
+    let summaryData = {}
       // {year: 2006, unpublished: 0, published: 0, male: 0, female: 0, both: 0, na: 0},
     // ]
     let currentYear = new Date();
@@ -237,19 +239,19 @@ const summarizeCumulativeSearch = () => {
         for (let pub of pubs) {
           for (let gen of gens) {
             for (let rep of reps) {
-              i === 0 ? yearData[pub][gen][rep] = sumData[year][pub][gen][rep] : yearData[pub][gen][rep] = sumData[year][pub][gen][rep] + summaryData[i-1][pub][gen][rep];
+              i === 0 ? yearData[pub][gen][rep] = sumData[year][pub][gen][rep] : yearData[pub][gen][rep] = sumData[year][pub][gen][rep] + summaryData[year-1][pub][gen][rep];
             }
           }
         }
 
       } else {
-        yearData = $.extend(true, {}, summaryData[i-1])
+        yearData = $.extend(true, {}, summaryData[year-1])
       }
       yearData.year = year;
 
 
 
-      summaryData[i] = $.extend(true, {}, yearData);
+      summaryData[year] = $.extend(true, {}, yearData);
     }
     // console.log("summaryData: ", summaryData);
 
@@ -257,7 +259,7 @@ const summarizeCumulativeSearch = () => {
     //   type: GET_DATA_BAR,
     //   data: summaryData,
     // });
-    return {sumData, summaryData};
+    return summaryData;
 
   } // closing if there was a search query
 } // closing summarizeSearch()

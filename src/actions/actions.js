@@ -8,7 +8,7 @@ export const GET_DATA_SCATTER = 'GET_DATA_SCATTER';
 export const GET_DATA_BAR = 'GET_DATA_BAR';
 export const SEARCH_DATA_GENDER = 'SEARCH_DATA_GENDER';
 export const SHOW_PUBLICATIONS = 'SHOW_PUBLICATIONS'
-
+export const GET_CUMULATIVE_DATA = 'GET_CUMULATIVE_DATA'
 // export function getDataScatter(data) {
 //   return {
 //     type: GET_DATA_SCATTER,

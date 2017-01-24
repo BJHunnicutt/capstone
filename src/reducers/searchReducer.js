@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import {
-  SELECT_SEARCH, FINALIZE_SEARCH, REQUEST_SEARCH, RECEIVE_SEARCH, FILTER_SEARCH, GET_RESULTS, SEARCH_TOO_BROAD, CLEAR_STATE
+  SELECT_SEARCH, FINALIZE_SEARCH, REQUEST_SEARCH, RECEIVE_SEARCH, FILTER_SEARCH, GET_RESULTS, SEARCH_TOO_BROAD, CLEAR_STATE, GET_CUMULATIVE_DATA
 } from '../actions/actions'
 
 import merge from 'lodash/merge'
@@ -109,7 +109,8 @@ function mergeItems(state, action) {
 // Save API response and response state
 function items(state = {
   isFetching: false,
-  items: []
+  items: [],
+  cumulativeSummary: {}
 }, action) {
 
   switch (action.type) {
@@ -128,6 +129,10 @@ function items(state = {
         totalItems: action.totalItems,
         lastUpdated: action.receivedAt
       })
+    case GET_CUMULATIVE_DATA:
+      return Object.assign({}, state, {
+        cumulativeSummary: action.cumulativeSummary
+      })
     default:
       return state
   }
@@ -138,6 +143,7 @@ function searchHistory(state = {}, action) {
   switch (action.type) {
     case FINALIZE_SEARCH:
     case RECEIVE_SEARCH:
+    case GET_CUMULATIVE_DATA:
     case REQUEST_SEARCH:
       return Object.assign({}, state, {
         [action.query]: items(state[action.query], action)

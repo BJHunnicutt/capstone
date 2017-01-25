@@ -18,7 +18,7 @@ class ComparisonsPage extends React.Component {
     // console.log(props);
     super(); // "To get our context"
     let queries = Object.keys(store.getState().searchState.searchHistory);
-    let year = 2013;
+    let year = 2016;
     this.state = {
       queries: queries,
       data: this.getData(queries, year),
@@ -42,23 +42,40 @@ class ComparisonsPage extends React.Component {
 
   renderCharts() {
 
+    // let dataArray = [];
+    // let queries = Object.keys(store.getState().searchState.searchHistory);
+    // let year = 2013;
+    // queries.map((query, i) => {
+    //   // console.log('query: ',i );
+    //   dataArray[i] = store.getState().searchState.searchHistory[query].cumulativeSummary[year]
+    // });
+
+
     return (props) => {
-      // console.log('renderCharts num: ', props);
+      // console.log('renderCharts props: ', props);
 
       // console.log('years: ',this.state.allYears);
-      let lineData = this.getLineData(props.query);
-      let pieData = this.getPieData(props.query);
+      let lineData = this.getLineData(props);
+      let pieData = this.getPieData(props);
 
       // console.log('return num: ', props);
       const chartProps = {
-        key: props.query
+        key: props
       };
-      return <ComparisonChart {...chartProps} {...props} {...this.state} lineData={lineData} pieData={pieData}/>
+
+
+      if ( (store.getState().searchState.searchHistory[props].isFetching === false) && (store.getState().searchState.currentResults.resultsReceived === true) && (Object.keys(store.getState().searchState.searchHistory[props].cumulativeSummary).length > 0)) {
+        return <ComparisonChart {...chartProps} query={props} {...this.state} lineData={lineData} pieData={pieData}/>
+      } else {
+        return null
+      }
+      // return <ComparisonChart {...chartProps} {...props} {...this.state} lineData={lineData} pieData={pieData}/>
     }
   }
 
   getData(queries, year) {
     let dataArray = [];
+
     queries.map((query, i) => {
       // console.log('query: ',i );
       dataArray[i] = store.getState().searchState.searchHistory[query].cumulativeSummary[year]
@@ -165,7 +182,7 @@ class ComparisonsPage extends React.Component {
       let maxSize = 0;
 
       let gens = ['female', 'both', 'male', 'na'];
-      let pubs = ['published', 'unpublished', 'ongoing'];
+      let pubs = ['ongoing', 'published', 'unpublished'];
       pieData[year].status = []
       let p = 0;
       for (let pub of pubs) {
@@ -254,42 +271,35 @@ class ComparisonsPage extends React.Component {
 
 	render (props) {
 
-
   	return (
       <g>
-        <div className='comparisons-wrapper row'>
+        {/* Need to change props to this.props in renderCharts if I use this */}
+        {/* <div className='comparisons-wrapper row'>
           <div className="large-12 medium-12 small-12 columns">
 
             { this.state.data.map(this.renderCharts(props)) }
 
           </div>
+        </div> */}
+        <div className="year-slider-wrapper">
+          <h4 className="f2">{this.state.year}</h4>
+          <input
+            id="typeinp"
+            type="range"
+            min={this.state.startYear} max={this.state.endYear-1}
+            value={this.state.year}
+            onChange={this.handleChange.bind(this)}
+            step="1"/>
         </div>
 
-        <div className='slider-wrapper row'>
-          <div className="comparison-panel large-3 medium-3 small-8 end columns">
-            <input
-              id="typeinp"
-              type="range"
-              min={this.state.startYear} max={this.state.endYear-1}
-              value={this.state.year}
-              onChange={this.handleChange.bind(this)}
-              step="1"/>
+        <div className='comparisons-wrapper row'>
+          <div className="large-12 medium-12 small-12 columns">
+            {/* need to loop through something in the redux store get it to auto render while on the page (the version above renders if you click to a new page and does year changes fine) */}
+            { Object.keys(store.getState().searchState.searchHistory).map(this.renderCharts(props)) }
 
-            {/* <ReactBootstrapSlider
-              value={this.state.year}
-              // change={this.handleChange.bind(this)}
-              slideStop={this.handleChange.bind(this)}
-              step={1}
-              ticks = {this.state.allYears}
-              tooltip={'hide'}
-              max={this.state.endYear}
-              min={this.state.startYear}
-              // orientation="horizontal"
-              reverse={true}
-              disabled="enabled"
-            /> */}
           </div>
         </div>
+
 
         {/* <h6>{this.store.year}</h6> */}
         <button className="button" onClick={this.toggleData.bind(this)}>Swap the year!</button>

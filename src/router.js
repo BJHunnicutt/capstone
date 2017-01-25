@@ -25,8 +25,13 @@ export default (
         <IndexRoute component={Scatter} />
       </Route>
 
+      <Route path="capstone/comparisons" component={SearchPage}>
+        <IndexRoute component={ComparisonsPage} />
+      </Route>
 
-      <Route path="capstone/comparisons" component={ComparisonsPage} />
+
+      {/* <Route path="capstone/comparisons" component={ComparisonsPage} /> */}
+
       <Route path="capstone/relationships" component={RelationshipsPage} />
     </Route>
     {/* This catch-all route will match everything, it must be the last route specified in the child route array. */}

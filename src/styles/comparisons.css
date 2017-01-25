@@ -13,4 +13,18 @@ div.comparison-panel {
 div.comparisons-wrapper {
   /*background-color: cyan;*/
   padding: 0% 5% 0% 5%;
+  clear: both;
+}
+
+.year-slider-wrapper {
+  text-align: right;
+  float: right;
+  margin: 0;
+}
+
+.year-slider-wrapper h4 {
+  font-size: 35px;
+  line-height: 1;
+  margin: 0;
+
 }

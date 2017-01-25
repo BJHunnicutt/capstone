@@ -63,7 +63,7 @@ class SearchPage extends React.Component {
     } else {
       console.log("Invalid Search, please enter a treatment or condition");
 
-      // REDIRECT to the Search page IF they click while in the homepage (AFTER everything is complete to avoid an error)
+      // REDIRECT to the Search page IF they searched while in the homepage (AFTER everything is complete to avoid an error)
       if (this.props.location.pathname === '/capstone/') {
         browserHistory.push('/capstone/search/');
       }
@@ -329,7 +329,7 @@ class SearchPage extends React.Component {
         data: summaryData,
       });
 
-      // REDIRECT to the Search page if they click while on the homepage (AFTER everything is complete to avoid an error)
+      // REDIRECT to the Search page if they searched while on the homepage (AFTER everything is complete to avoid an error)
       if (this.props.location.pathname === '/capstone/') {
         browserHistory.push('/capstone/search/');
         console.log(this.props.location.pathname)

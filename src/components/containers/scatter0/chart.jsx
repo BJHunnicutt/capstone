@@ -127,7 +127,7 @@ class Chart extends React.Component{
       searchTitle_bold = (received/total*100).toPrecision(2) + "% complete"
     // TITLE: after a search is complete
     } else {
-      searchTitle = total + " Trials related to: ";
+      searchTitle = total + " Trials found related to: ";
       searchTitle_bold = store.getState().searchState.selectedQuery.query;
     }
     // console.log(tooltipVisibility);

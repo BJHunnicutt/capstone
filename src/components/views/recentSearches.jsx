@@ -136,6 +136,13 @@ const renderHistory = (props, updateDisplay) => {
   };
 };
 
+const getTitle = (props) => {
+  if (props.location.pathname === '/capstone/search/') {
+    return "Recent Searches (click to view)";
+  } else {
+    return "Recent Searches";
+  }
+}
 
 
 export default (props) => {
@@ -164,6 +171,8 @@ export default (props) => {
         browserHistory.push('/capstone/search/');
         console.log(props.location.pathname)
       }
+
+
     }
 
     let searched = (store.getState().searchState.selectedQuery.query !== '')
@@ -172,7 +181,7 @@ export default (props) => {
       <div className='search-results'>
         {searched ? (
           <div>
-            <label>Recent Searches (click to view)</label>
+            <label> {getTitle(props)} </label>
             <g className="recent-searches-group">
               { Object.keys(props.searchHistory).map(renderHistory(props, updateDisplay)) }
             </g>

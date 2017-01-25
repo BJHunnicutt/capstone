@@ -10,6 +10,10 @@ export default class ComparisonChart extends React.Component {
     // console.log("this.props:", this.props);
   }
 
+  capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
 	render () {
     // const sampleData = [
     // {year: 2006, unpublished: 0, published: 0, ongoing: 0, male: 0, female: 0, both: 0, na: 0},
@@ -17,7 +21,7 @@ export default class ComparisonChart extends React.Component {
     // ];
 
     // console.log("props:", props);
-    // console.log("this.props:", this.props.lineData);
+    // console.log("this.props:", this.props);
 
     let publishedRadiusScale = (this.props.pieData[this.props.year].status[0].trials / (this.props.maxPieSize+1)) * 155;
     let unpublishedRadiusScale = (this.props.pieData[this.props.year].status[1].trials / (this.props.maxPieSize+1)) * 155;
@@ -27,19 +31,22 @@ export default class ComparisonChart extends React.Component {
 
   	return (
       <div className="comparison-panel large-3 medium-3 small-12 end columns">
-        <h6>{this.props.query}</h6>
+        {/* <h6>{this.capitalizeFirstLetter(this.props.query)}</h6> */}
         <svg viewBox="0 0 400 400" >
-          <VictoryLabel x={0} y={15}
+          <VictoryLabel x={0} y={20}
             style={{
-              fontSize: 16}}
-            text={"Dinosaurs"}
+              fontFamily: "'Raleway', sans-serif",
+              fontSize: 30}}
+            text={this.capitalizeFirstLetter(this.props.query)}
           />
-          <VictoryLabel x={300} y={0}
+          <VictoryLabel x={300} y={20}
             style={{
+              fontFamily: "'Exo', sans-serif",
               fontSize: 40,
               fontWeight: 400}}
             text={this.props.year}
           />
+
           <VictoryPie
             name={"Published"}
             // standalone={false}
@@ -53,6 +60,7 @@ export default class ComparisonChart extends React.Component {
             y={(datum) => datum.trials}
             startAngle={0} endAngle={120}
             label={false}
+            colorScale="green"
             // labelComponent={<VictoryTooltip/>}
             style={{ labels: { fontSize: 18, fill: "white"}}}
             padding={{top: 175-publishedRadiusScale, bottom: 175-publishedRadiusScale}} // More scaling = smaller pie
@@ -70,7 +78,7 @@ export default class ComparisonChart extends React.Component {
             data={this.props.pieData[this.props.year].unpublished}
             x="gender"
             y={(datum) => datum.trials}
-            colorScale={"cool"}
+            colorScale={"warm"}
             // innerRadius={20}
             labelRadius={unpublishedRadiusScale}
             startAngle={120} endAngle={240}
@@ -89,7 +97,7 @@ export default class ComparisonChart extends React.Component {
             //   {gender: "na", fraction_trials: 110, fraction_size: 10}
             // ]}
             data={this.props.pieData[this.props.year].ongoing}
-            colorScale={"warm"}
+            colorScale={"grayscale"}
             x="gender"
             y={(datum) => datum.trials}
             // innerRadius={20}
@@ -110,28 +118,24 @@ export default class ComparisonChart extends React.Component {
          <VictoryChart
            domain={{x: [this.props.startYear, this.props.endYear], y: [0, this.props.maxHeight]}}>
           <VictoryStack
-            colorScale={["gold", "orange", "tomato"]}
+            colorScale={["lightgray", "yellowgreen", "tomato"]}
           >
-            <VictoryArea name="published"
-              // data={[
-              //   {title: "one", year: 2012, published: 1},
-              //   {title: "two", year: 2013, published: 2},
-              //   {title: "three", year: 2014, published: 2}
-              // ]}
-              data={this.props.lineData}
 
+            <VictoryArea name="ongoing"
+              // data={[ {title: "one", year: 2012, ongoing: 1}, {title: "two",year: 2013, ongoing: 1}, ... ]}
+              data={this.props.lineData}
+              x="year"
+              y={(datum) => datum.ongoing}
+            />
+            <VictoryArea name="published"
+              // data={[ {title: "one", year: 2012, ongoing: 1}, {title: "two",year: 2013, ongoing: 1}, ... ]}
+              data={this.props.lineData}
               x="year"
               y={(datum) => datum.published}
             />
             <VictoryArea name="unpublished"
-
-              // data={[
-              //   {title: "one", year: 2012, unpublished: 1},
-              //   {title: "two",year: 2013, unpublished: 1},
-              //   {title: "three", year: 2014, unpublished: 2}
-              // ]}
+              // data={[ {title: "one", year: 2012, ongoing: 1}, {title: "two",year: 2013, ongoing: 1}, ... ]}
               data={this.props.lineData}
-
               style={{
                 // data: {fill: "tomato", opacity: 0.7},
                 // labels: {fontSize: 12},
@@ -140,40 +144,7 @@ export default class ComparisonChart extends React.Component {
               x="year"
               y={(datum) => datum.unpublished}
             />
-            <VictoryArea name="ongoing"
-
-              // data={[
-              //   {title: "one", year: 2012, ongoing: 1},
-              //   {title: "two",year: 2013, ongoing: 1},
-              //   {title: "three", year: 2014, ongoing: 2}
-              // ]}
-              data={this.props.lineData}
-
-              x="year"
-              y={(datum) => datum.ongoing}
-            />
           </VictoryStack>
-
-          {/* <VictoryAxis
-            tickValues={this.props.allYears}
-          />
-          <VictoryAxis dependentAxis
-            // domain={[0, 60000]}
-            // offsetX={50}
-            orientation="left"
-            standalone={false}
-            style={{}}
-          /> */}
-
-          {/* <VictoryLine
-            style={{
-              data: {stroke: "gray", strokeWidth: 2}
-            }}
-            data={[
-              {x: this.props.year, y: -1},
-              {x: this.props.year, y: 5} // MAKE THIS THE YEAR INDICATOR
-            ]}
-          /> */}
 
           <VictoryScatter // !!!!! Current Year indicator !
             data={[
@@ -183,21 +154,10 @@ export default class ComparisonChart extends React.Component {
             size={10}
           />
 
-          {/* <VictoryLine //Fake linechart to make a tooltip work
-            data={[
-              {x: 2012, y: 0},
-              {x: 2013, y: 4},
-              {x: 2014, y: 2}
-            ]}
-          /> */}
           <VictoryVoronoiTooltip
             // flyoutComponent={<CustomFlyout/>}
             labels={(d) => `Cumulative Trials \n published: ${d.published} \n unpublished: ${d.unpublished} \n ongoing: ${d.ongoing} \ntotal: ${d.total}`}
-            // data={[
-            //   {year: 2012, y: -0.001, published: 1, unpublished: 1, total: 2},
-            //   {year: 2013, y: -0.001, published: 2, unpublished: 1, total: 3},
-            //   {year: 2014, y: -0.001, published: 2, unpublished: 2, total: 4}
-            // ]}
+            // data={[ {year: 2012, y: -0.001, published: 1, unpublished: 1, total: 2}, ... ]}
             data={this.props.lineData}
             x="year"
             y={(datum) => datum.y}

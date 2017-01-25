@@ -11,7 +11,7 @@ export default (props) => {
             <div className="small-3 medium-3 large-3 columns">
               {/* Column 2 */}
                   <div className="top-bar-left">
-                    <h3><Link to="/capstone/">TrialsViewer</Link></h3>
+                    <h3><Link to="/">TrialsViewer</Link></h3>
                   </div>
             </div>
             <div className="small-8 medium-8 large-8 columns">
@@ -19,19 +19,19 @@ export default (props) => {
                   <div className="top-bar-right">
                     <ul className="menu">
                       <li>
-                        <Link to="/capstone/search">
+                        <Link to="/search">
                           <i className="material-icons"> search </i>
                           Search
                         </Link>
                       </li>
                       <li>
-                        <Link to="/capstone/comparisons">
+                        <Link to="/comparisons">
                           <i className="material-icons"> multiline_chart </i>
                           Compare Trials
                         </Link>
                       </li>
                       <li>
-                        <Link to="/capstone/relationships">
+                        <Link to="/relationships">
                           <i className="material-icons"> linear_scale </i>
                           Explore Relationships
                         </Link>

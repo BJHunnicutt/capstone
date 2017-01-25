@@ -17,22 +17,22 @@ export default (
   <Router history={browserHistory} >
     {/* <IndexRoute component={App} /> */}
     <Route component={App}>
-      <Route path="/capstone/" component={Homepage}>
+      <Route path="/" component={Homepage}>
         <IndexRoute component={SearchPage} />
       </Route>
 
-      <Route path="/capstone/search" component={SearchPage}>
+      <Route path="/search" component={SearchPage}>
         <IndexRoute component={Scatter} />
       </Route>
 
-      <Route path="/capstone/comparisons" component={SearchPage}>
+      <Route path="/comparisons" component={SearchPage}>
         <IndexRoute component={ComparisonsPage} />
       </Route>
 
 
       {/* <Route path="capstone/comparisons" component={ComparisonsPage} /> */}
 
-      <Route path="/capstone/relationships" component={RelationshipsPage} />
+      <Route path="/relationships" component={RelationshipsPage} />
     </Route>
     {/* This catch-all route will match everything, it must be the last route specified in the child route array. */}
     <Route path="*" component={NoMatch}/>

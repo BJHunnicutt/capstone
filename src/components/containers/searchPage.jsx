@@ -8,7 +8,6 @@ import cumulativeSummary from './cumulativeSummary.jsx'
 import $ from 'jquery'
 import _ from 'lodash'
 import {browserHistory} from 'react-router';
-import icon from '../../../public/search-gray.svg';
 
 // Adding in redux
 import { connect } from 'react-redux';

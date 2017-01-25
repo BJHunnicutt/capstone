@@ -227,6 +227,7 @@ button.button.clear-history-btn {
 
 button.button.clear-history-btn:hover {
   background-color: darkred;
+  color: white;
 }
 
 button.button.clear-history-btn:focus {
@@ -247,6 +248,10 @@ button.button.btn.gender-btn {
 
 .chart-wrapper {
   clear: both;
+}
+
+.results-chart h3 {
+
 }
 
 

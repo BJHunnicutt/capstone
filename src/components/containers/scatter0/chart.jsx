@@ -84,7 +84,7 @@ class Chart extends React.Component{
     this.state = {
       genderVisible: false,
       publicationVisible: true,
-      buttonText: 'View Gender Distribution'
+      buttonText: 'View Gender Distribution',
     };
     this.onClickSwap = this.onClickSwap.bind(this)
   }
@@ -111,24 +111,38 @@ class Chart extends React.Component{
 
   render(props) {
 
-    // // Only display the tooltip if theres data
-    // let tooltipVisibility = false;
-    // if (store.getState().searchState.selectedQuery.query !== "") {
-    //   tooltipVisibility = 'visible'
-    // }
+    // Determine a title for
+    let received = 0, total = 0;
+    if (store.getState().searchState.selectedQuery.query !== "") {
+      received = store.getState().searchState.searchHistory[store.getState().searchState.selectedQuery.query].items.length;
+      total = store.getState().searchState.searchHistory[store.getState().searchState.selectedQuery.query].totalItems;
+    }
+    let searchTitle = '', searchTitle_bold = '';
+    // TITLE: Before the first search
+    if (store.getState().searchState.selectedQuery.query === "") {
+      searchTitle = "Search for a Condition or Treatment to view results"
+    // TITLE: during a search
+    } else if (store.getState().searchState.searchHistory[store.getState().searchState.selectedQuery.query].isFetching === true) {
+      searchTitle = "Fetching " + store.getState().searchState.searchHistory[store.getState().searchState.selectedQuery.query].totalItems + " Trials ... ";
+      searchTitle_bold = (received/total*100).toPrecision(2) + "% complete"
+    // TITLE: after a search is complete
+    } else {
+      searchTitle = total + " Trials related to: ";
+      searchTitle_bold = store.getState().searchState.selectedQuery.query;
+    }
     // console.log(tooltipVisibility);
     // console.log(store.getState().searchState.selectedQuery.query);
 
     return (
       <div className='results-chart'>
-        {/* <h1> ... </h1> */}
+        <h3 className="f2"> {searchTitle} <strong>{searchTitle_bold}</strong></h3>
 
         <div className="row search-result" >
 
           <div className="large-6 medium-6 small-12 columns">
               {/* Corresponding Results Table */}
               <div id="search-table-wrapper">
-                <label>Individual Searches Results</label>
+                <label>Individual Search Results</label>
                 <SearchTable {...this.props}/>
               </div>
           </div>

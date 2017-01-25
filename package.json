@@ -38,5 +38,5 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
-  "homepage": "https://bjhunnicutt.github.io/capstone/"
+  "homepage": "trialsviewer.com"
 }

@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css?family=Work+Sans:100,200,300,400,500,600');   /* Thin, Extra-Light, Light*/
 @import url('https://fonts.googleapis.com/css?family=Raleway:200,300');
 @import url('https://fonts.googleapis.com/css?family=Exo:100,200|Megrim');
+@import url('https://fonts.googleapis.com/css?family=Material+Icons');
+  /*https://material.io/icons/#ic_search*/
 
 #root {
   font-family: 'Raleway', sans-serif;
@@ -18,6 +20,88 @@
 .f3 {
   font-family: 'Megrim', cursive;
 }
+
+
+/* Icons and Search button as an Icon*/
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+.icon-btn {
+  vertical-align: top;
+  display: inline-block;
+  line-height: 1;
+  top: -1px;
+  height: 39px;
+  padding: 7px;
+  margin: 0;
+  background-color: white;
+  color: lightgray;
+  box-shadow: 0 1px 1px 0 #C7C7C7 inset;
+	background: none repeat scroll 0 0 #E9E9E9;
+}
+
+.icon-btn:hover {
+  background-color: lightgray;
+  color: gray;
+}
+
+.search-wrapper {
+  display: inline-block;
+}
+
+.search-wrapper input {
+  width: 85%;
+  display: inline-block;
+}
+/* Getting rid of annoying blue glow on button pushes*/
+button.button:focus {
+  color: black;
+  background-color: rgb(227, 218, 172);
+  outline-color: rgba(227, 218, 172, 0.3);
+}
+button.button:active {
+  color: black;
+  background-color: rgb(227, 218, 172);
+  outline-color: rgba(214, 200, 125, 0.3);
+}
+/* And making the buttons prettier */
+button.button {
+  background-color: white;
+  color: rgb(50, 56, 61);
+  /*color: lightgray;*/
+  box-shadow: 0 1px 1px 0 #C7C7C7 inset;
+	background: none repeat scroll 0 0 #E9E9E9;
+}
+button.button:hover {
+  background-color: rgb(214, 200, 125);
+  color: black;
+}
+
+
+/* ------------------------ END FONTS & ICON BUTTON ---------------------------- */
+
 
 body {
   /*background-color: #e6e6e6;*/
@@ -54,6 +138,9 @@ body {
 }*/
 
 /* -------------------------- HEADER -------------------------------- */
+.top-bar {
+  border-bottom: 25px solid lightgray;
+}
 .top-bar, .top-bar a {
   background-color: rgb(50, 56, 61);
   color: white;
@@ -81,6 +168,7 @@ header hr {
 }
 
 header h3 {
+  word-wrap: break-word;
   padding-top: 5px;
   color: white;
   font-size: 25pt;
@@ -93,7 +181,73 @@ header h3 {
   /*font-family: 'Codystar', cursive;*/
   /*-webkit-text-stroke: 1px rgb(129, 111, 66);*/
 }
-/* -------------------------- END HEADER -------------------------------- */
+/* ------------------------------ END HEADER ---------------------------------- */
+
+
+
+
+/* ---------------------------- RECENT SEARCHES ------------------------------ */
+
+button.button.search-history-btn {
+  background-color: white;
+  color: rgb(50, 56, 61);
+  /*color: lightgray;*/
+  box-shadow: 0 1px 1px 0 #C7C7C7 inset;
+	background: none repeat scroll 0 0 #E9E9E9;
+}
+
+button.button.search-history-btn:hover {
+  background-color: rgb(214, 200, 125);
+  color: black;
+}
+
+button.button.search-history-btn:focus {
+  color: black;
+  background-color: rgb(227, 218, 172);
+  outline-color: rgba(227, 218, 172, 0.3);
+}
+
+button.button.search-history-btn:active {
+  color: black;
+  background-color: rgb(227, 218, 172);
+  outline-color: rgba(214, 200, 125, 0.3);
+}
+
+.recent-searches-group {
+  margin-right: 15px;
+}
+
+button.button.clear-history-btn {
+  background-color: darkred;
+  color: rgb(50, 56, 61);
+  /*color: lightgray;*/
+  box-shadow: 0 1px 1px 0 #C7C7C7 inset;
+	background: none repeat scroll 0 0 #E9E9E9;
+}
+
+button.button.clear-history-btn:hover {
+  background-color: darkred;
+}
+
+button.button.clear-history-btn:focus {
+  color: black;
+  background-color: rgb(139, 0, 0);
+  outline-color: rgba(139, 0, 0, 0.3);
+}
+
+/* ------------------------- END RECENT SEARCHES ----------------------------- */
+
+
+
+button.button.btn.gender-btn {
+  /*background-color: red;*/
+  margin: 0;
+  float: right;
+}
+
+.chart-wrapper {
+  clear: both;
+}
 
 
 /*header#primary-header {
@@ -108,17 +262,10 @@ header h3 {
   /*top: 5vw;*/
 }
 
-.search-wrapper {
-
-}
-
 li {
   list-style: none;
 }
 
-button.clear-history-btn {
-  background-color: darkred;
-}
 
 .comparison-panel svg {
   overflow: visible;

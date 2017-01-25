@@ -14,13 +14,30 @@ export default (props) => {
                     <h3><Link to="/capstone/">TrialsViewer</Link></h3>
                   </div>
             </div>
-            <div className="small-8 medium-6 large-6 columns">
+            <div className="small-8 medium-8 large-8 columns">
               {/* Column 1 */}
                   <div className="top-bar-right">
                     <ul className="menu">
-                      <li><Link to="/capstone/search">Search</Link></li>
-                      <li><Link to="/capstone/comparisons">Comparisons</Link></li>
-                      <li><Link to="/capstone/relationships">Relationships</Link></li>
+                      <li>
+                        <Link to="/capstone/search">
+                          <i className="material-icons"> search </i>
+                          Search
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/capstone/comparisons">
+                          <i className="material-icons"> multiline_chart </i>
+                          Compare Trials
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/capstone/relationships">
+                          <i className="material-icons"> linear_scale </i>
+                          Explore Relationships
+                        </Link>
+                      </li>
+                      {/* <li><Link to="/capstone/comparisons"><i className="material-icons">multiline_chart</i>Comparisons</Link></li>
+                      <li><Link to="/capstone/relationships"><i className="material-icons"><i class="material-icons">linear_scale</i></i>Relationships</Link></li> */}
                     </ul>
                   </div>
             </div>

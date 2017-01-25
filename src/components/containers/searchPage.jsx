@@ -2,11 +2,13 @@ import React from 'react';
 // import d3 from 'd3';
 // import '../../styles/App.css';
 import SearchInput from '../views/searchBar.jsx';
-import SearchPageView from '../views/searchPageView.jsx';
+// import SearchPageView from '../views/searchPageView.jsx';
 import RecentSearches from '../views/recentSearches.jsx'
 import cumulativeSummary from './cumulativeSummary.jsx'
 import $ from 'jquery'
 import _ from 'lodash'
+import {browserHistory} from 'react-router';
+import icon from '../../../public/search-gray.svg';
 
 // Adding in redux
 import { connect } from 'react-redux';
@@ -44,6 +46,8 @@ class SearchPage extends React.Component {
   }
 
   update(event){
+
+
     // Clean up Query
     let query = this.globalSearch.refs.input.value; //
     this.globalSearch.refs.input.value = ''; // Clear the search input field when the search is activated
@@ -59,6 +63,11 @@ class SearchPage extends React.Component {
 
     } else {
       console.log("Invalid Search, please enter a treatment or condition");
+
+      // REDIRECT to the Search page IF they click while in the homepage (AFTER everything is complete to avoid an error)
+      if (this.props.location.pathname === '/capstone/') {
+        browserHistory.push('/capstone/search/');
+      }
     }
 
   }
@@ -101,13 +110,13 @@ class SearchPage extends React.Component {
       // If all items are received, dispatch an action to say so
       } else { // Stop if all items are received, and dispatch an action to say so
         this.finalizeSearchResults(query);
+
         return null;
       }
 
     } else { // Fetch the search (this happens on the first call)
       this.fetchSearch(page, query);
     }
-
 
   }
 
@@ -321,6 +330,12 @@ class SearchPage extends React.Component {
         data: summaryData,
       });
 
+      // REDIRECT to the Search page if they click while on the homepage (AFTER everything is complete to avoid an error)
+      if (this.props.location.pathname === '/capstone/') {
+        browserHistory.push('/capstone/search/');
+        console.log(this.props.location.pathname)
+      }
+
     } // closing if there was a search query
   } // closing summarizeSearch()
 
@@ -370,7 +385,7 @@ class SearchPage extends React.Component {
         <div className="row">
           <div className="large-12 columns search-wrapper">
             <div className="row">
-              <div className="large-5 medium-5 small-12 columns search-wrapper">
+              <div className="large-6 medium-6 small-12 columns search-wrapper">
 
                   {/* SEARCH */}
                   <label>Search by Treatment or Condition</label>
@@ -379,12 +394,12 @@ class SearchPage extends React.Component {
                     update={this.update.bind(this)} // update now, not on change
                   />
 
-
                   {/* FILTER SEARCH RESULTS */}
-                  <label>Filter Search Results</label>
-                  <input type="text" onChange={this.filter.bind(this)} />
+                  {/* <label>Filter Search Results</label>
+                  <input type="text" onChange={this.filter.bind(this)} /> */}
+
               </div>
-              <div className="large-5 medium-5 small-12 end columns" >
+              <div className="large-6 medium-6 small-12 end columns" >
                   <RecentSearches {...this.props} clearSearches={this.clearHistory.bind(this)} />
               </div>
             </div>
@@ -394,18 +409,17 @@ class SearchPage extends React.Component {
 
         <hr/>
 
-        <div className="row search-result" >
+        {/* <div className="row search-result" >
           <div className="large-6 medium-6 small-12 columns">
-              {/* Corresponding View Component */}
               <SearchPageView {...this.props} />
           </div>
-          <div className="large-6 medium-6 small-12 columns">
-              {/* Render the plot */}
-              <div className="nested-plot">
-                {this.props.children}
-              </div>
+          <div className="large-6 medium-6 small-12 columns"> */}
+
+          <div className="nested-plot">
+            {this.props.children}
           </div>
-        </div>
+          {/* </div>
+        </div> */}
 
 
         {/* DISPLAY FILTERED SEARCH RESULTS -- DEV ONLY */}

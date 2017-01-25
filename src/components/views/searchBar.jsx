@@ -12,7 +12,13 @@ export default class SearchInput extends React.Component {
     return (
       <span>
         <input ref="input" type="text" placeholder='search' onKeyPress={this.handleKeyPress.bind(this)}/>
-        <button className='button' onClick={this.props.update}>search</button>
+        {/* <button className='button' onClick={this.props.update}>search</button> */}
+
+        <button className="button icon-btn" ><i className="material-icons" onClick={this.props.update}>search</i></button>
+        {/* <a className="icon-img" href="https://github.com/BJHunnicutt">
+          <img src={icon} alt="search button" title="GitHub"/>
+        </a> */}
+
       </span>
     )
   }

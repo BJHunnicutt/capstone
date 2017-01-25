@@ -159,7 +159,7 @@ export default class SearchTable extends Component {
               </div>
               )}
           </div> */}
-
+        
         <Table
            className={css(styles.wrapperStyles)} // STYLING
            rowHeight={40}

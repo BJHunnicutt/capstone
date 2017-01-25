@@ -3,6 +3,7 @@ import store from '../../store';
 import $ from 'jquery'
 import _ from 'lodash'
 import { SELECT_SEARCH, GET_RESULTS, GET_DATA_BAR } from '../../actions/actions'; //FAILED_SEARCH,
+import {browserHistory} from 'react-router';
 
 
 // NOTE: summarizeSearch() is a helper method, main class at the bottom (just moved this up here to get rid of a linter warning)
@@ -125,12 +126,12 @@ const renderHistory = (props, updateDisplay) => {
     // let validSearch = cleanSearch !== '';
 
     return (
-      <li {...historyProps}>
+      // <li {...historyProps}>
           <button className="button search-history-btn" {...historyProps} onClick={() => updateDisplay(query)}>
             {query}
           </button>
 
-      </li>
+      // </li>
     )
   };
 };
@@ -157,6 +158,12 @@ export default (props) => {
         trials: trials
       });
       summarizeSearch();
+
+      // Redirect to the Search page if they click on the homepage
+      if (props.location.pathname === '/capstone/') {
+        browserHistory.push('/capstone/search/');
+        console.log(props.location.pathname)
+      }
     }
 
     let searched = (store.getState().searchState.selectedQuery.query !== '')
@@ -165,8 +172,10 @@ export default (props) => {
       <div className='search-results'>
         {searched ? (
           <div>
-            <label>Recent Searches</label>
-            <ul>{ Object.keys(props.searchHistory).map(renderHistory(props, updateDisplay)) }</ul>
+            <label>Recent Searches (click to view)</label>
+            <g className="recent-searches-group">
+              { Object.keys(props.searchHistory).map(renderHistory(props, updateDisplay)) }
+            </g>
             <button className='button clear-history-btn' onClick={props.clearSearches}>clear search history</button>
           </div>
         ) : (null)}

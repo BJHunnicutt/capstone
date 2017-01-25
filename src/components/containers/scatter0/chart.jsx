@@ -4,6 +4,8 @@ import React from 'react';
 // import BarPlot from './bar-plot';
 // Adding in redux
 import { connect } from 'react-redux';
+import SearchTable from '../../views/searchTable.js';
+
 import store from '../../../store';   // Magic. FOR DISPATCH: You can just use this.props. instead of store. because of the <Provider> in src/index.js
 import { GET_DATA_BAR } from '../../../actions/actions';
 // import $ from 'jquery'
@@ -27,8 +29,8 @@ const styles = {
   // width  : 500,
   height : 400,
   // Only works when you fully reload the page
-  width : window.innerWidth / 2.2, // Testing out making the plot viewport responsive
-  height : 0.6 * window.innerWidth / 2,
+  width : (window.innerWidth >=  640 ? window.innerWidth/ 2.2 : window.innerWidth/1.1), // Testing out making the plot viewport responsive
+  // height : 0.6 * window.innerWidth / 2,
   padding : 30,
   top: 25,
   right: 0, // Add padding here to see the x label
@@ -107,7 +109,7 @@ class Chart extends React.Component{
 
 
 
-  render() {
+  render(props) {
 
     // // Only display the tooltip if theres data
     // let tooltipVisibility = false;
@@ -121,27 +123,47 @@ class Chart extends React.Component{
       <div className='results-chart'>
         {/* <h1> ... </h1> */}
 
-         {this.state.genderVisible ? (
-           <GenderBarChart {...styles} />
-         ) : (null)}
-         {this.state.publicationVisible ? (
-           <PublicationBarChart {...styles} />
-         ) : (null)}
+        <div className="row search-result" >
+
+          <div className="large-6 medium-6 small-12 columns">
+              {/* Corresponding Results Table */}
+              <div id="search-table-wrapper">
+                <label>Individual Searches Results</label>
+                <SearchTable {...this.props}/>
+              </div>
+          </div>
+
+          <div className="large-6 medium-6 small-12 columns">
+              <div className="controls">
+                <button className="button btn gender-btn" onClick={this.onClickSwap}>
+                  {this.state.buttonText}
+                </button>
+              </div>
+             {this.state.genderVisible ? (
+               <div className="chart-wrapper">
+                 <label>Targeted Gender of Searched Trials</label>
+                 <GenderBarChart {...styles} />
+               </div>
+             ) : (null)}
+             {this.state.publicationVisible ? (
+             <div className="chart-wrapper">
+               <label>Publication Status of Searched Trials</label>
+               <PublicationBarChart {...styles} />
+             </div>
+             ) : (null)}
+
+            {/* {publicationChart ? (
+              <PublicationBarChart {...styles} {...this.props} />
+            ) : (
+              <GenderBarChart {...styles} {...this.props}/>
+            )} */}
 
 
+          </div>
 
-        {/* {publicationChart ? (
-          <PublicationBarChart {...styles} {...this.props} />
-        ) : (
-          <GenderBarChart {...styles} {...this.props}/>
-        )} */}
-
-        <div className="controls">
-          <button className="button btn gender-btn" onClick={this.onClickSwap}>
-            {this.state.buttonText}
-          </button>
         </div>
-      </div>
+
+    </div>
     )
   }
 };
@@ -197,11 +219,14 @@ class GenderBarChart extends React.Component {
 //   }
 // }
 
-
 const mapStateToProps = function(store) {
   return {
     data: store.scatterState.dataBar,
-    showPublications: store.scatterState.showPublications
+    showPublications: store.scatterState.showPublications,
+    query: store.searchState.selectedQuery.query,
+    items: store.searchState.searchedTrials.items,
+    searchHistory: store.searchState.searchHistory,
+    totalItems: store.searchState.currentResults,
   };
 }
 

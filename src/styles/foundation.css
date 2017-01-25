@@ -1,8 +1,12 @@
 
 /* Made primary colors cariables for easy changing */
 :root {
+  --main-light-color: rgb(171, 154, 111);
   --main-bg-color: rgb(129, 111, 66);
+  --main-bg-color2: rgb(129, 111, 66);
   --main-hover-color: rgb(87, 74, 41);
+  --main-focus-color: rgb(129, 111, 66);
+  --glow-hover-color: rbga(255, 215, 0, 0.5);
 }
 
 
@@ -1274,7 +1278,7 @@ a {
   line-height: inherit;
   cursor: pointer; }
   a:hover, a:focus {
-    color: rgb(87, 74, 41); }
+    color: var(--main-hover-color); }
   a img {
     border: 0; }
 
@@ -1486,7 +1490,7 @@ kbd {
   .button:hover, .button:focus {
     /*-------------------------------------------------------------------*/
     /*background-color: rgb(87, 74, 41); changed this to replace all instances of this color  */
-    background-color: rgb(87, 74, 41);
+    background-color: var(--main-hover-color);
     /*-------------------------------------------------------------------*/
     color: #fefefe; }
   .button.tiny {
@@ -1504,7 +1508,7 @@ kbd {
     background-color: var(--main-bg-color);
     color: #fefefe; }
     .button.primary:hover, .button.primary:focus {
-      background-color: #147cc0;
+      background-color: var(--main-focus-color);
       color: #fefefe; }
   .button.secondary {
     background-color: #777;
@@ -1536,14 +1540,14 @@ kbd {
     .button.hollow, .button.hollow:hover, .button.hollow:focus {
       background-color: transparent; }
     .button.hollow:hover, .button.hollow:focus {
-      border-color: #0c4d78;
-      color: #0c4d78; }
+      border-color: var(--main-hover-color);
+      color: var(--main-hover-color); }
     .button.hollow.primary {
       border: 1px solid var(--main-bg-color);
       color: var(--main-bg-color); }
       .button.hollow.primary:hover, .button.hollow.primary:focus {
-        border-color: #0c4d78;
-        color: #0c4d78; }
+        border-color: var(--main-hover-color);
+        color: var(--main-hover-color); }
     .button.hollow.secondary {
       border: 1px solid #777;
       color: #777; }
@@ -1987,7 +1991,7 @@ select {
     background-color: var(--main-bg-color);
     color: #fefefe; }
     .button-group.primary .button:hover, .button-group.primary .button:focus {
-      background-color: #147cc0;
+      background-color: var(--main-focus-color);
       color: #fefefe; }
   .button-group.secondary .button {
     background-color: #777;
@@ -2045,7 +2049,7 @@ select {
   .callout > :last-child {
     margin-bottom: 0; }
   .callout.primary {
-    background-color: #def0fc; }
+    background-color: var(--main-light-color); }
   .callout.secondary {
     background-color: #ebebeb; }
   .callout.success {
@@ -3004,7 +3008,7 @@ html.is-reveal-open body {
   [data-whatinput='mouse'] .slider-handle {
     outline: 0; }
   .slider-handle:hover {
-    background-color: rgb(87, 74, 41); }
+    background-color: var(--main-hover-color); }
   .slider-handle.is-dragging {
     transition: all 0s linear; }
 
@@ -3248,7 +3252,7 @@ table.hover tr:nth-of-type(even):hover {
   .tabs.primary > li > a {
     color: #fefefe; }
     .tabs.primary > li > a:hover, .tabs.primary > li > a:focus {
-      background: #1893e4; }
+      background: var(--main-bg-color2); }
 
 .tabs-title {
   float: left; }
@@ -3288,7 +3292,7 @@ table.hover tr:nth-of-type(even):hover {
   border-radius: 0;
   margin-bottom: 1rem; }
   .thumbnail:hover, .thumbnail:focus {
-    box-shadow: 0 0 6px 1px rgba(33, 153, 232, 0.5); }
+    box-shadow: 0 0 6px 1px var(--glow-hover-color); }
 
 .title-bar {
   background: #0a0a0a;

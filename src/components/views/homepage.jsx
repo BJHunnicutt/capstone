@@ -33,6 +33,14 @@ class Homepage extends React.Component {
           present, should be reported in full. Read more on AllTrials.net and sign the
           petition.
         </p>
+
+        <div className="row search-result" >
+          <div className="large-10 large-centered columns">
+            {/* SearchBar - i.e. containers/searchPage.jsx */}
+            {this.props.children}
+          </div>
+        </div>
+
       </div>
     );
   }

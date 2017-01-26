@@ -1,5 +1,5 @@
 import React from 'react';
-import {VictoryPie, VictoryTheme, VictoryScatter, VictoryArea, VictoryAxis, VictoryTooltip, VictoryVoronoiTooltip, VictoryLine, VictoryLabel, VictoryBar, VictoryGroup, VictoryStack, VictoryChart} from 'victory';
+import {VictoryPie, VictoryScatter, VictoryArea, VictoryAxis, VictoryTooltip, VictoryVoronoiTooltip, VictoryLabel, VictoryStack, VictoryChart} from 'victory'; //VictoryTheme, VictoryBar, VictoryGroup, VictoryLine,
 // import {PieChart, Pie, Legend} from 'recharts';
 // import {ComposedChart, Line, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
 // import Chart from '../containers/scatter/chart.jsx';
@@ -43,7 +43,7 @@ export default class ComparisonChart extends React.Component {
     //  **This number reference needs to change if the order of status to change
     let publishedRadiusScale = (this.props.pieData[this.props.year].status[1].trials / (this.props.maxPieSize+1));
     let unpublishedRadiusScale = (this.props.pieData[this.props.year].status[2].trials / (this.props.maxPieSize+1));
-    let ongoingRadiusScale = (this.props.pieData[this.props.year].status[0].trials / (this.props.maxPieSize+1));
+    // let ongoingRadiusScale = (this.props.pieData[this.props.year].status[0].trials / (this.props.maxPieSize+1));
     // console.log("scale ", this.props.year, publishedRadiusScale, unpublishedRadiusScale, ongoingRadiusScale);
 
     let totalTrials = this.props.pieData[this.props.year].status[0].trials + this.props.pieData[this.props.year].status[1].trials + this.props.pieData[this.props.year].status[2].trials;
@@ -51,25 +51,25 @@ export default class ComparisonChart extends React.Component {
         // If under 1% ...
         internal_publishedPercent < 1 ? internal_publishedPercent = "<1" : internal_publishedPercent = internal_publishedPercent.toPrecision(2)
         // If 100% ...
-        internal_publishedPercent > 99.9 ? internal_publishedPercent = ">99" : null
+        if (internal_publishedPercent > 99.9) internal_publishedPercent = ">99";
         // If looking before there are trials ...
-        internal_publishedPercent === 'NaN' ? internal_publishedPercent = 0 : null
+        if (internal_publishedPercent === 'NaN') internal_publishedPercent = 0;
 
     let internal_unpublishedPercent = (this.props.pieData[this.props.year].status[2].trials / totalTrials)*100;
         // If under 1% ...
         internal_unpublishedPercent < 1 ? internal_unpublishedPercent = "<1" : internal_unpublishedPercent = internal_unpublishedPercent.toPrecision(2)
         // If 100% ...
-        internal_unpublishedPercent > 99.1 ? internal_unpublishedPercent = ">99" : null
+        if (internal_unpublishedPercent > 99.1) internal_unpublishedPercent = ">99";
         // If looking before there are trials ...
-        internal_unpublishedPercent === 'NaN' ? internal_unpublishedPercent = 0 : null
+        if (internal_unpublishedPercent === 'NaN') internal_unpublishedPercent = 0;
 
     let internal_ongoingPercent = (this.props.pieData[this.props.year].status[0].trials / totalTrials)*100;
         // If under 1% ...
         internal_ongoingPercent < 1 ? internal_ongoingPercent = "<1" : internal_ongoingPercent = (internal_ongoingPercent).toPrecision(2)
         // If 100% ...
-        internal_ongoingPercent > 99.1 ? internal_ongoingPercent = ">99" : null
+        if (internal_ongoingPercent > 99.1) internal_ongoingPercent = ">99";
         // If looking before there are trials ...
-        internal_ongoingPercent === 'NaN' ? internal_ongoingPercent = 0 : null
+        if (internal_ongoingPercent === 'NaN') internal_ongoingPercent = 0;
 
     // console.log("scale pub ", this.props.pieData[this.props.year].status[1].trials, " / ", totalTrials, " = ", internal_publishedRadiusScale);
     // console.log("scale unpub ", this.props.pieData[this.props.year].status[2].trials, " / ", totalTrials, " = ", internal_unpublishedRadiusScale);
@@ -242,11 +242,11 @@ export default class ComparisonChart extends React.Component {
             <VictoryArea name="unpublished"
               // data={[ {title: "one", year: 2012, ongoing: 1}, {title: "two",year: 2013, ongoing: 1}, ... ]}
               data={this.props.lineData}
-              style={{
+              // style={{
                 // data: {fill: "tomato", opacity: 0.7},
                 // labels: {fontSize: 12},
                 // parent: {border: "1px solid #ccc"}
-              }}
+              // }}
               x="year"
               y={(datum) => datum.unpublished}
               label={"unpublished"}
@@ -296,50 +296,16 @@ export default class ComparisonChart extends React.Component {
   }
 }
 
-class CustomFlyout extends React.Component {
-  render() {
-    const {x, y, orientation} = this.props;
-    const newY = orientation === "top" ? y - 25 : y + 25;
-    return (
-      <g>
-        <circle cx={x} cy={newY} r="20" stroke="tomato" fill="none"/>
-        <circle cx={x} cy={newY} r="25" stroke="orange" fill="none"/>
-        <circle cx={x} cy={newY} r="30" stroke="gold" fill="none"/>
-      </g>
-    );
-  }
-}
-
-{/* <VictoryStack
-  className={"test"}
-  colorScale={["gold", "orange", "tomato"]}
-  events={[{
-    childName: ["published", "unpublished"],
-    target: "data",
-    eventHandlers: {
-      onMouseOver: () => {
-        return [
-          {
-            childName: ["published"],
-            target: "data",
-            mutation: (props) => {
-              const fill = props.style.fill;
-              return fill === "red" ? null : {style: {fill: "red", opacity: 0.7}};
-            }
-          }
-        ];
-      },
-      onMouseOut: () => {
-        return [
-          {
-            childName: ["published"],
-            target: "data",
-            mutation: (props) => {
-              const fill = props.style.fill;
-              return fill === "red" ? null : {style: {fill: "red", opacity: 0.7}};
-            }
-          }
-        ];
-      }
-    }
-  }]} */}
+// class CustomFlyout extends React.Component {
+//   render() {
+//     const {x, y, orientation} = this.props;
+//     const newY = orientation === "top" ? y - 25 : y + 25;
+//     return (
+//       <g>
+//         <circle cx={x} cy={newY} r="20" stroke="tomato" fill="none"/>
+//         <circle cx={x} cy={newY} r="25" stroke="orange" fill="none"/>
+//         <circle cx={x} cy={newY} r="30" stroke="gold" fill="none"/>
+//       </g>
+//     );
+//   }
+// }

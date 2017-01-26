@@ -1,16 +1,7 @@
-import React from 'react';
+// import React from 'react';
 import store from '../../store.js'
 import $ from 'jquery'
 import _ from 'lodash'
-
-
-export default function (query) {
-
-  let sdata = summarizeCumulativeSearch();
-
-  return sdata;
-
-}
 
 
 
@@ -61,6 +52,7 @@ const summarizeCumulativeSearch = () => {
     for (let trial in newObject) {
       if (true) {
         let year = getYear(newObject[trial].registration_date);
+        var gen = '';
         // First time accessing this year?
         if (!sumData[year]) {
           sumData[year] = $.extend(true, {}, baseYear);
@@ -74,9 +66,9 @@ const summarizeCumulativeSearch = () => {
             sumData[year][pub].total.participants += newObject[trial].target_sample_size;
             // Target gender?
             if (newObject[trial].gender === undefined) {
-              var gen = 'na';
+              gen = 'na';
             } else {
-              var gen = newObject[trial].gender;
+              gen = newObject[trial].gender;
             }
             sumData[year][pub][gen].trials += 1;
             sumData[year][pub][gen].participants += newObject[trial].target_sample_size;
@@ -85,9 +77,9 @@ const summarizeCumulativeSearch = () => {
             sumData[year][pub].total.unreported += 1;
             // Target gender?
             if (newObject[trial].gender === undefined) {
-              var gen = 'na';
+              gen = 'na';
             } else {
-              var gen = newObject[trial].gender;
+              gen = newObject[trial].gender;
             }
             sumData[year][pub][gen].trials += 1;
             sumData[year][pub][gen].unreported += 1;
@@ -103,9 +95,9 @@ const summarizeCumulativeSearch = () => {
             sumData[year][pub].total.participants += newObject[trial].target_sample_size;
             // Target gender?
             if (newObject[trial].gender === undefined) {
-              var gen = 'na';
+              gen = 'na';
             } else {
-              var gen = newObject[trial].gender;
+              gen = newObject[trial].gender;
             }
             sumData[year][pub][gen].trials += 1;
             sumData[year][pub][gen].participants += newObject[trial].target_sample_size;
@@ -114,9 +106,9 @@ const summarizeCumulativeSearch = () => {
             sumData[year][pub].total.unreported += 1;
             // Target gender?
             if (newObject[trial].gender === undefined) {
-              var gen = 'na';
+              gen = 'na';
             } else {
-              var gen = newObject[trial].gender;
+              gen = newObject[trial].gender;
             }
             sumData[year][pub][gen].trials += 1;
             sumData[year][pub][gen].unreported += 1;
@@ -132,9 +124,9 @@ const summarizeCumulativeSearch = () => {
             sumData[year][pub].total.participants += newObject[trial].target_sample_size
             // Target gender?
             if (newObject[trial].gender === undefined) {
-              var gen = 'na';
+              gen = 'na';
             } else {
-              var gen = newObject[trial].gender;
+              gen = newObject[trial].gender;
             }
             sumData[year][pub][gen].trials += 1;
             sumData[year][pub][gen].participants += newObject[trial].target_sample_size;
@@ -143,9 +135,9 @@ const summarizeCumulativeSearch = () => {
             sumData[year][pub].total.unreported += 1;
             // Target gender?
             if (newObject[trial].gender === undefined) {
-              var gen = 'na';
+              gen = 'na';
             } else {
-              var gen = newObject[trial].gender;
+              gen = newObject[trial].gender;
             }
             sumData[year][pub][gen].trials += 1;
             sumData[year][pub][gen].unreported += 1;
@@ -161,9 +153,9 @@ const summarizeCumulativeSearch = () => {
             sumData[year][pub].total.participants += newObject[trial].target_sample_size
             // Target gender?
             if (newObject[trial].gender === undefined) {
-              var gen = 'na';
+              gen = 'na';
             } else {
-              var gen = newObject[trial].gender;
+              gen = newObject[trial].gender;
             }
             sumData[year][pub][gen].trials += 1;
             sumData[year][pub][gen].participants += newObject[trial].target_sample_size;
@@ -172,9 +164,9 @@ const summarizeCumulativeSearch = () => {
             sumData[year][pub].total.unreported += 1;
             // Target gender?
             if (newObject[trial].gender === undefined) {
-              var gen = 'na';
+              gen = 'na';
             } else {
-              var gen = newObject[trial].gender;
+              gen = newObject[trial].gender;
             }
             sumData[year][pub][gen].trials += 1;
             sumData[year][pub][gen].unreported += 1;
@@ -190,9 +182,9 @@ const summarizeCumulativeSearch = () => {
             sumData[year][pub].total.participants += newObject[trial].target_sample_size
             // Target gender?
             if (newObject[trial].gender === undefined) {
-              var gen = 'na';
+              gen = 'na';
             } else {
-              var gen = newObject[trial].gender;
+              gen = newObject[trial].gender;
             }
             sumData[year][pub][gen].trials += 1;
             sumData[year][pub][gen].participants += newObject[trial].target_sample_size;
@@ -201,9 +193,9 @@ const summarizeCumulativeSearch = () => {
             sumData[year][pub].total.unreported += 1;
             // Target gender?
             if (newObject[trial].gender === undefined) {
-              var gen = 'na';
+              gen = 'na';
             } else {
-              var gen = newObject[trial].gender;
+              gen = newObject[trial].gender;
             }
             sumData[year][pub][gen].trials += 1;
             sumData[year][pub][gen].unreported += 1;
@@ -263,3 +255,10 @@ const summarizeCumulativeSearch = () => {
 
   } // closing if there was a search query
 } // closing summarizeSearch()
+
+
+
+export default function (query) {
+  let sdata = summarizeCumulativeSearch();
+  return sdata;
+}

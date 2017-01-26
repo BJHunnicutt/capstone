@@ -1,3 +1,13 @@
+
+
+
+
+
+
+
+
+
+/* --------------------------Default styling--------------------------------- */
 .node {
     stroke: #fff;
     stroke-width: 1.5px;
@@ -15,8 +25,6 @@ h3 {
     font-family: "Helvetica";
 }
 
-
-
 .node text {
 stroke:#333;
 cursos:pointer;
@@ -31,3 +39,5 @@ fill:#555;
 .force-diagram {
   border: 1px solid black;
 }
+
+/* ------------------------------End default------------------------------------ */

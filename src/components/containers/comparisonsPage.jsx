@@ -7,11 +7,11 @@ import ComparisonChart from '../views/comparisonChart.jsx'
 import $ from 'jquery'
 import _ from 'lodash'
 
-const randomNum = () => Math.floor(Math.random() * 100);
-const getYear = (years) => {
-  var rand = years[Math.floor(Math.random() * years.length)];
-  return rand;
-}
+// const randomNum = () => Math.floor(Math.random() * 100);
+// const getYear = (years) => {
+//   var rand = years[Math.floor(Math.random() * years.length)];
+//   return rand;
+// }
 
 class ComparisonsPage extends React.Component {
   constructor(props){
@@ -54,7 +54,6 @@ class ComparisonsPage extends React.Component {
       maxHeight: this.getHeight(queries),
       maxPieSize: this.getPieSize(queries)
     }
-    console.log("data accessed");
 
     return scale;
   }
@@ -119,6 +118,7 @@ class ComparisonsPage extends React.Component {
     queries.map((query, i) => {
       // console.log('query: ',i );
       dataArray[i] = store.getState().searchState.searchHistory[query].cumulativeSummary[year]
+      return dataArray;
     });
 
     // let dataArray = [
@@ -140,9 +140,8 @@ class ComparisonsPage extends React.Component {
       let summary = $.extend(true, {}, store.getState().searchState.searchHistory[query].cumulativeSummary);
       let allYears = Object.keys(summary);
       let first = Math.min(...allYears);
-      first < startYear ? startYear = first : startYear = startYear;
+      if (first < startYear) startYear = first;
     }
-
     return startYear
   }
 
@@ -152,7 +151,7 @@ class ComparisonsPage extends React.Component {
       let summary = $.extend(true, {}, store.getState().searchState.searchHistory[query].cumulativeSummary);
       let allYears = Object.keys(summary);
       let last = Math.max(...allYears);
-      last > endYear ? endYear = last : endYear = endYear;
+      if (last > endYear) endYear = last;
     }
     return endYear
   }
@@ -162,7 +161,7 @@ class ComparisonsPage extends React.Component {
     for (let query of queries) {
       let line = this.getLineData(query);
       let queryHeight = line[line.length-1].total;
-      queryHeight > maxHeight ? maxHeight = queryHeight : maxHeight = maxHeight;
+      if (queryHeight > maxHeight) maxHeight = queryHeight;
       // console.log('max', query, queryHeight);
     }
     return maxHeight;
@@ -240,8 +239,8 @@ class ComparisonsPage extends React.Component {
         // In case this is a year before there are trials for this query (since the domain is determined by the longest of the queries)
         if (summary[year]) {
           pieData[year].status[p] = {status: pub, trials: summary[year][pub].total.trials, size: summary[year][pub].total.trials}
-          summary[year][pub].total.trials > maxTrials ? (maxTrials = summary[year][pub].total.trials) : (maxTrials = maxTrials)
-          summary[year][pub].total.participants > maxSize ? (maxSize = summary[year][pub].total.participants) : (maxSize = maxSize)
+          if (summary[year][pub].total.trials > maxTrials) maxTrials = summary[year][pub].total.trials;
+          if (summary[year][pub].total.participants > maxSize) maxSize = summary[year][pub].total.participants;
         } else {
           pieData[year].status[p] = {status: pub, trials: 0, size: 0}
         }
@@ -263,7 +262,7 @@ class ComparisonsPage extends React.Component {
     for (let query of queries) {
       let pie = this.getPieData(query);
       let querySize = pie[pie.lastYear].maxTrials;
-      querySize > maxPieSize ? maxPieSize = querySize : maxPieSize = maxPieSize;
+      if (querySize > maxPieSize) maxPieSize = querySize;
       // console.log('max', query, queryHeight);
     }
     return maxPieSize;

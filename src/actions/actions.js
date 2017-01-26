@@ -9,6 +9,8 @@ export const GET_DATA_BAR = 'GET_DATA_BAR';
 export const SEARCH_DATA_GENDER = 'SEARCH_DATA_GENDER';
 export const SHOW_PUBLICATIONS = 'SHOW_PUBLICATIONS'
 export const GET_CUMULATIVE_DATA = 'GET_CUMULATIVE_DATA'
+export const GET_RELATIONSHIP_DATA = 'GET_RELATIONSHIP_DATA'
+
 // export function getDataScatter(data) {
 //   return {
 //     type: GET_DATA_SCATTER,

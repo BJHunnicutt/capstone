@@ -1,6 +1,9 @@
 import React from 'react';
 // import ReactDOM from 'react-dom';
 import d3 from 'd3';
+import allData from '../data/short_filtered.csv'
+import store from '../../store';
+
 // import Chart from '../containers/scatter/chart.jsx';
 
 
@@ -13,15 +16,16 @@ export default class RelationshipsDiagram extends React.Component {
       svg: '',
       data: props.data
     }
+    console.log("constructor props: ", props);
   }
   // this.setState({
   //   globalSearch: cleanQuery,
   // });
 
 
-  componentDidMount() {
-    this.renderForceDiagram();
-  }
+  // componentDidMount() {
+  //   this.renderForceDiagram();
+  // }
 
   updateData() {
     console.log('click');
@@ -76,7 +80,7 @@ export default class RelationshipsDiagram extends React.Component {
   renderForceDiagram() {
     //Constants for the SVG
     // var width = 500, height = 500;
-    let width = window.innerWidth; // Testing out making the plot viewport responsive
+    let width = window.innerWidth * .96; // Testing out making the plot viewport responsive
     let height = 0.8 * window.innerHeight;
 
     //Set up the colour scale
@@ -94,11 +98,17 @@ export default class RelationshipsDiagram extends React.Component {
         .attr("width", width)
         .attr("height", height);
 
-    this.setState({
-      svg: svg,
-    });
+    // this.setState({
+    //   svg: svg,
+    // });
 
     let graph = this.state.graph;
+
+    // d3.csv(allData, (data) => {
+		// 	// console.log('d3csv: ', data);
+		// 	return this.props.setUpRelationships(data);
+    //
+		// });
 
     //Creates the graph data structure out of the json data
     force.nodes(graph.nodes)
@@ -196,7 +206,7 @@ export default class RelationshipsDiagram extends React.Component {
     // var selectedVal = document.getElementById('search').value;
     var node = this.state.svg.selectAll(".node");
 
-    if (selectedVal == "none") {
+    if (selectedVal === "none") {
         node.style("stroke", "white").style("stroke-width", "1");
     } else {
         var selected = node.filter(function (d, i) {
@@ -213,12 +223,13 @@ export default class RelationshipsDiagram extends React.Component {
 
 
   render (props) {
-    // console.log('render: ', props);
+    console.log('render: ', this.props);
     // console.log('constructor: ', this.state.data);
 
     return (
       <div data={this.state.graph}>
         {/* <Chart /> */}
+        {this.renderForceDiagram(this.props.graphData)}
         <g className="force-diagram-wrapper" ref="forceDiagram" transform={this.props.translate} data={this.state.graph}></g>
         <button className="button testy" onClick={() => this.searchNode('Valjean')}>Swap data</button>
         <button className="button secondary" onClick={() => this.searchGroup(1)}>Search group</button>

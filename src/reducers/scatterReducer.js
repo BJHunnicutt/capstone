@@ -1,4 +1,4 @@
-import { GET_DATA_SCATTER, GET_DATA_BAR, CLEAR_STATE} from '../actions/actions'; //, SEARCH_DATA_GENDER, CLEAR_STATE, SHOW_PUBLICATIONS
+import { GET_DATA_SCATTER, GET_DATA_BAR, CLEAR_STATE, GET_RELATIONSHIP_DATA} from '../actions/actions'; //, SEARCH_DATA_GENDER, CLEAR_STATE, SHOW_PUBLICATIONS
 import _ from 'lodash';
 // import d3 from 'd3';
 
@@ -31,9 +31,8 @@ const initialState = {
   data: _.range(50).map(function (x, i) { return [x,i] }),
   dataBar: data,
   showingPublication: true,
+  graphData: {},
 };
-
-
 
 
 const rootReducer = function(state = initialState, action) {
@@ -46,6 +45,10 @@ const rootReducer = function(state = initialState, action) {
     case GET_DATA_BAR:
       return Object.assign({}, state, {
         dataBar: action.data
+      })
+    case GET_RELATIONSHIP_DATA:
+      return Object.assign({}, state, {
+        graphData: action.graphData
       })
     // case SHOW_PUBLICATIONS:
     //   return Object.assign({}, state, {

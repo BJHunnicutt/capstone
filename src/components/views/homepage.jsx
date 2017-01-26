@@ -2,10 +2,8 @@ import React from 'react';
 // import store from '../../store';
 import { connect } from 'react-redux';
 import '../../styles/relationships.css';
-import d3 from 'd3'
-import allData from '../data/test.csv'
 
-import SearchPage from '../containers/searchPage.jsx'
+// import SearchPage from '../containers/searchPage.jsx'
 
 
 class Homepage extends React.Component {

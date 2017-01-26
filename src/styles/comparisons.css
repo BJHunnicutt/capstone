@@ -26,5 +26,29 @@ div.comparisons-wrapper {
   font-size: 35px;
   line-height: 1;
   margin: 0;
+}
+
+.comparison-panel h5 {
+  font-size: 25px;
+  font-weight: 200;
+  float: left;
+  padding-bottom: 35px;
+}
+
+.comparison-panel h6 {
+  font-size: 15px;
+  float: right;
+  padding-bottom: 35px;
+}
+
+.line-wrapper {
+  clear: both;
+  padding: 0;
+  margin: 0;
+  /*margin-bottom: 50px;*/
+}
+
+.line-chart-label {
+  /*padding: 0;*/
 
 }

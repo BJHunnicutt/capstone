@@ -54,18 +54,17 @@ class ComparisonsPage extends React.Component {
     return (props) => {
       // console.log('renderCharts props: ', props);
 
-      // console.log('years: ',this.state.allYears);
-      let lineData = this.getLineData(props);
-      let pieData = this.getPieData(props);
-
-      // console.log('return num: ', props);
-      const chartProps = {
-        key: props
-      };
-
-
+      // These ifs are so a new search doesn't try to render until it has the appropriate data
       if ( (store.getState().searchState.searchHistory[props].isFetching === false) && (store.getState().searchState.currentResults.resultsReceived === true) && (Object.keys(store.getState().searchState.searchHistory[props].cumulativeSummary).length > 0)) {
+
+        let lineData = this.getLineData(props);
+        let pieData = this.getPieData(props);
+        // console.log('return num: ', props);
+        const chartProps = {
+          key: props
+        };
         return <ComparisonChart {...chartProps} query={props} {...this.state} lineData={lineData} pieData={pieData}/>
+
       } else {
         return null
       }
@@ -196,6 +195,7 @@ class ComparisonsPage extends React.Component {
             pieData[year][pub][g] = {gender: gen, trials: 0, size: 0};
           }
         }
+        // In case this is a year before there are trials for this query (since the domain is determined by the longest of the queries)
         if (summary[year]) {
           pieData[year].status[p] = {status: pub, trials: summary[year][pub].total.trials, size: summary[year][pub].total.trials}
           summary[year][pub].total.trials > maxTrials ? (maxTrials = summary[year][pub].total.trials) : (maxTrials = maxTrials)

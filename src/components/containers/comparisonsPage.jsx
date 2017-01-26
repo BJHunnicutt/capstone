@@ -15,21 +15,60 @@ const getYear = (years) => {
 
 class ComparisonsPage extends React.Component {
   constructor(props){
-    // console.log(props);
+    // console.log("constructor props", props);
     super(); // "To get our context"
+
     let queries = Object.keys(store.getState().searchState.searchHistory);
     let year = 2016;
+    let startYear, endYear;
+    queries.length === 0 ? startYear = 2008 : startYear = this.getFirstYear(queries);
+    queries.length === 0 ? endYear = year : endYear = this.getLastYear(queries);
+
     this.state = {
       queries: queries,
       data: this.getData(queries, year),
       allData: store.getState().searchState.searchHistory,
       year: year,
       allYears: this.getYears(queries),
+      startYear: startYear,
+      endYear: endYear,
+      maxHeight: this.getHeight(queries),
+      maxPieSize: this.getPieSize(queries),
+      normalizeAcrossSearches: true
+    }
+  }
+
+
+
+  getScalingData() {
+    let queries = Object.keys(store.getState().searchState.searchHistory);
+
+    let scale = {
+      // queries: queries,
+      // data: this.getData(queries, this.state.year),
+      // allData: store.getState().searchState.searchHistory,
+      year: this.state.year,
+      // allYears: this.getYears(queries),
       startYear: this.getFirstYear(queries),
       endYear: this.getLastYear(queries),
       maxHeight: this.getHeight(queries),
       maxPieSize: this.getPieSize(queries)
     }
+    console.log("data accessed");
+
+    return scale;
+  }
+
+  componentWillReceiveProps() {
+    let queries = Object.keys(store.getState().searchState.searchHistory);
+    if (queries.length === 0) {
+      return null
+    } else if ( this.state.startYear){
+      this.setState({
+        startYear: this.getFirstYear(queries),
+      })
+    }
+    // console.log("props received");
   }
 
   handleChange(e) {
@@ -59,11 +98,13 @@ class ComparisonsPage extends React.Component {
 
         let lineData = this.getLineData(props);
         let pieData = this.getPieData(props);
+        let scale = this.getScalingData();
+
         // console.log('return num: ', props);
         const chartProps = {
           key: props
         };
-        return <ComparisonChart {...chartProps} query={props} {...this.state} lineData={lineData} pieData={pieData}/>
+        return <ComparisonChart {...chartProps} query={props} {...scale} lineData={lineData} pieData={pieData}/>
 
       } else {
         return null
@@ -101,6 +142,7 @@ class ComparisonsPage extends React.Component {
       let first = Math.min(...allYears);
       first < startYear ? startYear = first : startYear = startYear;
     }
+
     return startYear
   }
 
@@ -265,7 +307,7 @@ class ComparisonsPage extends React.Component {
   toggleData() {
     // console.log('click');
     this.setState({
-      year: getYear(this.state.allYears),
+      normalizeAcrossSearches: !this.state.normalizeAcrossSearches,
     });
   }
 
@@ -302,7 +344,7 @@ class ComparisonsPage extends React.Component {
 
 
         {/* <h6>{this.store.year}</h6> */}
-        <button className="button" onClick={this.toggleData.bind(this)}>Swap the year!</button>
+        <button className="button" onClick={this.toggleData.bind(this)}>Swap the normalization method!</button>
       </g>
 
     );

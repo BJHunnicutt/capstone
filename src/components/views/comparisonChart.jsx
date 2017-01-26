@@ -84,7 +84,7 @@ export default class ComparisonChart extends React.Component {
               fill: "#8AB25C",
               fontFamily: "'Exo', sans-serif",
               fontSize: 25,
-              fontWeight: 200
+              fontWeight: 400
             }}
             text={internal_publishedPercent + "% published"}
           />
@@ -93,7 +93,7 @@ export default class ComparisonChart extends React.Component {
               fill: "tomato",
               fontFamily: "'Exo', sans-serif",
               fontSize: 25,
-              fontWeight: 200
+              fontWeight: 400
             }}
             text={internal_unpublishedPercent+ "% unpublished"}
           />
@@ -210,7 +210,7 @@ export default class ComparisonChart extends React.Component {
         <VictoryChart
            domain={{x: [this.props.startYear, this.props.endYear], y: [0, this.props.maxHeight]}}
            >
-           <VictoryLabel x={30} y={10}
+           <VictoryLabel x={20} y={30}
              style={{
               //  fill: "#8AB25C",
                fontFamily: "'Raleway', sans-serif",

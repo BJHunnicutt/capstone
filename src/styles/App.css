@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Work+Sans:100,200,300,400,500,600');   /* Thin, Extra-Light, Light*/
 @import url('https://fonts.googleapis.com/css?family=Raleway:200,300');
-@import url('https://fonts.googleapis.com/css?family=Exo:100,200|Megrim');
+@import url('https://fonts.googleapis.com/css?family=Exo:100,200,300,400|Megrim');
 @import url('https://fonts.googleapis.com/css?family=Material+Icons');
   /*https://material.io/icons/#ic_search*/
 
@@ -16,6 +16,7 @@
 }
 .f2 {
   font-family: 'Exo', sans-serif;
+  font-weight: 200;
 }
 .f3 {
   font-family: 'Megrim', cursive;

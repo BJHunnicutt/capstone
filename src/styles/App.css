@@ -17,16 +17,20 @@
   background-color: cyan;
 }*/
 
+/*Basic Font*/
 .f1 {
   font-family: 'Raleway', sans-serif;
 }
+/*Stylized Font*/
 .f2 {
   font-family: 'Exo', sans-serif;
   font-weight: 200;
 }
+/*Logo Font*/
 .f3 {
   font-family: 'Megrim', cursive;
 }
+
 
 
 /* Icons and Search button as an Icon*/
@@ -117,6 +121,36 @@ body {
 #search-table-wrapper {
   width: 100%;
   /*display: inline-block;*/
+}
+
+p a:hover {
+  color: gold;
+}
+
+#quote {
+  padding: 4%;
+  text-align: center;
+}
+
+.homepage-title {
+  text-align: center;
+}
+
+.homepage-text {
+  width: 60%;
+  text-align: center;
+}
+
+.homepage-search {
+  /*background-color: cyan;*/
+  text-align: center;
+  padding: 0 10% 0 10%;
+
+}
+
+.centered {
+  text-align: center;
+  align-self: center;
 }
 
 /*.App {

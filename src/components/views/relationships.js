@@ -1,12 +1,14 @@
 import React from 'react';
 // import ReactDOM from 'react-dom';
 import d3 from 'd3';
-import allData from '../data/short_filtered.csv'
+// import allData from '../data/short_filtered.csv'
 import store from '../../store';
-
 // import Chart from '../containers/scatter/chart.jsx';
+// import veryImportantGif from '../../../public/dory1.gif'
+import veryImportantGif2 from '../../../public/dory2.gif'
 
-
+let mis, mis2;
+let explore = false;
 export default class RelationshipsDiagram extends React.Component {
   constructor(props){
     super(); // "To get our context"
@@ -16,19 +18,20 @@ export default class RelationshipsDiagram extends React.Component {
       svg: '',
       data: props.data
     }
-    console.log("constructor props: ", props);
+    // console.log("constructor props: ", props);
   }
   // this.setState({
   //   globalSearch: cleanQuery,
   // });
 
 
-  // componentDidMount() {
-  //   this.renderForceDiagram();
-  // }
+  renderButton() {
+    this.renderForceDiagram();
+    explore = true;
+  }
 
   updateData() {
-    console.log('click');
+    // console.log('click');
   }
 
   //This function looks up whether a pair are neighbours
@@ -98,11 +101,12 @@ export default class RelationshipsDiagram extends React.Component {
         .attr("width", width)
         .attr("height", height);
 
-    // this.setState({
-    //   svg: svg,
-    // });
+    this.setState({
+      svg: svg,
+    });
 
-    let graph = this.state.graph;
+    // let graph = this.state.graph;
+    let graph = store.getState().scatterState.graphData;
 
     // d3.csv(allData, (data) => {
 		// 	// console.log('d3csv: ', data);
@@ -170,8 +174,8 @@ export default class RelationshipsDiagram extends React.Component {
   }
 
   searchNode(selectedVal) {
-    console.log('click');
-    console.log(this.state.graph.nodes[0].group)
+    // console.log('click');
+    // console.log(this.state.graph.nodes[0].group)
       // find the node
     // var selectedVal = document.getElementById('search').value;
     // var node = this.state.svg.selectAll(".node");
@@ -189,6 +193,8 @@ export default class RelationshipsDiagram extends React.Component {
     //         .duration(1000)
     //         .style("opacity", 1);
     // }
+
+
     if (this.state.graph === mis) {
       this.setState({
         graph: mis2,
@@ -201,7 +207,7 @@ export default class RelationshipsDiagram extends React.Component {
   }
 
   searchGroup(selectedVal) {
-    console.log('click');
+    // console.log('click');
       // find the node
     // var selectedVal = document.getElementById('search').value;
     var node = this.state.svg.selectAll(".node");
@@ -223,18 +229,36 @@ export default class RelationshipsDiagram extends React.Component {
 
 
   render (props) {
-    console.log('render: ', this.props);
+    // console.log('render: ', this.props);
     // console.log('constructor: ', this.state.data);
 
     return (
-      <div data={this.state.graph}>
-        {/* <Chart /> */}
-        {this.renderForceDiagram(this.props.graphData)}
-        <g className="force-diagram-wrapper" ref="forceDiagram" transform={this.props.translate} data={this.state.graph}></g>
-        <button className="button testy" onClick={() => this.searchNode('Valjean')}>Swap data</button>
-        <button className="button secondary" onClick={() => this.searchGroup(1)}>Search group</button>
+      <div>
+        <h3 className="f2 comp-title"> <strong>Under Construction!</strong> ...but feel free to play with the squidies (i.e. clinical trial funder-drug relationships) in the mean time! </h3>
 
-        <button className="button" onClick={this.updateData} />
+        <div className="column explore-btn-wrapper">
+          {explore ? (
+            <img className="dory-gif" src={veryImportantGif2} alt="Come here little squishy"/>
+          ) : (null)}
+        </div>
+
+
+        {/* <Chart /> */}
+        {/* {this.renderForceDiagram(this.props.graphData)} */}
+        <g className="force-diagram-wrapper" ref="forceDiagram" transform={this.props.translate} data={this.state.graph}></g>
+        {/* <button className="button testy" onClick={() => this.searchNode('Valjean')}>Swap data</button> */}
+
+        <div className="column explore-btn-wrapper">
+            <button className="button explore-relationships-btn" onClick={this.renderButton.bind(this)}><strong>Explore!</strong></button>
+        </div>
+
+        {/* <button className="button secondary" onClick={() => this.searchGroup(1)}>Search group</button> */}
+
+        {/* <button className="button" onClick={this.updateData} /> */}
+
+        {/* <img src={veryImportantGif} alt="and you shall be my squishy"/> */}
+
+
       </div>
     )
   }
@@ -318,7 +342,8 @@ export default class RelationshipsDiagram extends React.Component {
 
 
 
-  const mis = {
+  // const
+  mis = {
         "nodes": [{
             "name": "Myriel",
                 "group": 2
@@ -1446,7 +1471,8 @@ export default class RelationshipsDiagram extends React.Component {
         }]
     };
 
-    const mis2 = {
+    // const
+    mis2 = {
           "nodes": [{
               "name": "Myriel",
                   "group": 1

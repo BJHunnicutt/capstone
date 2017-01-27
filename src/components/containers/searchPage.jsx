@@ -88,8 +88,8 @@ class SearchPage extends React.Component {
       let itemsInSearch = store.getState().searchState.searchHistory[store.getState().searchState.selectedQuery.query].totalItems;
       let itemsAcquired = store.getState().searchState.searchHistory[store.getState().searchState.selectedQuery.query].items.length;
 
-      console.log('itemsInSearch: ', itemsInSearch);
-      console.log('itemsAcquired: ', itemsAcquired);
+      // console.log('itemsInSearch: ', itemsInSearch);
+      // console.log('itemsAcquired: ', itemsAcquired);
 
 
       // If there are more items to get from the API for this search

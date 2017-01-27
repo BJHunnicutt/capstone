@@ -22,7 +22,7 @@ class RelationshipsPage extends React.Component {
   }
 
 	componentWillMount() {
-		console.log("componentWillMount");
+		// console.log("componentWillMount");
 		d3.csv(allData, (data) => {
 			// console.log('d3csv: ', data);
 			this.setUpRelationships(data);
@@ -30,7 +30,7 @@ class RelationshipsPage extends React.Component {
 	}
 
 	componentDidMount() {
-		console.log('did mount');
+		// console.log('did mount');
 	}
 
 	setUpRelationships(data) {
@@ -128,7 +128,7 @@ class RelationshipsPage extends React.Component {
 	}
 
 	render (props) {
-			console.log("state: ",this.props);
+			// console.log("state: ",this.props);
 
   	return (
 

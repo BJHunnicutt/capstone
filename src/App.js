@@ -26,7 +26,7 @@ class App extends React.Component {
           {this.props.children}
         </div>
 
-        <button className='button redux-store' onClick={this.showReduxStore.bind(this)}>Log Redux Store</button>
+        {/* <button className='button redux-store' onClick={this.showReduxStore.bind(this)}>Log Redux Store</button> */}
 
 
       </div>

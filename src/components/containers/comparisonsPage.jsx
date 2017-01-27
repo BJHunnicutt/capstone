@@ -311,6 +311,28 @@ class ComparisonsPage extends React.Component {
   }
 
 	render (props) {
+    // This is replicated from scatter0/chart.js -- should break out into a function
+    // Determine a title for
+    let received = 0, total = 0;
+    if (store.getState().searchState.selectedQuery.query !== "") {
+      received = store.getState().searchState.searchHistory[store.getState().searchState.selectedQuery.query].items.length;
+      total = store.getState().searchState.searchHistory[store.getState().searchState.selectedQuery.query].totalItems;
+    }
+    let searchTitle = '', searchTitle_bold = '';
+    // TITLE: Before the first search
+    if (store.getState().searchState.selectedQuery.query === "") {
+      searchTitle = "Search to compare results"
+    // TITLE: during a search
+    } else if (store.getState().searchState.searchHistory[store.getState().searchState.selectedQuery.query].isFetching === true) {
+      searchTitle = "Fetching " + store.getState().searchState.searchHistory[store.getState().searchState.selectedQuery.query].totalItems + " Trials ... ";
+      searchTitle_bold = (received/total*100).toPrecision(2) + "% complete"
+    // TITLE: after a search is complete
+    } else {
+      // searchTitle = total + " Trials found related to: ";
+      // let queries = $.extend(true, {}, store.getState().searchState.searchHistory)
+      // searchTitle_bold = Object.keys(queries).join(', ');
+      searchTitle = ''
+    }
 
   	return (
       <g>
@@ -322,6 +344,8 @@ class ComparisonsPage extends React.Component {
 
           </div>
         </div> */}
+        <h3 className="f2 comp-title"> {searchTitle} <strong>{searchTitle_bold}</strong></h3>
+
         <div className="year-slider-wrapper">
           <h4 className="f2">{this.state.year}</h4>
           <input
@@ -343,7 +367,7 @@ class ComparisonsPage extends React.Component {
 
 
         {/* <h6>{this.store.year}</h6> */}
-        <button className="button" onClick={this.toggleData.bind(this)}>Swap the normalization method!</button>
+        {/* <button className="button" onClick={this.toggleData.bind(this)}>Swap the normalization method!</button> */}
       </g>
 
     );

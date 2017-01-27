@@ -2,8 +2,20 @@
 
 
 
+.explore-relationships-btn {
+  align-self: center;
+}
 
+.explore-btn-wrapper {
+  text-align: center;
+  padding-top: 50px;
+}
 
+.dory-gif {
+  position: absolute;
+  left: 40%;
+  top: 400px;
+}
 
 
 

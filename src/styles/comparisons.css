@@ -28,6 +28,10 @@ div.comparisons-wrapper {
   margin: 0;
 }
 
+.comp-title {
+  display: inline-block;
+}
+
 #typeinp {
   width: 90px;
 }

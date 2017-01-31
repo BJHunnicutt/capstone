@@ -17,6 +17,7 @@ class RelationshipsPage extends React.Component {
 		// console.log("constructor");
     super(); // "To get our context"
     this.state = {
+			// This store data is set with setUpRelationships in componentWillMount
       data: store.getState().scatterState.graphData,
     }
   }
@@ -54,7 +55,7 @@ class RelationshipsPage extends React.Component {
 					nameNodes[sponsor].group = 2;
 					nameNodes[sponsor].type = 'sponsor';
 				}
-				// Increment values for new and old
+				// Increment values for new and old sponsors
 				if (data[i].is_overdue === "False") nameNodes[sponsor].published +=1;
 				nameNodes[sponsor].total += 1;
 				nameNodes[sponsor].fraction = nameNodes[sponsor].published/nameNodes[sponsor].total;
@@ -88,16 +89,18 @@ class RelationshipsPage extends React.Component {
 				"nodes": [],
 				"links": []
 			};
-			// Put the object of keys into an array
+			// Put the keys (i.e. drugs) into an array
 			let k = 0;
 			for (let key of Object.keys(nameNodes)) {
 				trialsData.nodes[k] = nameNodes[key]
 				trialsData.nodes[k].id = k;
+				// Add an id to the original data that corresponds to the array index for trialsData.nodes[i]
 				nameNodes[key].id = k;
 				k += 1;
 			}
 			// set up{source: 0, target: 1, value: 0}
 			let l = 0;
+			// Put the keys (i.e. sponsors) into an array
 			for (var source of Object.keys(sourceLinks)) {
 				for (var target of Object.keys(sourceLinks[source])) {
 					trialsData.links[l] = {};
@@ -110,9 +113,9 @@ class RelationshipsPage extends React.Component {
 				}
 			}
 		}
-		// console.log("nameNodes", nameNodes);
-		// console.log("trialsData", trialsData);
-		// console.log(sourceLinks);
+		console.log("nameNodes", nameNodes);
+		console.log("trialsData", trialsData);
+		console.log("sourceLinks", sourceLinks);
 
 
 		this.setState({

@@ -109,6 +109,9 @@ button.button:hover {
   background-color: rgb(214, 200, 125);
   color: black;
 }
+input:focus {
+  outline-color: rgba(227, 218, 172, 0.3);
+}
 
 
 /* ------------------------ END FONTS & ICON BUTTON ---------------------------- */

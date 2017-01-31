@@ -4,7 +4,7 @@ import d3 from 'd3';
 // import allData from '../data/short_filtered.csv'
 import store from '../../store';
 import Autocomplete from 'react-autocomplete'
-import { getStates, matchStateToTerm, styles } from '../data/utils.js' //sortStates,
+import { matchStateToTerm, styles } from '../data/utils.js' //sortStates,
 // import Chart from '../containers/scatter/chart.jsx';
 
 // import veryImportantGif2 from '../../../public/dory2.gif'

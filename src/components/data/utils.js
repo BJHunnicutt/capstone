@@ -5,8 +5,8 @@ export let styles = {
   },
 
   highlightedItem: {
-    color: 'white',
-    background: 'hsl(200, 50%, 50%)',
+    // color: 'white',
+    background: 'rgb(227, 218, 172)',//'hsl(200, 50%, 50%)',
     padding: '2px 6px',
     cursor: 'default'
   },

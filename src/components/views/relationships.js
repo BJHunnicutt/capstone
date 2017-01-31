@@ -4,7 +4,7 @@ import d3 from 'd3';
 // import allData from '../data/short_filtered.csv'
 import store from '../../store';
 import Autocomplete from 'react-autocomplete'
-import { matchStateToTerm, styles } from '../data/utils.js' //sortStates,
+import { sortStates, matchStateToTerm, styles } from '../data/utils.js'
 // import Chart from '../containers/scatter/chart.jsx';
 
 // import veryImportantGif2 from '../../../public/dory2.gif'
@@ -271,6 +271,7 @@ export default class RelationshipsDiagram extends React.Component {
 }
 
 
+// https://github.com/reactjs/react-autocomplete
 class NodeSearch extends React.Component {
   constructor(props){
     super();
@@ -289,7 +290,7 @@ class NodeSearch extends React.Component {
           items={this.props.graph.nodes}
           getItemValue={(item) => item.name}
           shouldItemRender={matchStateToTerm}
-          // sortItems={sortStates}
+          sortItems={sortStates}
           onChange={(event, value) => this.setState({ value })}
           onSelect={value => this.setState({ value })}
           renderItem={(item, isHighlighted) => (

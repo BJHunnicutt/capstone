@@ -12,7 +12,8 @@ export let styles = {
   },
 
   menu: {
-    border: 'solid 1px #ccc'
+    border: 'solid 1px #ccc',
+    // position: 'relative',
   }
 }
 

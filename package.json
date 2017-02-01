@@ -9,6 +9,7 @@
   "dependencies": {
     "aphrodite": "^1.1.0",
     "d3": "^3.5.17",
+    "d3-tip": "^0.7.1",
     "fixed-data-table": "^0.6.3",
     "fixed-data-table-2": "^0.7.10",
     "jquery": "^3.1.1",

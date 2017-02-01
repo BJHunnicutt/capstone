@@ -58,7 +58,7 @@ class RelationshipsPage extends React.Component {
 				// Increment values for new and old sponsors
 				if (data[i].is_overdue === "False") nameNodes[sponsor].published +=1;
 				nameNodes[sponsor].total += 1;
-				nameNodes[sponsor].fraction = nameNodes[sponsor].published/nameNodes[sponsor].total;
+				nameNodes[sponsor].fraction_published = nameNodes[sponsor].published/nameNodes[sponsor].total;
 
 				for (let el of drugs) {
 					let drug = el.trim().toLowerCase();
@@ -72,7 +72,7 @@ class RelationshipsPage extends React.Component {
 					// Increment values for new and old
 					if (data[i].is_overdue === "False") nameNodes[drug].published +=1;
 					nameNodes[drug].total += 1;
-					nameNodes[drug].fraction = nameNodes[drug].published/nameNodes[drug].total;
+					nameNodes[drug].fraction_published = nameNodes[drug].published/nameNodes[drug].total;
 
 					//Create links for trial sponsor --> drug
 					if (!sourceLinks[sponsor]) sourceLinks[sponsor] = {};

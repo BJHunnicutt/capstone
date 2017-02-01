@@ -6,8 +6,8 @@ import store from '../../store';
 import Autocomplete from 'react-autocomplete'
 import { sortStates, matchStateToTerm, styles } from '../data/utils.js'
 // import Chart from '../containers/scatter/chart.jsx';
-
 // import veryImportantGif2 from '../../../public/dory2.gif'
+
 
 
 let explore = false;
@@ -97,6 +97,11 @@ export default class RelationshipsDiagram extends React.Component {
         .linkDistance(30)
         .size([width, height]);
 
+    // Define the div for the tooltip
+    var div = d3.select(this.refs.forceDiagram).append("div")
+        .attr("class", "rel-tooltip")
+        .style("visibility", "hidden");
+
     //Append a SVG to the body of the html page. Assign this SVG as an object to svg
     var svg = d3.select(this.refs.forceDiagram)
         .append("svg")
@@ -106,6 +111,7 @@ export default class RelationshipsDiagram extends React.Component {
     this.setState({
       svg: svg,
     });
+
 
     // let graph = this.state.graph;
     let graph = store.getState().scatterState.graphData;
@@ -137,9 +143,24 @@ export default class RelationshipsDiagram extends React.Component {
         .attr("class", "node")
         .attr("r", 8)
         .style("fill", function (d) {
-        return color(d.group);
-    })
+          return color(d.group);
+        })
         .call(force.drag)
+        .on("mouseover", function(d) {
+            div.transition()
+                .duration(200)
+                .style("visibility", "visible");
+            div.html(d.name + "<br/><p>" + d.fraction_published*100 + "% published</p>")
+                .style("left", (d3.event.pageX - 80) + "px")
+                .style("top", (d3.event.pageY - 75) + "px");
+            })
+        .on("mouseout", function(d) {
+            div.transition()
+                .duration(500)
+                .style("visibility", "hidden");
+        });
+        // .on('mouseover', tip.show) //Added
+        // .on('mouseout', tip.hide); //Added
         // .on('dblclick', this.connectedNodes(node, link)); //Added code
 
     //Now we are giving the SVGs co-ordinates - the force layout is generating the co-ordinates which this code is using to update the attributes of the SVG elements
@@ -279,8 +300,28 @@ class NodeSearch extends React.Component {
       value: 'national cancer institute (nci)'
     }
   }
+  // This + renderMenu (in Autocomplete) will make a custom formatted dropdown menu
+  // renderItems(items) {
+  //   // console.log(items)
+  //   return items.map((item, index) => {
+  //     var text = item.props.children
+  //     if (index === 0 || items[index - 1].props.children.charAt(0) !== text.charAt(0)) {
+  //       var style = {
+  //         background: '#eee',
+  //         color: '#454545',
+  //         padding: '2px 6px',
+  //         fontWeight: 'bold'
+  //       }
+  //       return [<div style={style}>{text.charAt(0)}</div>, item]
+  //     }
+  //     else {
+  //       return item
+  //     }
+  //   })
+  // }
+
   render(props) {
-    console.log('autocomplete props', this.props.graph.nodes);
+    // console.log('autocomplete props', this.props.graph.nodes);
     return (
       <span>
         <label htmlFor="node-search">Select A Node</label>
@@ -299,6 +340,15 @@ class NodeSearch extends React.Component {
               key={item.abbr}
             >{item.name}</div>
           )}
+          // renderMenu={(items, value, style) => (
+          //   <div style={{...styles.menu, ...style}}>
+          //     {value === '' ? (
+          //       <div style={{padding: 6}}>Type of the name of a United State</div>
+          //     ) : items.length === 0 ? (
+          //       <div style={{padding: 6}}>No matches for {value}</div>
+          //     ) : this.renderItems(items)}
+          //   </div>
+          // )}
         />
       </span>
     )

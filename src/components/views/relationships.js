@@ -150,7 +150,7 @@ export default class RelationshipsDiagram extends React.Component {
             div.transition()
                 .duration(200)
                 .style("visibility", "visible");
-            div.html(d.name + "<br/><p>" + d.fraction_published*100 + "% published</p>")
+            div.html(d.name + "<br/><p>" + (d.fraction_published*100).toFixed(0) + "% published</p>")
                 .style("left", (d3.event.pageX - 80) + "px")
                 .style("top", (d3.event.pageY - 75) + "px");
             })

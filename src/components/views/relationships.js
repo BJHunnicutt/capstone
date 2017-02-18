@@ -36,6 +36,7 @@ export default class RelationshipsDiagram extends React.Component {
 
   updateData() {
     // console.log('click');
+    // test
   }
 
 

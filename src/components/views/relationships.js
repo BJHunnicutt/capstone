@@ -18,6 +18,8 @@ export default class RelationshipsDiagram extends React.Component {
       // graph: mis,
       toggle: 0,   //Toggle stores whether the highlighting is on
       svg: '',
+      linkedByIndex: [],
+      color: d3.scale.category20(),
       // data: props.data
     }
     // console.log("constructor props: ", props);
@@ -36,51 +38,107 @@ export default class RelationshipsDiagram extends React.Component {
     // console.log('click');
   }
 
-  //This function looks up whether a pair are neighbours
-  neighboring(a, b) {
-    let graph = store.getState().scatterState.graphData;
-    //---Insert-------
 
+// --------------------- neighbor node highlighting 2 ----------------------------- // http://bl.ocks.org/samuelleach/5497403
+mouseOverFunction(d) {
+  // console.log("mouseOverFunction this: ", this);
+  var circle = this.state.svg.selectAll(".circle")
+  var node = this.state.svg.selectAll(".node")
+  var link = this.state.svg.selectAll(".link")
 
-    //Create an array logging what is connected to what
-    var linkedByIndex = {};
-    for (let i = 0; i < graph.nodes.length; i++) {
-        linkedByIndex[i + "," + i] = 1;
-    };
-    graph.links.forEach(function (d) {
-        linkedByIndex[d.source.index + "," + d.target.index] = 1;
-    });
-
-    //---End Insert---
-    return linkedByIndex[a.index + "," + b.index];
-  }
-
-  connectedNodes(node, link) {
-    if (this.state.toggle === 0) {
-      //Reduce the opacity of all but the neighbouring nodes
-      let d = d3.select(this).node().__data__;
-      node.style("opacity", function (o) {
-          return this.neighboring(d, o) | this.neighboring(o, d) ? 1 : 0.1;
+  node
+    .transition()
+      .duration(250)
+      .attr("r", (o) => {
+        if (this.isConnectedAsSource(o, d) || this.isConnectedAsTarget(o, d) || this.isEqual(o, d)) {
+          return 1.4 * this.node_radius(o);
+        } else {
+          return this.node_radius(o);
+        }
+      })
+      .style("opacity", (o) => {
+        return this.isConnected(o, d) ? 1.0 : 0.2 ;
+      })
+      .style("fill", (o) => {
+        let fillcolor;
+        if (this.isConnectedAsSource(o, d)) {
+          fillcolor = 'red';
+        } else if (this.isConnectedAsTarget(o, d)) {
+          fillcolor = 'blue';
+        } else if (this.isEqual(o, d)) {
+          fillcolor = "hotpink";
+        } else {
+          fillcolor = this.state.color(o.group);
+        }
+        return fillcolor;
       });
 
-      link.style("opacity", function (o) {
-          return d.index === o.source.index | d.index === o.target.index ? 1 : 0.1;
+  link
+    .transition()
+      .duration(250)
+      .style("stroke-opacity", (o) =>{
+        return o.source === d || o.target === d ? 1 : 0.2;
       });
 
-      //Reduce the op
+  // circle
+  //   .transition(500)
+  //     .attr("r", () => { return 1.4 * this.node_radius(d)});
+}
 
-      this.setState({
-        toggle: 1,
-      });
-    } else {
-      //Put them back to opacity=1
-      node.style("opacity", 1);
-      link.style("opacity", 1);
-      this.setState({
-        toggle: 0,
-      });
-    }
-  }
+mouseOutFunction(d) {
+  var circle = this.state.svg.selectAll(".circle")
+  var node = this.state.svg.selectAll(".node")
+  var link = this.state.svg.selectAll(".link")
+
+
+  node
+    .transition()
+    .duration(250)
+      .attr("r", (d) => { return this.node_radius(d)})
+      .style("fill", (o) => {
+        let fillcolor;
+        if (this.isConnectedAsSource(o, d)) {
+          fillcolor = 'red';
+        } else if (this.isConnectedAsTarget(o, d)) {
+          fillcolor = 'blue';
+        } else if (this.isEqual(o, d)) {
+          fillcolor = "hotpink";
+        } else {
+          fillcolor = this.state.color(o.group);
+        }
+        return fillcolor;
+      })
+      .style("opacity", 1);
+
+  link
+    .transition(250)
+    // .style("stroke-opacity", 0.8);
+
+  // circle
+  //   .transition(250)
+}
+
+isConnected(a, b) {
+    return this.isConnectedAsTarget(a, b) || this.isConnectedAsSource(a, b) || a.index === b.index;
+}
+
+isConnectedAsSource(a, b) {
+    return this.state.linkedByIndex[a.index + "," + b.index];
+}
+
+isConnectedAsTarget(a, b) {
+    return this.state.linkedByIndex[b.index + "," + a.index];
+}
+
+isEqual(a, b) {
+    return a.index === b.index;
+}
+// Node radius is proportional to the number of trials related to a node (to the power of 0.57 as per visual area perception work)
+node_radius(d) { return Math.pow(20 * d.total, 0.57); }
+
+
+// --------------------- end neighbor node highlighting 2 ----------------------------- //
+
 
   renderForceDiagram() {
     //Constants for the SVG
@@ -89,7 +147,7 @@ export default class RelationshipsDiagram extends React.Component {
     let height = 0.8 * window.innerHeight;
 
     //Set up the colour scale
-    var color = d3.scale.category20();
+    var color = this.state.color;
 
     //Set up the force layout
     var force = d3.layout.force()
@@ -132,36 +190,38 @@ export default class RelationshipsDiagram extends React.Component {
         .data(graph.links)
         .enter().append("line")
         .attr("class", "link")
-        .style("stroke-width", function (d) {
-        return Math.sqrt(d.value);
-    });
+        .style("stroke-color", "red")
+        // Stroke width is proportional to the number of trials between a drug and a sponsor
+        .style("stroke-width", (d) => { return d.value * 1.5});
 
     //Do the same with the circles for the nodes - no
     let node = svg.selectAll(".node")
         .data(graph.nodes)
         .enter().append("circle")
         .attr("class", "node")
-        .attr("r", 8)
+        // Node Radius is proportional to the number of trials related to the node
+        .attr("r", (d) => { return this.node_radius(d)})
         .style("fill", function (d) {
           return color(d.group);
         })
         .call(force.drag)
-        .on("mouseover", function(d) {
-            div.transition()
+        .on("mouseover", (d) => {
+            this.mouseOverFunction(d); // Neighbor node selection
+            div.transition() // Tooltip show
                 .duration(200)
                 .style("visibility", "visible");
-            div.html(d.name + "<br/><p>" + (d.fraction_published*100).toFixed(0) + "% published</p>")
+            div.html(`<strong> ${d.group===1 ? 'Drug: ' : 'Sponsor: '} </strong>` + d.name + "<br/><p>" + (d.fraction_published*100).toFixed(0) + "% published</p><p>" + d.total + `${d.total===1 ? ' trial' : ' trials'}` + " </p>") // Tooltip format
                 .style("left", (d3.event.pageX - 80) + "px")
                 .style("top", (d3.event.pageY - 75) + "px");
             })
-        .on("mouseout", function(d) {
-            div.transition()
+        .on("mouseout", (d) => {
+            this.mouseOutFunction(d); // Neighbor node selection
+            div.transition() // Tooltip hide
                 .duration(500)
                 .style("visibility", "hidden");
         });
-        // .on('mouseover', tip.show) //Added
-        // .on('mouseout', tip.hide); //Added
-        // .on('dblclick', this.connectedNodes(node, link)); //Added code
+        // .on("mouseover", this.mouseOverFunction.bind(this))
+        // .on("mouseout", this.mouseOutFunction.bind(this));
 
     //Now we are giving the SVGs co-ordinates - the force layout is generating the co-ordinates which this code is using to update the attributes of the SVG elements
     force.on("tick", function () {
@@ -192,6 +252,17 @@ export default class RelationshipsDiagram extends React.Component {
     }
 
     optArray = optArray.sort();
+
+
+    // --------------------- neighbor node highlighting 2 ----------------------------- //
+    var linkedByIndex = {};
+    graph.links.forEach( (d) => {
+      linkedByIndex[d.source.index + "," + d.target.index] = true;
+      this.setState({
+        linkedByIndex: linkedByIndex,
+      });
+    });
+    // --------------------- end neighbor node highlighting 2 ----------------------------- //
 
 
   }

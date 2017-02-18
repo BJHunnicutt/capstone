@@ -21,7 +21,7 @@ class Homepage extends React.Component {
       <div>
 				<div className="column large-10 large-centered medium-10 medium-centered small-12">
 					<h2 className="f2 homepage-title">TrialsViewer<small className="f2">: Clinical Trial Explorer</small></h2>
-	        <h5 className="f2" id="quote">You can observe a lot by just watching <small>-Yogi Berra</small></h5>
+					<h5 className="f2" id="quote">You can observe a lot by just watching <small>-Yogi Berra</small></h5>
 
 	        <p>
 	          Clinical trials are a necessary and important tool used to test whether new drugs and

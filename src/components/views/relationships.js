@@ -9,14 +9,13 @@ import { sortStates, matchStateToTerm, styles } from '../data/utils.js'
 // import veryImportantGif2 from '../../../public/dory2.gif'
 
 
+let explore = false; // The 'Explore!' button appears when false to give data time to load - switch to a lifecycle method later
 
-let explore = false;
 export default class RelationshipsDiagram extends React.Component {
   constructor(props){
     super(); // "To get our context"
     this.state = {
-      // graph: mis,
-      toggle: 0,   //Toggle stores whether the highlighting is on
+      highlighting: false,   //highlighting stores whether the highlighting is on
       svg: '',
       linkedByIndex: [],
       color: d3.scale.category20(),
@@ -28,117 +27,112 @@ export default class RelationshipsDiagram extends React.Component {
   //   globalSearch: cleanQuery,
   // });
 
-
+  // Show Force diagram
   renderButton() {
     this.renderForceDiagram();
     explore = true;
   }
 
   updateData() {
-    // console.log('click');
+    console.log('click');
     // test
   }
 
+  // Highlight Neightbor nodes on hover --------- // http://bl.ocks.org/samuelleach/5497403
+  mouseOverFunction(d) {
+    // console.log("mouseOverFunction this: ", this);
+    var circle = this.state.svg.selectAll(".circle")
+    var node = this.state.svg.selectAll(".node")
+    var link = this.state.svg.selectAll(".link")
 
-// --------------------- neighbor node highlighting 2 ----------------------------- // http://bl.ocks.org/samuelleach/5497403
-mouseOverFunction(d) {
-  // console.log("mouseOverFunction this: ", this);
-  var circle = this.state.svg.selectAll(".circle")
-  var node = this.state.svg.selectAll(".node")
-  var link = this.state.svg.selectAll(".link")
+    node
+      .transition()
+        .duration(250)
+        .attr("r", (o) => {
+          if (this.isConnectedAsSource(o, d) || this.isConnectedAsTarget(o, d) || this.isEqual(o, d)) {
+            return 1.3 * this.node_radius(o);
+          } else {
+            return this.node_radius(o);
+          }
+        })
+        .style("opacity", (o) => {
+          return this.isConnected(o, d) ? 1.0 : 0.5 ;
+        })
+        // .style("fill", (o) => {
+        //   let fillcolor;
+        //   if (this.isConnectedAsSource(o, d)) {
+        //     fillcolor = 'red';
+        //   } else if (this.isConnectedAsTarget(o, d)) {
+        //     fillcolor = 'blue';
+        //   } else if (this.isEqual(o, d)) {
+        //     fillcolor = "hotpink";
+        //   } else {
+        //     fillcolor = this.state.color(o.group);
+        //   }
+        //   return fillcolor;
+        // })
+        ;
+    link
+      .transition()
+        .duration(250)
+        .style("stroke-opacity", (o) =>{
+          return o.source === d || o.target === d ? 1 : 0.2;
+        });
 
-  node
-    .transition()
-      .duration(250)
-      .attr("r", (o) => {
-        if (this.isConnectedAsSource(o, d) || this.isConnectedAsTarget(o, d) || this.isEqual(o, d)) {
-          return 1.4 * this.node_radius(o);
-        } else {
-          return this.node_radius(o);
-        }
-      })
-      .style("opacity", (o) => {
-        return this.isConnected(o, d) ? 1.0 : 0.2 ;
-      })
-      .style("fill", (o) => {
-        let fillcolor;
-        if (this.isConnectedAsSource(o, d)) {
-          fillcolor = 'red';
-        } else if (this.isConnectedAsTarget(o, d)) {
-          fillcolor = 'blue';
-        } else if (this.isEqual(o, d)) {
-          fillcolor = "hotpink";
-        } else {
-          fillcolor = this.state.color(o.group);
-        }
-        return fillcolor;
-      });
+    // circle
+    //   .transition(500)
+    //     .attr("r", () => { return 1.4 * this.node_radius(d)});
+  }
 
-  link
-    .transition()
-      .duration(250)
-      .style("stroke-opacity", (o) =>{
-        return o.source === d || o.target === d ? 1 : 0.2;
-      });
+  // Remove hover highlighting
+  mouseOutFunction(d) {
+    if (!this.state.highlighting) {
+      var circle = this.state.svg.selectAll(".circle")
+      var node = this.state.svg.selectAll(".node")
+      var link = this.state.svg.selectAll(".link")
 
-  // circle
-  //   .transition(500)
-  //     .attr("r", () => { return 1.4 * this.node_radius(d)});
-}
+      node
+        .transition()
+        .duration(250)
+          .attr("r", (d) => { return this.node_radius(d)})
+          // .style("fill", (o) => {
+          //   let fillcolor;
+          //   if (this.isConnectedAsSource(o, d)) {
+          //     fillcolor = 'red';
+          //   } else if (this.isConnectedAsTarget(o, d)) {
+          //     fillcolor = 'blue';
+          //   } else if (this.isEqual(o, d)) {
+          //     fillcolor = "hotpink";
+          //   } else {
+          //     fillcolor = this.state.color(o.group);
+          //   }
+          //   return fillcolor;
+          // })
+          .style("opacity", 1);
+      link
+        .transition(250)
+        .style("stroke-opacity", 0.5);
+    }
+  }
 
-mouseOutFunction(d) {
-  var circle = this.state.svg.selectAll(".circle")
-  var node = this.state.svg.selectAll(".node")
-  var link = this.state.svg.selectAll(".link")
+  isConnected(a, b) {
+      return this.isConnectedAsTarget(a, b) || this.isConnectedAsSource(a, b) || a.index === b.index;
+  }
 
+  isConnectedAsSource(a, b) {
+      return this.state.linkedByIndex[a.index + "," + b.index];
+  }
 
-  node
-    .transition()
-    .duration(250)
-      .attr("r", (d) => { return this.node_radius(d)})
-      .style("fill", (o) => {
-        let fillcolor;
-        if (this.isConnectedAsSource(o, d)) {
-          fillcolor = 'red';
-        } else if (this.isConnectedAsTarget(o, d)) {
-          fillcolor = 'blue';
-        } else if (this.isEqual(o, d)) {
-          fillcolor = "hotpink";
-        } else {
-          fillcolor = this.state.color(o.group);
-        }
-        return fillcolor;
-      })
-      .style("opacity", 1);
+  isConnectedAsTarget(a, b) {
+      return this.state.linkedByIndex[b.index + "," + a.index];
+  }
 
-  link
-    .transition(250)
-    // .style("stroke-opacity", 0.8);
+  isEqual(a, b) {
+      return a.index === b.index;
+  }
 
-  // circle
-  //   .transition(250)
-}
-
-isConnected(a, b) {
-    return this.isConnectedAsTarget(a, b) || this.isConnectedAsSource(a, b) || a.index === b.index;
-}
-
-isConnectedAsSource(a, b) {
-    return this.state.linkedByIndex[a.index + "," + b.index];
-}
-
-isConnectedAsTarget(a, b) {
-    return this.state.linkedByIndex[b.index + "," + a.index];
-}
-
-isEqual(a, b) {
-    return a.index === b.index;
-}
-// Node radius is proportional to the number of trials related to a node (to the power of 0.57 as per visual area perception work)
-node_radius(d) { return Math.pow(20 * d.total, 0.57); }
-
-
-// --------------------- end neighbor node highlighting 2 ----------------------------- //
+  // Node radius is proportional to the number of trials related to a node (to the power of 0.57 as per visual area perception work)
+  node_radius(d) { return Math.pow(20 * d.total, 0.57); }
 
 
   renderForceDiagram() {
@@ -255,7 +249,7 @@ node_radius(d) { return Math.pow(20 * d.total, 0.57); }
     optArray = optArray.sort();
 
 
-    // --------------------- neighbor node highlighting 2 ----------------------------- //
+    // Used for neighbor node highlighting
     var linkedByIndex = {};
     graph.links.forEach( (d) => {
       linkedByIndex[d.source.index + "," + d.target.index] = true;
@@ -263,15 +257,11 @@ node_radius(d) { return Math.pow(20 * d.total, 0.57); }
         linkedByIndex: linkedByIndex,
       });
     });
-    // --------------------- end neighbor node highlighting 2 ----------------------------- //
-
 
   }
 
   searchNode() {
-    // console.log('click');
-    // console.log(this.state.graph.nodes[0].group)
-      // find the node
+    // find the node
     var selectedVal = document.getElementById('node-search').value;
     var node = this.state.svg.selectAll(".node");
 
@@ -288,23 +278,9 @@ node_radius(d) { return Math.pow(20 * d.total, 0.57); }
             .duration(1000)
             .style("opacity", 1);
     }
-
-
-    // if (this.state.graph === mis) {
-    //   this.setState({
-    //     graph: mis2,
-    //   });
-    // } else if (this.state.graph === mis2) {
-    //   this.setState({
-    //     graph: mis,
-    //   });
-    // }
   }
 
   searchGroup(selectedVal) {
-    // console.log('click');
-      // find the node
-    // var selectedVal = document.getElementById('search').value;
     var node = this.state.svg.selectAll(".node");
 
     if (selectedVal === "none") {
@@ -339,18 +315,18 @@ node_radius(d) { return Math.pow(20 * d.total, 0.57); }
               {/* <input id="node-search"/> */}
               <button className="button testy" onClick={() => this.searchNode()}>Search For One</button>
               <button className="button secondary" onClick={() => this.searchGroup(1)}>Select Drugs</button>
+
+              {/* <Chart /> */}
+              {/* {this.renderForceDiagram(this.props.graphData)} */}
             </div>
-          ) : (null)}
+          ) : (
+            <div className="column explore-btn-wrapper">
+                <button className="button explore-relationships-btn" onClick={this.renderButton.bind(this)}><strong>Explore!</strong></button>
+            </div>
+        )}
         {/* </div> */}
 
-
-        {/* <Chart /> */}
-        {/* {this.renderForceDiagram(this.props.graphData)} */}
         <g className="force-diagram-wrapper" ref="forceDiagram" transform={this.props.translate} ></g>
-
-        <div className="column explore-btn-wrapper">
-            <button className="button explore-relationships-btn" onClick={this.renderButton.bind(this)}><strong>Explore!</strong></button>
-        </div>
 
 
         {/* <button className="button" onClick={this.updateData} /> */}

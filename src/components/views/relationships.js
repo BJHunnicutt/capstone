@@ -33,43 +33,25 @@ export default class RelationshipsDiagram extends React.Component {
     explore = true;
   }
 
-  // Select node and it's neighbors onClick
-  click(d) {
+  // Either highlight selected nodes (d) or deselect all nodes (false)
+  toggleNodeHighlight(d = false) {
+    console.log('toggleNodeHighlight', d);
     var node = this.state.svg.selectAll(".node")
-
-    node
-      .transition()
-        .duration(250)
-        .style("stroke", (o) => {
-          let bordercolor;
-          if (this.isConnectedAsSource(o, d) || this.isConnectedAsTarget(o, d) || this.isEqual(o, d)) {
-            bordercolor = 'gold';
-          } else {
-            bordercolor = 'white';
-          }
-          return bordercolor;
-        })
-  }
-
-  // Deselect node and it's neighbors on dblClick
-  dblclick() {
-    var node = this.state.svg.selectAll(".node")
-
-    node
-      .transition()
-        .duration(250)
-        .style("stroke", (o) => {
-          let bordercolor = 'white';
-          return bordercolor;
-        })
-  }
-
-  // Deselect node and it's neighbors when clicking on canvas but not on a node
-  canvasClick(e) {
-    console.log("canvas click");
-    var node = this.state.svg.selectAll(".node")
-
-    if (e.target.nodeName !== 'circle') {
+    if (d) {
+      console.log('in d');
+      node
+        .transition()
+          .duration(250)
+          .style("stroke", (o) => {
+            let bordercolor;
+            if (this.isConnectedAsSource(o, d) || this.isConnectedAsTarget(o, d) || this.isEqual(o, d)) {
+              bordercolor = 'gold';
+            } else {
+              bordercolor = 'white';
+            }
+            return bordercolor;
+          })
+    } else {
       node
         .transition()
           .duration(250)
@@ -77,6 +59,14 @@ export default class RelationshipsDiagram extends React.Component {
             let bordercolor = 'white';
             return bordercolor;
           })
+    }
+  }
+
+  // Deselect node and it's neighbors when clicking on canvas but not on a node
+  canvasClick(e) {
+    console.log("canvas click");
+    if (e.target.nodeName !== 'circle') {
+      this.toggleNodeHighlight();
     };
   }
 
@@ -242,8 +232,8 @@ export default class RelationshipsDiagram extends React.Component {
           return color(d.group);
         })
         .call(force.drag)
-        .on("click", (d) => this.click(d))
-        .on("dblclick", (d) => this.dblclick(d))
+        .on("click", (d) => this.toggleNodeHighlight(d))
+        .on("dblclick", (d) => this.toggleNodeHighlight(false))
         .on("mouseover", (d) => {
             this.mouseOverFunction(d); // Neighbor node selection
             div.transition() // Tooltip show
@@ -309,18 +299,22 @@ export default class RelationshipsDiagram extends React.Component {
     var selectedVal = document.getElementById('node-search').value;
     var node = this.state.svg.selectAll(".node");
 
-    if (selectedVal === "none") {
+    if (selectedVal === null) {
         node.style("stroke", "white").style("stroke-width", "1");
     } else {
-        var selected = node.filter(function (d, i) {
-            return d.name !== selectedVal;
-        });
-        selected.style("opacity", "0");
+        var selected = node.filter((d) => d.name === selectedVal);
+
+        var unselected = node.filter((d, i) => d.name !== selectedVal);
+        unselected.style("opacity", "0");
         var link = this.state.svg.selectAll(".link")
         link.style("opacity", "0");
-        d3.selectAll(".node, .link").transition()
-            .duration(1000)
-            .style("opacity", 1);
+        setTimeout(() => {
+          d3.selectAll(".node, .link").transition()
+              .duration(1000)
+              .style("opacity", 1);
+        }, 250); // without this the transition in toggleNodeHighlight() doesn't rerender properly
+
+        this.toggleNodeHighlight(selected[0][0].__data__)
     }
   }
 

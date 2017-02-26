@@ -33,9 +33,37 @@ export default class RelationshipsDiagram extends React.Component {
     explore = true;
   }
 
-  updateData() {
+  // Select node and it's neighbors onClick
+  click(d) {
     console.log('click');
-    // test
+    var node = this.state.svg.selectAll(".node")
+
+    node
+      .transition()
+        .duration(250)
+        .style("stroke", (o) => {
+          let bordercolor;
+          if (this.isConnectedAsSource(o, d) || this.isConnectedAsTarget(o, d) || this.isEqual(o, d)) {
+            bordercolor = 'gold';
+          } else {
+            bordercolor = 'white';
+          }
+          return bordercolor;
+        })
+  }
+
+  // Select node and it's neighbors onClick
+  dblclick() {
+    console.log('dblclick');
+    var node = this.state.svg.selectAll(".node")
+
+    node
+      .transition()
+        .duration(250)
+        .style("stroke", (o) => {
+          let bordercolor = 'white';
+          return bordercolor;
+        })
   }
 
   // Highlight Neightbor nodes on hover --------- // http://bl.ocks.org/samuelleach/5497403
@@ -200,6 +228,8 @@ export default class RelationshipsDiagram extends React.Component {
           return color(d.group);
         })
         .call(force.drag)
+        .on("click", (d) => this.click(d))
+        .on("dblclick", (d) => this.dblclick(d))
         .on("mouseover", (d) => {
             this.mouseOverFunction(d); // Neighbor node selection
             div.transition() // Tooltip show

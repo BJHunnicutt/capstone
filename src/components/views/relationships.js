@@ -35,7 +35,6 @@ export default class RelationshipsDiagram extends React.Component {
 
   // Select node and it's neighbors onClick
   click(d) {
-    console.log('click');
     var node = this.state.svg.selectAll(".node")
 
     node
@@ -52,9 +51,8 @@ export default class RelationshipsDiagram extends React.Component {
         })
   }
 
-  // Select node and it's neighbors onClick
+  // Deselect node and it's neighbors on dblClick
   dblclick() {
-    console.log('dblclick');
     var node = this.state.svg.selectAll(".node")
 
     node
@@ -64,6 +62,22 @@ export default class RelationshipsDiagram extends React.Component {
           let bordercolor = 'white';
           return bordercolor;
         })
+  }
+
+  // Deselect node and it's neighbors when clicking on canvas but not on a node
+  canvasClick(e) {
+    console.log("canvas click");
+    var node = this.state.svg.selectAll(".node")
+
+    if (e.target.nodeName !== 'circle') {
+      node
+        .transition()
+          .duration(250)
+          .style("stroke", (o) => {
+            let bordercolor = 'white';
+            return bordercolor;
+          })
+    };
   }
 
   // Highlight Neightbor nodes on hover --------- // http://bl.ocks.org/samuelleach/5497403
@@ -356,7 +370,7 @@ export default class RelationshipsDiagram extends React.Component {
         )}
         {/* </div> */}
 
-        <g className="force-diagram-wrapper" ref="forceDiagram" transform={this.props.translate} ></g>
+        <g className="force-diagram-wrapper" ref="forceDiagram" transform={this.props.translate} onClick={this.canvasClick.bind(this)}></g>
 
 
         {/* <button className="button" onClick={this.updateData} /> */}

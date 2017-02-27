@@ -8,6 +8,14 @@ import { sortStates, matchStateToTerm, styles } from '../data/utils.js'
 // import Chart from '../containers/scatter/chart.jsx';
 // import veryImportantGif2 from '../../../public/dory2.gif'
 
+// The graph:
+  // - highlights nodes and neighbors on click
+  // - highlights nodes and neighbors on search
+  // - un-highlights all nodes if the canvas is clicked (non-node)
+  // - limits node position to svg canvas size
+  // - shows details tooltip on hover
+  // - doesn't allow nodes to overlap (prevents node collision)
+
 
 let explore = false; // The 'Explore!' button appears when false to give data time to load - switch to a lifecycle method later
 
@@ -37,27 +45,36 @@ export default class RelationshipsDiagram extends React.Component {
   toggleNodeHighlight(d = false) {
     var node = this.state.svg.selectAll(".node")
     if (d) {
-      console.log('in d');
+      node.style("stroke", (o) => 'rgba(255,255,255,0)');
       node
-        .transition()
-          .duration(250)
+        // .transition()
+        //   .duration(0)
+          // .style("stroke", (o) => {
+          //   let bordercolor;
+          //   if (this.isConnectedAsSource(o, d) || this.isConnectedAsTarget(o, d) || this.isEqual(o, d)) {
+          //     bordercolor = 'black';
+          //   } else {
+          //     bordercolor = 'white';
+          //   }
+          //   return bordercolor;
+          // })
           .style("stroke", (o) => {
-            let bordercolor;
+            let fillcolor = 'rgba(255,255,255,0)';
             if (this.isConnectedAsSource(o, d) || this.isConnectedAsTarget(o, d) || this.isEqual(o, d)) {
-              bordercolor = 'gold';
+              let greenScale = `rgb( ${Math.floor(255-( ((o.fraction_published-0.5)*2) *200))}, 255, ${Math.floor(255-( ((o.fraction_published-0.5)*2) *200))} )`;
+              let redScale = `rgb(255, ${Math.floor(((o.fraction_published*2)*200))}, ${Math.floor(((o.fraction_published*2)*200))})`
+              fillcolor = `${o.fraction_published > 0.5 ? greenScale : redScale}`;
             } else {
-              bordercolor = 'white';
+              fillcolor = 'rgba(255,255,255,0)';
             }
-            return bordercolor;
+            return fillcolor;
           })
     } else {
       node
         .transition()
           .duration(250)
-          .style("stroke", (o) => {
-            let bordercolor = 'white';
-            return bordercolor;
-          })
+          .style("stroke", (o) => 'rgba(255,255,255,0)')
+          .style("fill", (o) => this.state.color(o.group))
     }
   }
 
@@ -174,11 +191,13 @@ export default class RelationshipsDiagram extends React.Component {
     //Set up the colour scale
     var color = this.state.color;
 
-    //Set up the force layout
+    //Set up the force layout -- the physics
     var force = d3.layout.force()
-        .charge(-120)
+        .charge(-90)
         .linkDistance(30)
+        .gravity(0.2)
         .size([width, height]);
+
 
     // Define the div for the tooltip
     var div = d3.select(this.refs.forceDiagram).append("div")
@@ -227,8 +246,18 @@ export default class RelationshipsDiagram extends React.Component {
         // Node Radius is proportional to the number of trials related to the node
         .attr("r", (d) => { return this.node_radius(d)})
         .style("fill", function (d) {
-          return color(d.group);
+          // if (d.group === 2) {
+          //   let greenScale = `rgb( ${Math.floor(255-( ((d.fraction_published-0.5)*2) *200))}, 255, ${Math.floor(255-( ((d.fraction_published-0.5)*2) *200))} )`;
+          //   let redScale = `rgb(255, ${Math.floor(((d.fraction_published*2)*200))}, ${Math.floor(((d.fraction_published*2)*200))})`
+          //   console.log(redScale, greenScale, d.fraction_published);
+          //   return `${d.fraction_published > 0.5 ? greenScale : redScale}`;
+          // } else {
+          //   return 'rgb(200, 200, 200)';
+            return color(d.group);
+          // }
         })
+        .style("stroke-width", 3)
+        .style("stroke", 'rgba(255,255,255,0)')
         .call(force.drag)
         .on("click", (d) => this.toggleNodeHighlight(d))
         .on("dblclick", (d) => this.toggleNodeHighlight(false))
@@ -253,6 +282,7 @@ export default class RelationshipsDiagram extends React.Component {
     //Now we are giving the SVGs co-ordinates - the force layout is generating the co-ordinates which this code is using to update the attributes of the SVG elements
     force
       .on("tick", () => {
+        node.each(this.collide(0.5)); // Inhibits node collision
         node
           .attr("cx", (d) => {
             return d.x = Math.max(this.node_radius(d), Math.min(width - this.node_radius(d), d.x)); // THis limits the nodes to the canvas bounds
@@ -275,6 +305,7 @@ export default class RelationshipsDiagram extends React.Component {
           });
       });
 
+
     var optArray = [];
     for (var i = 0; i < graph.nodes.length - 1; i++) {
         optArray.push(graph.nodes[i].name);
@@ -292,6 +323,36 @@ export default class RelationshipsDiagram extends React.Component {
       });
     });
 
+  }
+
+  // Calculates the distances to inhibit node collision
+  collide(alpha) {
+    let graph = store.getState().scatterState.graphData;
+    var padding = 1; // separation between circles
+    var quadtree = d3.geom.quadtree(graph.nodes);
+
+    return (d) => {
+      var rb = 2*this.node_radius(d) + padding,
+          nx1 = d.x - rb,
+          nx2 = d.x + rb,
+          ny1 = d.y - rb,
+          ny2 = d.y + rb;
+      quadtree.visit(function(quad, x1, y1, x2, y2) {
+        if (quad.point && (quad.point !== d)) {
+          var x = d.x - quad.point.x,
+              y = d.y - quad.point.y,
+              l = Math.sqrt(x * x + y * y);
+            if (l < rb) {
+            l = (l - rb) / l * alpha;
+            d.x -= x *= l;
+            d.y -= y *= l;
+            quad.point.x += x;
+            quad.point.y += y;
+          }
+        }
+        return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+      });
+    };
   }
 
   searchNode() {
@@ -331,13 +392,25 @@ export default class RelationshipsDiagram extends React.Component {
       node.style("stroke", "white").style("stroke-width", "1");
     } else {
       var selected = node.filter((d) => d.group === selectedVal);
-      selected.style("stroke", 'gold');
+      selected
+        // .style("stroke", 'black');
+        .style("stroke", (d) => {
+          let fillcolor;
+          if (d.group === selectedVal) {
+            let greenScale = `rgb( ${Math.floor(255-( ((d.fraction_published-0.5)*2) *200))}, 255, ${Math.floor(255-( ((d.fraction_published-0.5)*2) *200))} )`;
+            let redScale = `rgb(255, ${Math.floor(((d.fraction_published*2)*200))}, ${Math.floor(((d.fraction_published*2)*200))})`
+            fillcolor = `${d.fraction_published > 0.5 ? greenScale : redScale}`;
+          } else {
+            fillcolor = this.state.color(d.group);
+          }
+          return fillcolor;
+        });
 
       var unselected = node.filter(function (d, i) {
           return d.group !== selectedVal;
       });
       unselected.style("opacity", "0");
-      unselected.style("stroke", 'white');
+      unselected.style("stroke", 'rgba(255,255,255,0)')
 
       var link = this.state.svg.selectAll(".link")
       link.style("opacity", "0");

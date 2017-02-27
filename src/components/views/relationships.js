@@ -35,7 +35,6 @@ export default class RelationshipsDiagram extends React.Component {
 
   // Either highlight selected nodes (d) or deselect all nodes (false)
   toggleNodeHighlight(d = false) {
-    console.log('toggleNodeHighlight', d);
     var node = this.state.svg.selectAll(".node")
     if (d) {
       console.log('in d');
@@ -64,7 +63,6 @@ export default class RelationshipsDiagram extends React.Component {
 
   // Deselect node and it's neighbors when clicking on canvas but not on a node
   canvasClick(e) {
-    console.log("canvas click");
     if (e.target.nodeName !== 'circle') {
       this.toggleNodeHighlight();
     };
@@ -253,27 +251,29 @@ export default class RelationshipsDiagram extends React.Component {
         // .on("mouseout", this.mouseOutFunction.bind(this));
 
     //Now we are giving the SVGs co-ordinates - the force layout is generating the co-ordinates which this code is using to update the attributes of the SVG elements
-    force.on("tick", function () {
-        link.attr("x1", function (d) {
+    force
+      .on("tick", () => {
+        node
+          .attr("cx", (d) => {
+            return d.x = Math.max(this.node_radius(d), Math.min(width - this.node_radius(d), d.x)); // THis limits the nodes to the canvas bounds
+          })
+          .attr("cy", (d) => {
+            return d.y = Math.max(this.node_radius(d), Math.min(height - this.node_radius(d), d.y));  // THis limits the nodes to the canvas bounds
+          });
+        link
+          .attr("x1", function (d) {
             return d.source.x;
-        })
-            .attr("y1", function (d) {
+          })
+          .attr("y1", function (d) {
             return d.source.y;
-        })
-            .attr("x2", function (d) {
+          })
+          .attr("x2", function (d) {
             return d.target.x;
-        })
-            .attr("y2", function (d) {
+          })
+          .attr("y2", function (d) {
             return d.target.y;
-        });
-
-        node.attr("cx", function (d) {
-            return d.x;
-        })
-            .attr("cy", function (d) {
-            return d.y;
-        });
-    });
+          });
+      });
 
     var optArray = [];
     for (var i = 0; i < graph.nodes.length - 1; i++) {
@@ -327,19 +327,27 @@ export default class RelationshipsDiagram extends React.Component {
   searchGroup(selectedVal) {
     var node = this.state.svg.selectAll(".node");
 
-    if (selectedVal === "none") {
-        node.style("stroke", "white").style("stroke-width", "1");
+    if (selectedVal === null) {
+      node.style("stroke", "white").style("stroke-width", "1");
     } else {
-        var selected = node.filter(function (d, i) {
-            return d.group !== selectedVal;
-        });
-        selected.style("opacity", "0");
-        var link = this.state.svg.selectAll(".link")
-        link.style("opacity", "0");
+      var selected = node.filter((d) => d.group === selectedVal);
+      selected.style("stroke", 'gold');
+
+      var unselected = node.filter(function (d, i) {
+          return d.group !== selectedVal;
+      });
+      unselected.style("opacity", "0");
+      unselected.style("stroke", 'white');
+
+      var link = this.state.svg.selectAll(".link")
+      link.style("opacity", "0");
+      setTimeout(() => {
         d3.selectAll(".node, .link").transition()
             .duration(1000)
             .style("opacity", 1);
+      }, 250); // without this the node transition below doesn't rerender properly
     }
+
   }
 
 
@@ -359,6 +367,7 @@ export default class RelationshipsDiagram extends React.Component {
               {/* <input id="node-search"/> */}
               <button className="button testy" onClick={() => this.searchNode()}>Search For One</button>
               <button className="button secondary" onClick={() => this.searchGroup(1)}>Select Drugs</button>
+              <button className="button secondary" onClick={() => this.searchGroup(2)}>Select Trial Sponsors</button>
 
               {/* <Chart /> */}
               {/* {this.renderForceDiagram(this.props.graphData)} */}

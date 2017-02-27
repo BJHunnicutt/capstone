@@ -303,18 +303,24 @@ export default class RelationshipsDiagram extends React.Component {
         node.style("stroke", "white").style("stroke-width", "1");
     } else {
         var selected = node.filter((d) => d.name === selectedVal);
+        selected = selected[0][0].__data__;
 
-        var unselected = node.filter((d, i) => d.name !== selectedVal);
+        var unselected = node.filter((d, i) => {
+          console.log("equal", this.isEqual(d, selected));
+          let connectedOrSelectedNode = this.isConnectedAsSource(d, selected) || this.isConnectedAsTarget(d, selected) || this.isEqual(d, selected);
+          return !connectedOrSelectedNode;
+        });
+
         unselected.style("opacity", "0");
         var link = this.state.svg.selectAll(".link")
         link.style("opacity", "0");
         setTimeout(() => {
           d3.selectAll(".node, .link").transition()
-              .duration(1000)
+              .duration(500)
               .style("opacity", 1);
         }, 250); // without this the transition in toggleNodeHighlight() doesn't rerender properly
 
-        this.toggleNodeHighlight(selected[0][0].__data__)
+        this.toggleNodeHighlight(selected)
     }
   }
 

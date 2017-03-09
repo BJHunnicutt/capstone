@@ -19,6 +19,17 @@ import { sortStates, matchStateToTerm, styles } from '../data/utils.js'
 
 let explore = false; // The 'Explore!' button appears when false to give data time to load - switch to a lifecycle method later
 
+// Default node colors
+function colorScale(i) {
+  let colors = ["", "rgb(200, 200, 200)", "rgb(50, 50, 50)"]; //I'm only accessing indeces 1 & 2
+  return colors[i];
+};
+function colorScaleDim(i) {
+  let colors = ["", "rgb(230, 230, 230)", "rgb(150, 150, 150)"];
+  return colors[i];
+};
+
+
 export default class RelationshipsDiagram extends React.Component {
   constructor(props){
     super(); // "To get our context"
@@ -26,14 +37,12 @@ export default class RelationshipsDiagram extends React.Component {
       highlighting: false,   //highlighting stores whether the highlighting is on
       svg: '',
       linkedByIndex: [],
-      color: d3.scale.category20(),
-      // data: props.data
+      // color: d3.scale.category20(),
+      color: colorScale,
+      colorDimmed: colorScaleDim,
     }
     // console.log("constructor props: ", props);
   }
-  // this.setState({
-  //   globalSearch: cleanQuery,
-  // });
 
   // Show Force diagram
   renderButton() {
@@ -41,34 +50,24 @@ export default class RelationshipsDiagram extends React.Component {
     explore = true;
   }
 
+  getPublicationColor(o, d) {
+    let fillcolor = 'rgba(255,255,255,0)';
+    if (this.isConnectedAsSource(o, d) || this.isConnectedAsTarget(o, d) || this.isEqual(o, d)) {
+      let greenScale = `rgb( ${Math.floor(255-( ((o.fraction_published-0.5)*2) *200))}, 255, ${Math.floor(255-( ((o.fraction_published-0.5)*2) *200))} )`;
+      let redScale = `rgb(255, ${Math.floor(((o.fraction_published*2)*200))}, ${Math.floor(((o.fraction_published*2)*200))})`
+      fillcolor = `${o.fraction_published > 0.5 ? greenScale : redScale}`;
+    } else {
+      fillcolor = 'rgba(255,255,255,0)';
+    }
+    return fillcolor;
+  }
+
   // Either highlight selected nodes (d) or deselect all nodes (false)
   toggleNodeHighlight(d = false) {
     var node = this.state.svg.selectAll(".node")
     if (d) {
       node.style("stroke", (o) => 'rgba(255,255,255,0)');
-      node
-        // .transition()
-        //   .duration(0)
-          // .style("stroke", (o) => {
-          //   let bordercolor;
-          //   if (this.isConnectedAsSource(o, d) || this.isConnectedAsTarget(o, d) || this.isEqual(o, d)) {
-          //     bordercolor = 'black';
-          //   } else {
-          //     bordercolor = 'white';
-          //   }
-          //   return bordercolor;
-          // })
-          .style("stroke", (o) => {
-            let fillcolor = 'rgba(255,255,255,0)';
-            if (this.isConnectedAsSource(o, d) || this.isConnectedAsTarget(o, d) || this.isEqual(o, d)) {
-              let greenScale = `rgb( ${Math.floor(255-( ((o.fraction_published-0.5)*2) *200))}, 255, ${Math.floor(255-( ((o.fraction_published-0.5)*2) *200))} )`;
-              let redScale = `rgb(255, ${Math.floor(((o.fraction_published*2)*200))}, ${Math.floor(((o.fraction_published*2)*200))})`
-              fillcolor = `${o.fraction_published > 0.5 ? greenScale : redScale}`;
-            } else {
-              fillcolor = 'rgba(255,255,255,0)';
-            }
-            return fillcolor;
-          })
+      node.style("stroke", (o) => this.getPublicationColor(o, d))
     } else {
       node
         .transition()
@@ -102,23 +101,9 @@ export default class RelationshipsDiagram extends React.Component {
             return this.node_radius(o);
           }
         })
-        .style("opacity", (o) => {
-          return this.isConnected(o, d) ? 1.0 : 0.5 ;
-        })
-        // .style("fill", (o) => {
-        //   let fillcolor;
-        //   if (this.isConnectedAsSource(o, d)) {
-        //     fillcolor = 'red';
-        //   } else if (this.isConnectedAsTarget(o, d)) {
-        //     fillcolor = 'blue';
-        //   } else if (this.isEqual(o, d)) {
-        //     fillcolor = "hotpink";
-        //   } else {
-        //     fillcolor = this.state.color(o.group);
-        //   }
-        //   return fillcolor;
-        // })
-        ;
+        .style("fill", (o) => {
+          return this.isConnected(o, d) ? this.state.color(o.group) : this.state.colorDimmed(o.group) ;
+        });
     link
       .transition()
         .duration(250)
@@ -126,9 +111,6 @@ export default class RelationshipsDiagram extends React.Component {
           return o.source === d || o.target === d ? 1 : 0.2;
         });
 
-    // circle
-    //   .transition(500)
-    //     .attr("r", () => { return 1.4 * this.node_radius(d)});
   }
 
   // Remove hover highlighting
@@ -142,20 +124,7 @@ export default class RelationshipsDiagram extends React.Component {
         .transition()
         .duration(250)
           .attr("r", (d) => { return this.node_radius(d)})
-          // .style("fill", (o) => {
-          //   let fillcolor;
-          //   if (this.isConnectedAsSource(o, d)) {
-          //     fillcolor = 'red';
-          //   } else if (this.isConnectedAsTarget(o, d)) {
-          //     fillcolor = 'blue';
-          //   } else if (this.isEqual(o, d)) {
-          //     fillcolor = "hotpink";
-          //   } else {
-          //     fillcolor = this.state.color(o.group);
-          //   }
-          //   return fillcolor;
-          // })
-          .style("opacity", 1);
+          .style("fill", (o) => this.state.color(o.group))
       link
         .transition(250)
         .style("stroke-opacity", 0.5);
@@ -256,7 +225,7 @@ export default class RelationshipsDiagram extends React.Component {
             return color(d.group);
           // }
         })
-        .style("stroke-width", 3)
+        .style("stroke-width", 2)
         .style("stroke", 'rgba(255,255,255,0)')
         .call(force.drag)
         .on("click", (d) => this.toggleNodeHighlight(d))
@@ -367,7 +336,6 @@ export default class RelationshipsDiagram extends React.Component {
         selected = selected[0][0].__data__;
 
         var unselected = node.filter((d, i) => {
-          console.log("equal", this.isEqual(d, selected));
           let connectedOrSelectedNode = this.isConnectedAsSource(d, selected) || this.isConnectedAsTarget(d, selected) || this.isEqual(d, selected);
           return !connectedOrSelectedNode;
         });
@@ -378,7 +346,8 @@ export default class RelationshipsDiagram extends React.Component {
         setTimeout(() => {
           d3.selectAll(".node, .link").transition()
               .duration(500)
-              .style("opacity", 1);
+              .style("opacity", 1)
+              .style("fill", (o) => this.state.color(o.group))
         }, 250); // without this the transition in toggleNodeHighlight() doesn't rerender properly
 
         this.toggleNodeHighlight(selected)
@@ -417,7 +386,8 @@ export default class RelationshipsDiagram extends React.Component {
       setTimeout(() => {
         d3.selectAll(".node, .link").transition()
             .duration(1000)
-            .style("opacity", 1);
+            .style("opacity", 1)
+            .style("fill", (o) => this.state.color(o.group))
       }, 250); // without this the node transition below doesn't rerender properly
     }
 

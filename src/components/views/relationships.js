@@ -50,7 +50,7 @@ export default class RelationshipsDiagram extends React.Component {
     explore = true;
   }
 
-  getPublicationColor(o, d) {
+  getPublicationColor(o, d) { // o is the node to color and d is the target node
     let fillcolor = 'rgba(255,255,255,0)';
     if (this.isConnectedAsSource(o, d) || this.isConnectedAsTarget(o, d) || this.isEqual(o, d)) {
       let greenScale = `rgb( ${Math.floor(255-( ((o.fraction_published-0.5)*2) *200))}, 255, ${Math.floor(255-( ((o.fraction_published-0.5)*2) *200))} )`;
@@ -183,15 +183,9 @@ export default class RelationshipsDiagram extends React.Component {
       svg: svg,
     });
 
-
     // let graph = this.state.graph;
     let graph = store.getState().scatterState.graphData;
 
-    // d3.csv(allData, (data) => {
-		// 	// console.log('d3csv: ', data);
-		// 	return this.props.setUpRelationships(data);
-    //
-		// });
 
     //Creates the graph data structure out of the json data
     force.nodes(graph.nodes)
@@ -213,18 +207,9 @@ export default class RelationshipsDiagram extends React.Component {
         .enter().append("circle")
         .attr("class", "node")
         // Node Radius is proportional to the number of trials related to the node
-        .attr("r", (d) => { return this.node_radius(d)})
-        .style("fill", function (d) {
-          // if (d.group === 2) {
-          //   let greenScale = `rgb( ${Math.floor(255-( ((d.fraction_published-0.5)*2) *200))}, 255, ${Math.floor(255-( ((d.fraction_published-0.5)*2) *200))} )`;
-          //   let redScale = `rgb(255, ${Math.floor(((d.fraction_published*2)*200))}, ${Math.floor(((d.fraction_published*2)*200))})`
-          //   console.log(redScale, greenScale, d.fraction_published);
-          //   return `${d.fraction_published > 0.5 ? greenScale : redScale}`;
-          // } else {
-          //   return 'rgb(200, 200, 200)';
-            return color(d.group);
-          // }
-        })
+        .attr("r", (d) => {return this.node_radius(d)})
+        .style("fill", (d) => {return color(d.group)})
+        // .style("fill", (d) => this.getPublicationColor(d, d))
         .style("stroke-width", 2)
         .style("stroke", 'rgba(255,255,255,0)')
         .call(force.drag)
@@ -245,8 +230,6 @@ export default class RelationshipsDiagram extends React.Component {
                 .duration(500)
                 .style("visibility", "hidden");
         });
-        // .on("mouseover", this.mouseOverFunction.bind(this))
-        // .on("mouseout", this.mouseOutFunction.bind(this));
 
     //Now we are giving the SVGs co-ordinates - the force layout is generating the co-ordinates which this code is using to update the attributes of the SVG elements
     force

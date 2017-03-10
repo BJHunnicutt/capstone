@@ -40,6 +40,7 @@ export default class RelationshipsDiagram extends React.Component {
       // color: d3.scale.category20(),
       color: colorScale,
       colorDimmed: colorScaleDim,
+      selectedFilter: false,
     }
     // console.log("constructor props: ", props);
   }
@@ -67,8 +68,13 @@ export default class RelationshipsDiagram extends React.Component {
     var node = this.state.svg.selectAll(".node")
     if (d) {
       node.style("stroke", (o) => 'rgba(255,255,255,0)');
-      node.style("stroke", (o) => this.getPublicationColor(o, d))
+      node.style("stroke", (o) => {
+        d === o ? this.setState({ selectedFilter: o.name }) : null;
+        return this.getPublicationColor(o, d)
+      })
+
     } else {
+      this.setState({ selectedFilter: false })
       node
         .transition()
           .duration(250)
@@ -154,8 +160,9 @@ export default class RelationshipsDiagram extends React.Component {
   renderForceDiagram() {
     //Constants for the SVG
     // var width = 500, height = 500;
-    let width = window.innerWidth * .96; // Testing out making the plot viewport responsive
-    let height = 0.8 * window.innerHeight;
+    // let width = window.innerWidth * .96; // Testing out making the plot viewport responsive
+    let width = ((window.innerWidth * 0.96) > (window.innerHeight * 0.55)) ? window.innerHeight * 0.55 : window.innerWidth * 0.96;
+    let height = ((window.innerHeight * 0.55) < (window.innerWidth * 0.96)) ? window.innerHeight * 0.55 : window.innerWidth * 0.96;
 
     //Set up the colour scale
     var color = this.state.color;
@@ -311,6 +318,7 @@ export default class RelationshipsDiagram extends React.Component {
     // find the node
     var selectedVal = document.getElementById('node-search').value;
     var node = this.state.svg.selectAll(".node");
+    this.setState({ selectedFilter: selectedVal })
 
     if (selectedVal === null) {
         node.style("stroke", "white").style("stroke-width", "1");
@@ -338,12 +346,21 @@ export default class RelationshipsDiagram extends React.Component {
   }
 
   searchGroup(selectedVal) {
-    var node = this.state.svg.selectAll(".node");
+    let node = this.state.svg.selectAll(".node");
+    let link = this.state.svg.selectAll(".link")
 
     if (selectedVal === null) {
       node.style("stroke", "white").style("stroke-width", "1");
+    } else if (selectedVal === 'all') {
+      this.setState({ selectedFilter: 'All Drugs ans Trial Sponsors' })
+      node.style("stroke", (o) => this.getPublicationColor(o, o));
     } else {
-      var selected = node.filter((d) => d.group === selectedVal);
+      if (selectedVal === 1) {
+        this.setState({ selectedFilter: 'All Drugs' })
+      } else {
+        this.setState({ selectedFilter: 'All Trial Sponsors' })
+      }
+      let selected = node.filter((d) => d.group === selectedVal);
       selected
         // .style("stroke", 'black');
         .style("stroke", (d) => {
@@ -364,11 +381,10 @@ export default class RelationshipsDiagram extends React.Component {
       unselected.style("opacity", "0");
       unselected.style("stroke", 'rgba(255,255,255,0)')
 
-      var link = this.state.svg.selectAll(".link")
       link.style("opacity", "0");
       setTimeout(() => {
         d3.selectAll(".node, .link").transition()
-            .duration(1000)
+            .duration(500)
             .style("opacity", 1)
             .style("fill", (o) => this.state.color(o.group))
       }, 250); // without this the node transition below doesn't rerender properly
@@ -382,36 +398,43 @@ export default class RelationshipsDiagram extends React.Component {
     // console.log('constructor: ', this.state.data);
 
     return (
-      <div>
+      <div className="relationships-diagram">
         {/* <h3 className="f2 comp-title"> <strong>Under Construction!</strong> ...but feel free to play with the squidies (i.e. clinical trial funder-drug relationships) in the mean time! </h3> */}
 
-        {/* <div className="column explore-btn-wrapper"> */}
           {explore ? (
-            <div className="column explore-btn-wrapper">
-              {/* // <img className="dory-gif" src={veryImportantGif2} alt="Come here little squishy"/> */}
-              <NodeSearch graph={store.getState().scatterState.graphData}/>
-              {/* <input id="node-search"/> */}
-              <button className="button testy" onClick={() => this.searchNode()}>Search For One</button>
-              <button className="button secondary" onClick={() => this.searchGroup(1)}>Select Drugs</button>
-              <button className="button secondary" onClick={() => this.searchGroup(2)}>Select Trial Sponsors</button>
+            <div>
+              <h3 className="f2 centered filter-title">Explore Relationships Between Drug Trials and Their Sponsors </h3>
 
-              {/* <Chart /> */}
-              {/* {this.renderForceDiagram(this.props.graphData)} */}
+              <div className="column centered filter-wrapper">
+                <div className="search-wrapper">
+                  <h7 className="f2 rel-search-label">View Publication Rates For : </h7>
+                  <div className="filter-buttons">
+                    <button className="button secondary" onClick={() => this.searchGroup(1)}>Drugs</button>
+                    <button className="button secondary" onClick={() => this.searchGroup(2)}>Sponsors</button>
+                    <button className="button secondary" onClick={() => this.searchGroup('all')}>Both</button>
+                  </div>
+                  <div className="filter-search">
+                    <NodeSearch graph={store.getState().scatterState.graphData}/>
+                    <button className="button node-search-btn" onClick={() => this.searchNode()}>Search</button>
+                  </div>
+                </div>
+
+              </div>
+              {this.state.selectedFilter ? (
+                <label className="f2 rel-current-search"> Current Search : <strong> {this.state.selectedFilter}</strong> </label>
+              ) : (
+                <label className="f2 rel-current-search"> Current Search : <i>(select a filter above OR click on the diagram below)</i> </label>
+              )};
             </div>
+
           ) : (
             <div className="column explore-btn-wrapper">
                 <button className="button explore-relationships-btn" onClick={this.renderButton.bind(this)}><strong>Explore!</strong></button>
             </div>
         )}
-        {/* </div> */}
 
         <g className="force-diagram-wrapper" ref="forceDiagram" transform={this.props.translate} onClick={this.canvasClick.bind(this)}></g>
-
-
         {/* <button className="button" onClick={this.updateData} /> */}
-
-        {/* <img src={veryImportantGif} alt="and you shall be my squishy"/> */}
-
 
       </div>
     )
@@ -450,8 +473,6 @@ class NodeSearch extends React.Component {
   render(props) {
     // console.log('autocomplete props', this.props.graph.nodes);
     return (
-      <span>
-        <label htmlFor="node-search">Select A Node</label>
         <Autocomplete
           value={this.state.value}
           inputProps={{name: "Sponsor Node", id: "node-search"}}
@@ -477,7 +498,6 @@ class NodeSearch extends React.Component {
           //   </div>
           // )}
         />
-      </span>
     )
   }
 }

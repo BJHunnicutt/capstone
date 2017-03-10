@@ -113,9 +113,9 @@ class RelationshipsPage extends React.Component {
 				}
 			}
 		}
-		console.log("nameNodes", nameNodes);
-		console.log("trialsData", trialsData);
-		console.log("sourceLinks", sourceLinks);
+		// console.log("nameNodes", nameNodes);
+		// console.log("trialsData", trialsData);
+		// console.log("sourceLinks", sourceLinks);
 
 
 		this.setState({

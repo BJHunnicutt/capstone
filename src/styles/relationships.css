@@ -14,6 +14,73 @@
   top: 400px;
 }
 
+.force-diagram-wrapper svg {
+  /*border: 1px solid black;*/
+}
+
+
+/* ---------------------------- Filter --------------------------------- */
+
+.relationships-diagram .filter-wrapper {
+  /*border: 1px solid black;*/
+  box-shadow: 0 1px #FFFFFF inset, 0 1px 3px rgba(34, 25, 25, 0.4);
+  margin-bottom: 1%;
+}
+
+.relationships-diagram .filter-title {
+  margin-bottom: 3vh;
+}
+
+#node-search {
+  position: relative;
+  top: 0;
+  padding: 0;
+  width: 100%;
+  height: 40px;
+}
+
+.relationships-diagram .search-wrapper {
+  padding-top: 2%;
+  width: 100%;
+}
+
+.relationships-diagram .search-wrapper div {
+  vertical-align: top;
+}
+
+.relationships-diagram .search-wrapper .node-search-btn {
+  /*margin-right: 3%;*/
+}
+
+.relationships-diagram .filter-buttons {
+  display: inline-block;
+}
+
+.relationships-diagram .filter-search {
+  display: inline;
+  white-space: nowrap;
+  margin-left: 3%;
+
+}
+
+.rel-current-search {
+  text-align: right;
+}
+
+.rel-search-label {
+  display: inline-block;
+  vertical-align: middle;
+  /*color: red;*/
+  line-height: normal;
+  margin: 0 1rem 1rem 0;
+}
+
+
+/* ---------------------------- end Filter --------------------------------- */
+
+
+
+
 /* ---------------------------- Tooltip --------------------------------- */
 /*div#rel-tooltip {
     position: absolute;
@@ -69,13 +136,13 @@
     stroke-opacity: .6;
 }
 
-h3 {
+/*.relationships-diagram h3 {
     color: #1ABC9C;
     text-align:center;
     font-style: italic;
     font-size: 14px;
     font-family: "Helvetica";
-}
+}*/
 
 .node text {
 stroke:#333;

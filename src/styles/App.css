@@ -31,6 +31,10 @@
   font-family: 'Megrim', cursive;
 }
 
+small {
+  color: gray !important;
+}
+
 
 
 /* Icons and Search button as an Icon*/
@@ -230,7 +234,7 @@ header h3 {
 }
 /* ------------------------------ END HEADER ---------------------------------- */
 
-rel-tooltip.hidden 
+rel-tooltip.hidden
 
 
 /* ---------------------------- RECENT SEARCHES ------------------------------ */

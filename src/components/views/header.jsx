@@ -19,20 +19,20 @@ export default (props) => {
                   <div className="top-bar-right">
                     <ul className="menu">
                       <li>
-                        <Link to="/search">
+                        <Link to="/search" title="Search">
                           <i className="material-icons"> search </i>
                           Search
                         </Link>
                       </li>
                       <li>
-                        <Link to="/comparisons">
+                        <Link to="/comparisons" title="Comparisons">
                           <i className="material-icons"> multiline_chart </i>
                           Compare Trials
                         </Link>
                       </li>
                       <li>
-                        <Link to="/relationships">
-                          <i className="material-icons"> linear_scale </i>
+                        <Link to="/relationships" title="Explore Relationships">
+                        <i className="material-icons"> linear_scale </i>
                           Explore Relationships
                         </Link>
                       </li>

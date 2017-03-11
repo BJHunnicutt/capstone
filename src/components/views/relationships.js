@@ -20,14 +20,46 @@ import { sortStates, matchStateToTerm, styles } from '../data/utils.js'
 let explore = false; // The 'Explore!' button appears when false to give data time to load - switch to a lifecycle method later
 
 // Default node colors
-function colorScale(i) {
+function nodeColors(i) {
   let colors = ["", "rgb(200, 200, 200)", "rgb(50, 50, 50)"]; //I'm only accessing indeces 1 & 2
   return colors[i];
 };
-function colorScaleDim(i) {
+function nodeColorsDim(i) {
   let colors = ["", "rgb(230, 230, 230)", "rgb(150, 150, 150)"];
   return colors[i];
 };
+
+function linspace(start, end, n) {
+    var out = [];
+    var delta = (end - start) / (n - 1);
+
+    var i = 0;
+    while(i < (n - 1)) {
+        out.push(start + (i * delta));
+        i++;
+    }
+
+    out.push(end);
+    return out;
+}
+
+// const colorRange = ['#7f3b08', '#b35806', '#e08214', '#fdb863', '#fee0b6', '#ffffff', '#d8daeb', '#b2abd2', '#8073ac', '#542788', '#2d004b'];
+const colorRange = ['#ff0000', '#ff8282', '#ffffff', '#82ff82', '#00ff00'];
+// const colorRange = ['#ff0000', '#AA0000', '#550000', '#005500', '#00AA00', '#00ff00'];
+
+//Base the color scale on average temperature extremes (http://bl.ocks.org/nbremer/a43dbd5690ccd5ac4c6cc392415140e7)
+var colorScale = d3.scale.linear()
+	.domain(linspace(0, 100, colorRange.length))
+	.range(colorRange);
+	// .interpolate(d3.interpolateHcl);
+
+// programatically generate the gradient for the legend
+// this creates an array of [pct, colour] pairs as stop
+// values for legend
+var pct = linspace(0, 100, colorRange.length).map(function(d) {
+    return Math.round(d) + '%';
+});
+var colourPct = d3.zip(pct, colorRange);
 
 
 export default class RelationshipsDiagram extends React.Component {
@@ -38,8 +70,8 @@ export default class RelationshipsDiagram extends React.Component {
       svg: '',
       linkedByIndex: [],
       // color: d3.scale.category20(),
-      color: colorScale,
-      colorDimmed: colorScaleDim,
+      nodeColor: nodeColors,
+      nodeColorDimmed: nodeColorsDim,
       selectedFilter: false,
     }
     // console.log("constructor props: ", props);
@@ -63,15 +95,24 @@ export default class RelationshipsDiagram extends React.Component {
     return fillcolor;
   }
 
+  isConnected(o, d) {
+    return (this.isConnectedAsSource(o, d) || this.isConnectedAsTarget(o, d) || this.isEqual(o, d)) ?
+      true : false
+  }
+
   // Either highlight selected nodes (d) or deselect all nodes (false)
   toggleNodeHighlight(d = false) {
     var node = this.state.svg.selectAll(".node")
     if (d) {
-      node.style("stroke", (o) => 'rgba(255,255,255,0)');
+      // node.style("stroke", (o) => 'rgba(255,255,255,0)');
+      // node.style("stroke", (o) => {
+      //   d === o ? this.setState({ selectedFilter: o.name }) : null;
+      //   return this.getPublicationColor(o, d)
+      // })
       node.style("stroke", (o) => {
         d === o ? this.setState({ selectedFilter: o.name }) : null;
-        return this.getPublicationColor(o, d)
-      })
+        return this.isConnected(o, d) ? colorScale(o.fraction_published*100) : 'rgba(255,255,255,0)';
+      });
 
     } else {
       this.setState({ selectedFilter: false })
@@ -79,7 +120,7 @@ export default class RelationshipsDiagram extends React.Component {
         .transition()
           .duration(250)
           .style("stroke", (o) => 'rgba(255,255,255,0)')
-          .style("fill", (o) => this.state.color(o.group))
+          .style("fill", (o) => this.state.nodeColor(o.group))
     }
   }
 
@@ -108,7 +149,7 @@ export default class RelationshipsDiagram extends React.Component {
           }
         })
         .style("fill", (o) => {
-          return this.isConnected(o, d) ? this.state.color(o.group) : this.state.colorDimmed(o.group) ;
+          return this.isConnected(o, d) ? this.state.nodeColor(o.group) : this.state.nodeColorDimmed(o.group) ;
         });
     link
       .transition()
@@ -130,7 +171,7 @@ export default class RelationshipsDiagram extends React.Component {
         .transition()
         .duration(250)
           .attr("r", (d) => { return this.node_radius(d)})
-          .style("fill", (o) => this.state.color(o.group))
+          .style("fill", (o) => this.state.nodeColor(o.group))
       link
         .transition(250)
         .style("stroke-opacity", 0.5);
@@ -165,7 +206,7 @@ export default class RelationshipsDiagram extends React.Component {
     let height = ((window.innerHeight * 0.55) < (window.innerWidth * 0.96)) ? window.innerHeight * 0.55 : window.innerWidth * 0.96;
 
     //Set up the colour scale
-    var color = this.state.color;
+    var color = this.state.nodeColor;
 
     //Set up the force layout -- the physics
     var force = d3.layout.force()
@@ -276,7 +317,7 @@ export default class RelationshipsDiagram extends React.Component {
 
 
     // Used for neighbor node highlighting
-    var linkedByIndex = {};
+    const linkedByIndex = {};
     graph.links.forEach( (d) => {
       linkedByIndex[d.source.index + "," + d.target.index] = true;
       this.setState({
@@ -284,13 +325,98 @@ export default class RelationshipsDiagram extends React.Component {
       });
     });
 
+    ///////////////////////////////////////////////////////////////////////////
+    //////////////// Create the gradient for the legend ///////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+
+    //Extra scale since the color scale is interpolated
+    const tempScale = d3.scale.linear()
+    	.domain([0, 100])
+    	.range([0, width]);
+
+    //Calculate the variables for the temp gradient
+    const numStops = 4;
+    const tempRange = tempScale.domain();
+    tempRange[2] = tempRange[1] - tempRange[0];
+    let tempPoint = [];
+    for(let i = 0; i < numStops; i++) {
+    	tempPoint.push(i * tempRange[2]/(numStops-1) + tempRange[0]);
+    }//for i
+
+    //Create the gradient
+    var gradient = svg.append("defs")
+    	.append("linearGradient")
+    	.attr("id", "legend-publication")
+    	.attr("x1", "0%").attr("y1", "0%")
+    	.attr("x2", "100%").attr("y2", "0%")
+    	// .selectAll("stop")
+    	// .data(d3.range(numStops))
+    	// .enter().append("stop")
+    	// .attr("offset", function(d,i) { return tempScale( tempPoint[i] )/width; })
+    	// .attr("stop-color", function(d,i) { return colorScale( tempPoint[i] ); });
+
+    colourPct.forEach(function(d) {
+        gradient.append('stop')
+            .attr('offset', d[0])
+            .attr('stop-color', d[1])
+            .attr('stop-opacity', 1);
+    });
+    ///////////////////////////////////////////////////////////////////////////
+    ////////////////////////// Draw the legend ////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+
+    const legendWidth = Math.min(width/2, 400);
+
+    //Color Legend container
+    const legendsvg = svg.append("g")
+    	.attr("class", "legendWrapper")
+    	.attr("transform", "translate(" + width/2 + "," + 0 + ")");
+
+    //Draw the Rectangle
+    legendsvg.append("rect")
+    	.attr("class", "legendRect")
+    	.attr("x", -legendWidth/2)
+    	.attr("y", 0)
+    	.attr("rx", 8/2)
+    	.attr("width", legendWidth)
+    	.attr("height", 8)
+    	.style("fill", "url(#legend-publication)");
+
+    //Append title
+    legendsvg.append("text")
+    	.attr("class", "legendTitle")
+    	.attr("x", 0)
+    	.attr("y", -10)
+    	.style("text-anchor", "middle")
+    	.text("Publication Rate");
+
+    //Set scale for x-axis
+    const xScale = d3.scale.linear()
+    	 .range([-legendWidth/2, legendWidth/2])
+    	 .domain([0,100] );
+
+    //Define x-axis
+    const xAxis = d3.svg.axis()
+    	  .orient("bottom")
+    	  .ticks(4)
+    	  .tickFormat(function(d) { return d + "%"; })
+    	  .scale(xScale);
+
+    //Set up X axis
+    legendsvg.append("g")
+    	.attr("class", "axis")
+    	.attr("transform", "translate(0," + (10) + ")")
+    	.call(xAxis);
+
+
+
   }
 
   // Calculates the distances to inhibit node collision
   collide(alpha) {
-    let graph = store.getState().scatterState.graphData;
-    var padding = 1; // separation between circles
-    var quadtree = d3.geom.quadtree(graph.nodes);
+    const graph = store.getState().scatterState.graphData;
+    const padding = 1; // separation between circles
+    const quadtree = d3.geom.quadtree(graph.nodes);
 
     return (d) => {
       var rb = 2*this.node_radius(d) + padding,
@@ -340,7 +466,7 @@ export default class RelationshipsDiagram extends React.Component {
           d3.selectAll(".node, .link").transition()
               .duration(500)
               .style("opacity", 1)
-              .style("fill", (o) => this.state.color(o.group))
+              .style("fill", (o) => this.state.nodeColor(o.group))
         }, 250); // without this the transition in toggleNodeHighlight() doesn't rerender properly
 
         this.toggleNodeHighlight(selected)
@@ -355,7 +481,8 @@ export default class RelationshipsDiagram extends React.Component {
       node.style("stroke", "white").style("stroke-width", "1");
     } else if (selectedVal === 'all') {
       this.setState({ selectedFilter: 'All Drugs and Trial Sponsors' })
-      node.style("stroke", (o) => this.getPublicationColor(o, o));
+      // node.style("stroke", (o) => this.getPublicationColor(o, o));
+      node.style("stroke", (o) => colorScale(o.fraction_published*100));
     } else {
       if (selectedVal === 1) {
         this.setState({ selectedFilter: 'All Drugs' })
@@ -368,11 +495,12 @@ export default class RelationshipsDiagram extends React.Component {
         .style("stroke", (d) => {
           let fillcolor;
           if (d.group === selectedVal) {
-            let greenScale = `rgb( ${Math.floor(255-( ((d.fraction_published-0.5)*2) *200))}, 255, ${Math.floor(255-( ((d.fraction_published-0.5)*2) *200))} )`;
-            let redScale = `rgb(255, ${Math.floor(((d.fraction_published*2)*200))}, ${Math.floor(((d.fraction_published*2)*200))})`
-            fillcolor = `${d.fraction_published > 0.5 ? greenScale : redScale}`;
+            fillcolor = colorScale(d.fraction_published*100);
+            // let greenScale = `rgb( ${Math.floor(255-( ((d.fraction_published-0.5)*2) *200))}, 255, ${Math.floor(255-( ((d.fraction_published-0.5)*2) *200))} )`;
+            // let redScale = `rgb(255, ${Math.floor(((d.fraction_published*2)*200))}, ${Math.floor(((d.fraction_published*2)*200))})`
+            // fillcolor = `${d.fraction_published > 0.5 ? greenScale : redScale}`;
           } else {
-            fillcolor = this.state.color(d.group);
+            fillcolor = this.state.nodeColor(d.group);
           }
           return fillcolor;
         });
@@ -388,7 +516,7 @@ export default class RelationshipsDiagram extends React.Component {
         d3.selectAll(".node, .link").transition()
             .duration(500)
             .style("opacity", 1)
-            .style("fill", (o) => this.state.color(o.group))
+            .style("fill", (o) => this.state.nodeColor(o.group))
       }, 250); // without this the node transition below doesn't rerender properly
     }
 

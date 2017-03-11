@@ -14,7 +14,7 @@ import { sortStates, matchStateToTerm, styles } from '../data/utils.js'
   // - un-highlights all nodes if the canvas is clicked (non-node)
   // - limits node position to svg canvas size
   // - shows details tooltip on hover
-  // - doesn't allow nodes to overlap (prevents node collision)
+  // - doesn't allow nodes to overlap (i.e. prevents node collision)
 
 
 let explore = false; // The 'Explore!' button appears when false to give data time to load - switch to a lifecycle method later
@@ -228,8 +228,10 @@ export default class RelationshipsDiagram extends React.Component {
                 .duration(200)
                 .style("visibility", "visible");
             div.html(`<strong> ${d.group===1 ? 'Drug: ' : 'Sponsor: '} </strong>` + d.name + "<br/><p>" + (d.fraction_published*100).toFixed(0) + "% published</p><p>" + d.total + `${d.total===1 ? ' trial' : ' trials'}` + " </p>") // Tooltip format
-                .style("left", (d3.event.pageX - 80) + "px")
-                .style("top", (d3.event.pageY - 75) + "px");
+                // .style("left", (d3.event.pageX - (width * 0.1)) + "px")
+                // .style("top", (d3.event.pageY - (height * 0.35)) + "px");
+                .style("left", (d3.event.pageX + 50 - (window.innerWidth * 0.2)) + "px")
+                .style("top", (d3.event.pageY - 150 + (window.innerWidth * 0.05)) + "px");
             })
         .on("mouseout", (d) => {
             this.mouseOutFunction(d); // Neighbor node selection
@@ -352,7 +354,7 @@ export default class RelationshipsDiagram extends React.Component {
     if (selectedVal === null) {
       node.style("stroke", "white").style("stroke-width", "1");
     } else if (selectedVal === 'all') {
-      this.setState({ selectedFilter: 'All Drugs ans Trial Sponsors' })
+      this.setState({ selectedFilter: 'All Drugs and Trial Sponsors' })
       node.style("stroke", (o) => this.getPublicationColor(o, o));
     } else {
       if (selectedVal === 1) {

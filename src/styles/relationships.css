@@ -15,7 +15,10 @@
 }
 
 .force-diagram-wrapper svg {
+  position: relative;
   /*border: 1px solid black;*/
+  margin-bottom: 50px;
+  top: -25px;
 }
 
 
@@ -28,7 +31,7 @@
 }
 
 .relationships-diagram .filter-title {
-  margin-bottom: 3vh;
+  margin-bottom: 2vh;
 }
 
 #node-search {
@@ -98,6 +101,7 @@
 /* NOTE: there is a .tooltip in foundation.css, so also styled by that if just .tooltip is used */
 .rel-tooltip {
   position: absolute;
+  z-index: 100;
   width: 200px;
   height: auto;
   padding: 10px;
@@ -118,7 +122,7 @@
 .rel-tooltip p {
   margin: 0;
   font-family: sans-serif;
-  color: red;
+  /*color: red;*/
   font-size: 16px;
   line-height: 20px;
 }

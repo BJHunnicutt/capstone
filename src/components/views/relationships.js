@@ -5,6 +5,7 @@ import d3 from 'd3';
 import store from '../../store';
 import Autocomplete from 'react-autocomplete'
 import { sortStates, matchStateToTerm, styles } from '../data/utils.js'
+import _ from 'lodash'
 // import Chart from '../containers/scatter/chart.jsx';
 // import veryImportantGif2 from '../../../public/dory2.gif'
 
@@ -21,11 +22,11 @@ let explore = false; // The 'Explore!' button appears when false to give data ti
 
 // Default node colors
 function nodeColors(i) {
-  let colors = ["", "rgb(200, 200, 200)", "rgb(50, 50, 50)"]; //I'm only accessing indeces 1 & 2
+  let colors = ["", "rgb(200,200,200)", "rgb(50,50,50)"]; //I'm only accessing indeces 1 & 2
   return colors[i];
 };
 function nodeColorsDim(i) {
-  let colors = ["", "rgb(230, 230, 230)", "rgb(150, 150, 150)"];
+  let colors = ["", "rgb(230,230,230)", "rgb(150,150,150)"];
   return colors[i];
 };
 
@@ -44,8 +45,8 @@ function linspace(start, end, n) {
 }
 
 // const colorRange = ['#7f3b08', '#b35806', '#e08214', '#fdb863', '#fee0b6', '#ffffff', '#d8daeb', '#b2abd2', '#8073ac', '#542788', '#2d004b'];
-const colorRange = ['#ff0000', '#ff8282', '#ffffff', '#82ff82', '#00ff00'];
-// const colorRange = ['#ff0000', '#AA0000', '#550000', '#005500', '#00AA00', '#00ff00'];
+// const colorRange = ['#ff0000', '#ff8282', '#ffffff', '#82ff82', '#00ff00'];
+const colorRange = ['#ff0000', '#bb0000', '#770000', '#007700', '#00bb00', '#00ff00'];
 
 //Base the color scale on average temperature extremes (http://bl.ocks.org/nbremer/a43dbd5690ccd5ac4c6cc392415140e7)
 var colorScale = d3.scale.linear()
@@ -83,34 +84,12 @@ export default class RelationshipsDiagram extends React.Component {
     explore = true;
   }
 
-  getPublicationColor(o, d) { // o is the node to color and d is the target node
-    let fillcolor = 'rgba(255,255,255,0)';
-    if (this.isConnectedAsSource(o, d) || this.isConnectedAsTarget(o, d) || this.isEqual(o, d)) {
-      let greenScale = `rgb( ${Math.floor(255-( ((o.fraction_published-0.5)*2) *200))}, 255, ${Math.floor(255-( ((o.fraction_published-0.5)*2) *200))} )`;
-      let redScale = `rgb(255, ${Math.floor(((o.fraction_published*2)*200))}, ${Math.floor(((o.fraction_published*2)*200))})`
-      fillcolor = `${o.fraction_published > 0.5 ? greenScale : redScale}`;
-    } else {
-      fillcolor = 'rgba(255,255,255,0)';
-    }
-    return fillcolor;
-  }
-
-  isConnected(o, d) {
-    return (this.isConnectedAsSource(o, d) || this.isConnectedAsTarget(o, d) || this.isEqual(o, d)) ?
-      true : false
-  }
-
   // Either highlight selected nodes (d) or deselect all nodes (false)
   toggleNodeHighlight(d = false) {
     var node = this.state.svg.selectAll(".node")
     if (d) {
-      // node.style("stroke", (o) => 'rgba(255,255,255,0)');
-      // node.style("stroke", (o) => {
-      //   d === o ? this.setState({ selectedFilter: o.name }) : null;
-      //   return this.getPublicationColor(o, d)
-      // })
       node.style("stroke", (o) => {
-        d === o ? this.setState({ selectedFilter: o.name }) : null;
+        if (d === o) this.setState({ selectedFilter: o.name });
         return this.isConnected(o, d) ? colorScale(o.fraction_published*100) : 'rgba(255,255,255,0)';
       });
 
@@ -134,7 +113,7 @@ export default class RelationshipsDiagram extends React.Component {
   // Highlight Neightbor nodes on hover --------- // http://bl.ocks.org/samuelleach/5497403
   mouseOverFunction(d) {
     // console.log("mouseOverFunction this: ", this);
-    var circle = this.state.svg.selectAll(".circle")
+    // var circle = this.state.svg.selectAll(".circle")
     var node = this.state.svg.selectAll(".node")
     var link = this.state.svg.selectAll(".link")
 
@@ -163,7 +142,7 @@ export default class RelationshipsDiagram extends React.Component {
   // Remove hover highlighting
   mouseOutFunction(d) {
     if (!this.state.highlighting) {
-      var circle = this.state.svg.selectAll(".circle")
+      // var circle = this.state.svg.selectAll(".circle")
       var node = this.state.svg.selectAll(".node")
       var link = this.state.svg.selectAll(".link")
 
@@ -202,8 +181,8 @@ export default class RelationshipsDiagram extends React.Component {
     //Constants for the SVG
     // var width = 500, height = 500;
     // let width = window.innerWidth * .96; // Testing out making the plot viewport responsive
-    let width = ((window.innerWidth * 0.96) > (window.innerHeight * 0.55)) ? window.innerHeight * 0.55 : window.innerWidth * 0.96;
-    let height = ((window.innerHeight * 0.55) < (window.innerWidth * 0.96)) ? window.innerHeight * 0.55 : window.innerWidth * 0.96;
+    let width = ((window.innerWidth * 0.96) > (window.innerHeight * 0.5)) ? window.innerHeight * 0.5 : window.innerWidth * 0.96;
+    let height = ((window.innerHeight * 0.5) < (window.innerWidth * 0.96)) ? window.innerHeight * 0.5 : window.innerWidth * 0.96;
 
     //Set up the colour scale
     var color = this.state.nodeColor;
@@ -225,7 +204,8 @@ export default class RelationshipsDiagram extends React.Component {
     var svg = d3.select(this.refs.forceDiagram)
         .append("svg")
         .attr("width", width)
-        .attr("height", height);
+        .attr("height", height)
+        .style("overflow", "visible"); //So you can see the legend and circle edges dont get cut off
 
     this.setState({
       svg: svg,
@@ -257,7 +237,6 @@ export default class RelationshipsDiagram extends React.Component {
         // Node Radius is proportional to the number of trials related to the node
         .attr("r", (d) => {return this.node_radius(d)})
         .style("fill", (d) => {return color(d.group)})
-        // .style("fill", (d) => this.getPublicationColor(d, d))
         .style("stroke-width", 2)
         .style("stroke", 'rgba(255,255,255,0)')
         .call(force.drag)
@@ -268,7 +247,7 @@ export default class RelationshipsDiagram extends React.Component {
             div.transition() // Tooltip show
                 .duration(200)
                 .style("visibility", "visible");
-            div.html(`<strong> ${d.group===1 ? 'Drug: ' : 'Sponsor: '} </strong>` + d.name + "<br/><p>" + (d.fraction_published*100).toFixed(0) + "% published</p><p>" + d.total + `${d.total===1 ? ' trial' : ' trials'}` + " </p>") // Tooltip format
+            div.html(`<strong> ${d.group===1 ? 'Drug: ' : 'Sponsor: '} </strong>` + d.name + `<br/> <p style=color:${colorScale(d.fraction_published*100)} >` + (d.fraction_published*100).toFixed(0) + "% published</p><p>" + d.total + `${d.total===1 ? ' trial' : ' trials'}` + " </p>") // Tooltip format
                 // .style("left", (d3.event.pageX - (width * 0.1)) + "px")
                 // .style("top", (d3.event.pageY - (height * 0.35)) + "px");
                 .style("left", (d3.event.pageX + 50 - (window.innerWidth * 0.2)) + "px")
@@ -370,7 +349,7 @@ export default class RelationshipsDiagram extends React.Component {
     //Color Legend container
     const legendsvg = svg.append("g")
     	.attr("class", "legendWrapper")
-    	.attr("transform", "translate(" + width/2 + "," + 0 + ")");
+    	.attr("transform", "translate(" + width/2 + "," + (height + 30) + ")");
 
     //Draw the Rectangle
     legendsvg.append("rect")
@@ -481,7 +460,6 @@ export default class RelationshipsDiagram extends React.Component {
       node.style("stroke", "white").style("stroke-width", "1");
     } else if (selectedVal === 'all') {
       this.setState({ selectedFilter: 'All Drugs and Trial Sponsors' })
-      // node.style("stroke", (o) => this.getPublicationColor(o, o));
       node.style("stroke", (o) => colorScale(o.fraction_published*100));
     } else {
       if (selectedVal === 1) {
@@ -532,12 +510,12 @@ export default class RelationshipsDiagram extends React.Component {
         {/* <h3 className="f2 comp-title"> <strong>Under Construction!</strong> ...but feel free to play with the squidies (i.e. clinical trial funder-drug relationships) in the mean time! </h3> */}
 
           {explore ? (
-            <div>
-              <h3 className="f2 centered filter-title">Explore Relationships Between Drug Trials and Their Sponsors </h3>
+            <div className="filter-wrapper-wrapper">
+              <h4 className="f2 centered filter-title">Explore Relationships Between Drug Trials and Their Sponsors </h4>
 
               <div className="column centered filter-wrapper">
                 <div className="search-wrapper">
-                  <h7 className="f2 rel-search-label">View Publication Rates For : </h7>
+                  <h7 className="f2 rel-search-label">Select : </h7>
                   <div className="filter-buttons">
                     <button className="button secondary" onClick={() => this.searchGroup(1)}>Drugs</button>
                     <button className="button secondary" onClick={() => this.searchGroup(2)}>Sponsors</button>

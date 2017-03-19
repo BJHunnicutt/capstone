@@ -42,6 +42,9 @@
   height: 40px;
 }
 
+#node-search {
+}
+
 .relationships-diagram .search-wrapper {
   padding-top: 2%;
   width: 100%;
@@ -63,7 +66,15 @@
   display: inline;
   white-space: nowrap;
   margin-left: 3%;
+}
 
+/*.relationships-diagram .filter-search div div {*/
+.relationships-diagram .node-search-list {
+  /*NOTE: there are more styles in data/utils.js .menu*/
+  right: 15vw;
+  max-height: 50%;
+  overflow-x: scroll;
+  z-index: 100;
 }
 
 .rel-current-search {

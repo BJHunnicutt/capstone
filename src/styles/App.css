@@ -228,10 +228,11 @@ header h3 {
   /*font-family: 'Kumar One', cursive;*/
   /*font-family: 'Bungee Shade', cursive;*/
   /*font-family: 'Monoton', cursive;*/
-  font-family: 'Megrim', cursive;
+  /*font-family: 'Megrim', cursive;*/
   /*font-family: 'Codystar', cursive;*/
   /*-webkit-text-stroke: 1px rgb(129, 111, 66);*/
 }
+
 /* ------------------------------ END HEADER ---------------------------------- */
 
 rel-tooltip.hidden
@@ -343,3 +344,40 @@ li {
   display: inline-block;
   z-index: 1000;
 }*/
+
+
+/* ----------- Media Queries ----------- */
+
+@media screen and (min-width:900px) {
+  .top-bar .small-header { display: none; }
+  .top-bar .medium-header { display: none; }
+  .top-bar .large-header { display: inline-block; }
+
+  .top-bar .tiny-header { display: none; }
+  .top-bar .other-header { display: inline-block; }
+}
+
+@media screen and (max-width:900px) {
+  .top-bar .small-header { display: none; }
+  .top-bar .medium-header { display: inline-block; }
+  .top-bar .large-header { display: none; }
+
+  .top-bar .tiny-header { display: none; }
+  .top-bar .other-header { display: inline-block; }
+}
+
+@media screen and (max-width:650px) {
+  .top-bar .small-header { display: inline-block; }
+  .top-bar .medium-header { display: none; }
+  .top-bar .large-header { display: none; }
+
+  .top-bar .tiny-header { display: none; }
+  .top-bar .other-header { display: inline-block; }
+
+  .top-bar .top-bar-right { width: auto;}
+}
+
+@media screen and (max-width:450px) {
+  .top-bar .tiny-header { display: inline-block; }
+  .top-bar .other-header { display: none; }
+}

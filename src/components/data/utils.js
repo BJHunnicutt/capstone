@@ -13,7 +13,12 @@ export let styles = {
 
   menu: {
     border: 'solid 1px #ccc',
-    // position: 'relative',
+    width: 'auto',
+    hight: '30%',
+    position: 'fixed',
+    left: 'auto',
+    right: '2vw',
+    backgroundColor: 'white',
   }
 }
 

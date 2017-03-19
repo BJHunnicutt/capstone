@@ -247,11 +247,11 @@ export default class RelationshipsDiagram extends React.Component {
             div.transition() // Tooltip show
                 .duration(200)
                 .style("visibility", "visible");
-            div.html(`<strong> ${d.group===1 ? 'Drug: ' : 'Sponsor: '} </strong>` + _.startCase(_.toLower(d.name)) + `<br/> <p class='percent-published' style=color:${colorScale(d.fraction_published*100)} >` + (d.fraction_published*100).toFixed(0) + "% published</p><p>" + d.total + `${d.total===1 ? ' trial' : ' trials'}` + " </p>") // Tooltip format
+            div.html(`<strong> ${d.group===1 ? 'Drug: ' : 'Sponsor: '} </strong>` + _.startCase(_.toLower(d.name)) + `<br/> <p class='percent-published' style=color:${colorScale(d.fraction_published*100)} >` + (d.fraction_published*100).toFixed(0) + "% published</p><p>" + d.total + `${d.total===1 ? ' trial' : ' trials'} </p>`) // Tooltip format
                 // .style("left", (d3.event.pageX - (width * 0.1)) + "px")
                 // .style("top", (d3.event.pageY - (height * 0.35)) + "px");
                 .style("left", (d3.event.pageX + 50 - (window.innerWidth * 0.2)) + "px")
-                .style("top", (d3.event.pageY - 150 + (window.innerWidth * 0.05)) + "px");
+                .style("top", (d3.event.pageY - 125 + (window.innerWidth * 0.03)) + "px");
             })
         .on("mouseout", (d) => {
             this.mouseOutFunction(d); // Neighbor node selection
@@ -555,28 +555,28 @@ class NodeSearch extends React.Component {
   constructor(props){
     super();
     this.state = {
-      value: 'national cancer institute (nci)'
+      value: ''
     }
   }
   // This + renderMenu (in Autocomplete) will make a custom formatted dropdown menu
-  // renderItems(items) {
-  //   // console.log(items)
-  //   return items.map((item, index) => {
-  //     var text = item.props.children
-  //     if (index === 0 || items[index - 1].props.children.charAt(0) !== text.charAt(0)) {
-  //       var style = {
-  //         background: '#eee',
-  //         color: '#454545',
-  //         padding: '2px 6px',
-  //         fontWeight: 'bold'
-  //       }
-  //       return [<div style={style}>{text.charAt(0)}</div>, item]
-  //     }
-  //     else {
-  //       return item
-  //     }
-  //   })
-  // }
+  renderItems(items) {
+    // console.log(items)
+    return items.map((item, index) => {
+      var text = item.props.children
+      if (index === 0 || items[index - 1].props.children.charAt(0) !== text.charAt(0)) {
+        var style = {
+          background: '#eee',
+          color: '#454545',
+          padding: '2px 6px',
+          fontWeight: 'bold'
+        }
+        return [<div style={style}> {text.charAt(0)} </div>, item]
+      }
+      else {
+        return item
+      }
+    })
+  }
 
   render(props) {
     // console.log('autocomplete props', this.props.graph.nodes);
@@ -584,27 +584,32 @@ class NodeSearch extends React.Component {
         <Autocomplete
           value={this.state.value}
           inputProps={{name: "Sponsor Node", id: "node-search"}}
+          // wrapperProps={{id: "node-search-list"}}
           items={this.props.graph.nodes}
           getItemValue={(item) => item.name}
           shouldItemRender={matchStateToTerm}
           sortItems={sortStates}
           onChange={(event, value) => this.setState({ value })}
           onSelect={value => this.setState({ value })}
+          // menuStyle={{width: '50px'}}
           renderItem={(item, isHighlighted) => (
             <div
               style={isHighlighted ? styles.highlightedItem : styles.item}
-              key={item.abbr}
+              key={item.name}
             >{item.name}</div>
           )}
-          // renderMenu={(items, value, style) => (
-          //   <div style={{...styles.menu, ...style}}>
-          //     {value === '' ? (
-          //       <div style={{padding: 6}}>Type of the name of a United State</div>
-          //     ) : items.length === 0 ? (
-          //       <div style={{padding: 6}}>No matches for {value}</div>
-          //     ) : this.renderItems(items)}
-          //   </div>
-          // )}
+          // renderMenu={(items, value, style) => {
+          //   return <div style={{...style, ...this.menuStyle}} children={items}/>
+          // }}
+          renderMenu={(items, value, style) => (
+            <div className="node-search-list" style={{...styles.menu, ...style}}>
+              {value === '' ? (
+                <div style={{padding: 6}}>Type of the name of a Drug or Trial Sponsor</div>
+              ) : items.length === 0 ? (
+                <div style={{padding: 6}}>No matches for {value}</div>
+              ) : this.renderItems(items)}
+            </div>
+          )}
         />
     )
   }

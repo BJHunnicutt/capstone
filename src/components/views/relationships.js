@@ -247,7 +247,7 @@ export default class RelationshipsDiagram extends React.Component {
             div.transition() // Tooltip show
                 .duration(200)
                 .style("visibility", "visible");
-            div.html(`<strong> ${d.group===1 ? 'Drug: ' : 'Sponsor: '} </strong>` + d.name + `<br/> <p style=color:${colorScale(d.fraction_published*100)} >` + (d.fraction_published*100).toFixed(0) + "% published</p><p>" + d.total + `${d.total===1 ? ' trial' : ' trials'}` + " </p>") // Tooltip format
+            div.html(`<strong> ${d.group===1 ? 'Drug: ' : 'Sponsor: '} </strong>` + _.startCase(_.toLower(d.name)) + `<br/> <p class='percent-published' style=color:${colorScale(d.fraction_published*100)} >` + (d.fraction_published*100).toFixed(0) + "% published</p><p>" + d.total + `${d.total===1 ? ' trial' : ' trials'}` + " </p>") // Tooltip format
                 // .style("left", (d3.event.pageX - (width * 0.1)) + "px")
                 // .style("top", (d3.event.pageY - (height * 0.35)) + "px");
                 .style("left", (d3.event.pageX + 50 - (window.innerWidth * 0.2)) + "px")

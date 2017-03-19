@@ -126,6 +126,10 @@
   font-size: 16px;
   line-height: 20px;
 }
+
+.rel-tooltip .percent-published {
+  text-shadow: 1px 0px 1px gray;
+}
 /* -------------------------- End Tooltip ----------------------------- */
 
 

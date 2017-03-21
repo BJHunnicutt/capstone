@@ -1,5 +1,5 @@
 import React from 'react';
-import {VictoryPie, VictoryScatter, VictoryArea, VictoryAxis, VictoryTooltip, VictoryVoronoiTooltip, VictoryLabel, VictoryStack, VictoryChart} from 'victory'; //VictoryTheme, VictoryBar, VictoryGroup, VictoryLine,
+import {VictoryPie, VictoryScatter, VictoryArea, VictoryAxis, VictoryTooltip, VictoryVoronoiTooltip, VictoryLabel, VictoryStack, VictoryChart, VictoryContainer} from 'victory'; //VictoryTheme, VictoryBar, VictoryGroup, VictoryLine,
 // import {PieChart, Pie, Legend} from 'recharts';
 // import {ComposedChart, Line, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
 // import Chart from '../containers/scatter/chart.jsx';
@@ -109,6 +109,7 @@ export default class ComparisonChart extends React.Component {
 
           <VictoryPie
             name={"Published"}
+            // labelComponent={<VictoryTooltip/>}
             // animate={{duration: 300}}
             // standalone={false}
             // data={[
@@ -122,7 +123,6 @@ export default class ComparisonChart extends React.Component {
             // label={true}
             // labelRadius={(publishedRadiusScale*155)+35}
             colorScale="green"
-            // labelComponent={<VictoryTooltip/>}
             style={{ labels: {
               fontSize: 20,
               fill: (d) => {
@@ -141,9 +141,15 @@ export default class ComparisonChart extends React.Component {
             // label={(data) => "years x " + data.length }
             padding={{top: 175-(publishedRadiusScale*155), bottom: 175-(publishedRadiusScale*155)}} // More scaling = smaller pie
             // cornerRadius={50}
+            containerComponent={
+              <VictoryContainer
+                title="Unpublished Trials"
+                desc="The area represents the number of unpublished trials (relative to all other searches) broken down by trial participants (male, female, both, na)."
+              />}
           />
           <VictoryPie
             name={"Unpublished"}
+            // labelComponent={<VictoryTooltip/>}
             animate={{duration: 300}}
             // standalone={false}
             // width={400} height={400}
@@ -176,6 +182,11 @@ export default class ComparisonChart extends React.Component {
             }}}
             startAngle={0} endAngle={180}
             padding={{top: 175-(unpublishedRadiusScale*155), bottom: 175-(unpublishedRadiusScale*155)}} // More scaling = smaller pie
+            containerComponent={
+              <VictoryContainer
+                title="Published Trials"
+                desc="The area represents the number of published trials (relative to all other searches) broken down by trial participants (male, female, both, na)."
+              />}
           />
           {/* <VictoryPie
             name={"Ongoing"}

@@ -27,7 +27,7 @@ class Homepage extends React.Component {
 	          Clinical trials are a necessary and important tool used to test whether new drugs and
 						procedures are safe and effective. Since 2007, new trials have been <a href="https://www.gpo.gov/fdsys/pkg/PLAW-110publ85/pdf/PLAW-110publ85.pdf#page=82" target="_blank"></a>
 						required to register their intent and methods with the FDA, but this data has historically been difficult to access.
-						The <a href="http://opentrials.net/" target="_blank"><strong>OpenTrials project</strong></a> is trying to
+						The <a href="http://opentrials.net/" target="_blank"><strong>OpenTrials project</strong></a> <strong>*</strong> is trying to
 						change that by making registered trial data from around the world easily available to the public.
 					</p>
 					<p>

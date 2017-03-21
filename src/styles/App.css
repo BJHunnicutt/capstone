@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css?family=Raleway:200,300');
 @import url('https://fonts.googleapis.com/css?family=Exo:100,200,300,400|Megrim');
 @import url('https://fonts.googleapis.com/css?family=Material+Icons');
+@import url('https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
   /*https://material.io/icons/#ic_search*/
 
 #root {
@@ -125,13 +126,17 @@ body {
   /*background-color: #e6e6e6;*/
 }
 
+#content {
+  min-height: 80vh;
+}
+
 #search-table-wrapper {
   width: 100%;
   /*display: inline-block;*/
 }
 
-p a:hover {
-  color: gold;
+p a:hover, li a:hover {
+  color: goldenrod;
 }
 
 #quote {
@@ -205,7 +210,7 @@ p a:hover {
   color: khaki;
 }
 
-ul.menu {
+header ul.menu {
   background-color: rgb(50, 56, 61);
   text-align: right;
 }
@@ -235,7 +240,32 @@ header h3 {
 
 /* ------------------------------ END HEADER ---------------------------------- */
 
-rel-tooltip.hidden
+
+
+/* -------------------------- HEADER -------------------------------- */
+
+footer {
+  position: relative;
+  bottom: 0;
+  background-color: lightgray;
+  padding: 20px 0 50px 0;
+}
+
+footer .fa {
+  color: black;
+  padding: 10px 5px;
+}
+
+footer .fa:hover {
+  color: white;
+}
+
+footer p a:hover, footer li a:hover {
+  color: white;
+}
+
+/* ------------------------------ END HEADER ---------------------------------- */
+
 
 
 /* ---------------------------- RECENT SEARCHES ------------------------------ */

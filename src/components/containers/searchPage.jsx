@@ -387,7 +387,7 @@ class SearchPage extends React.Component {
               <div className="large-6 medium-6 small-12 columns search-wrapper">
 
                   {/* SEARCH */}
-                  <label>Search by Treatment or Condition</label>
+                  <label>Search by Treatment or Condition<strong>*</strong></label>
                   <SearchInput  // Custom component - Search bar
                     ref={component => this.globalSearch = component} // THis can also take a callback (here we're setting as the nested class component Input)
                     update={this.update.bind(this)} // update now, not on change

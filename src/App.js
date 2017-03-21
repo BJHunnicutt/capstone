@@ -1,6 +1,8 @@
 import React from 'react';
 // import d3 from 'd3';
 import Header from './components/views/header.jsx';
+import Footer from './components/views/footer.jsx';
+
 // import SearchPage from '../components/search_page.jsx';
 
 import store from './store'; //Just to log the store
@@ -25,6 +27,9 @@ class App extends React.Component {
         <div className='row' id="content" >
           {this.props.children}
         </div>
+
+        {/* Render the header */}
+        <Footer />
 
         {/* <button className='button redux-store' onClick={this.showReduxStore.bind(this)}>Log Redux Store</button> */}
 

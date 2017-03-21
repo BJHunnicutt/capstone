@@ -13,7 +13,7 @@
   The **[OpenTrials project](http://opentrials.net/)** is trying to change that by making registered trial data from around the world easily available to the public.
 
   **TrialsViewer** is an independently created tool to explore the data available through
-  the [OpenTrials API](https://fda.opentrials.net/search)** \***. The goal is to create a summary that allows you to compare drugs or procedures for
+  the [OpenTrials API](https://fda.opentrials.net/search) **\***. The goal is to create a summary that allows you to compare drugs or procedures for
   a given condition by highlighting two components:
 
 1. **Gender**: Drugs regularly get approved without being tested on women, an "oversight" that can have life changing consequences. [It has been estimated that 8 out of 10 drugs pulled from the market by the FDA posed more of a threat for women.](https://www.drugwatch.com/featured/fda-let-women-down/)

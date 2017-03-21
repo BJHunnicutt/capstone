@@ -22,4 +22,4 @@
 
 
 * * *
-  **\* IMPORTANT NOTE:** The OpenTrialsFDA API is only in its beta release, thus <i><strong>clinical trial data are currently incomplete</strong></i> on the 'Search' and 'Compare' pages. Check back or follow [@OpenTrials](https://twitter.com/opentrials) for updates!
+  **\* IMPORTANT NOTE:** The OpenTrialsFDA API is only in its beta release, thus **_clinical trial data are currently incomplete_** on the 'Search' and 'Compare' pages. Check back or follow [@OpenTrials](https://twitter.com/opentrials) for updates!

@@ -17,8 +17,7 @@ export default (props) => {
               <ul className="links">
                 <li>
                   <strong> * IMPORTANT NOTE: </strong>
-                </li>
-                <li>
+
                   The OpenTrialsFDA API is only in its beta release, thus <i><strong>clinical trial data are currently incomplete</strong></i> on the 'Search' and 'Compare' pages. Check back or follow <a href="https://twitter.com/opentrials">@OpenTrials</a> for updates!
                 </li>
                 <hr/>

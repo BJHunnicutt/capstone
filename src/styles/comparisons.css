@@ -5,7 +5,7 @@ div.comparison-panel {
   /*border: 1px solid black;*/
   box-shadow: 0 1px #FFFFFF inset, 0 1px 3px rgba(34, 25, 25, 0.4);
   margin: 0 2% 2% 2%;
-  padding: 2%;
+  padding: 15px;
   margin-top: 0;
   width: 29%;
 }
@@ -37,17 +37,31 @@ div.comparisons-wrapper {
 }
 
 .comparison-panel h5 {
-  font-size: 25px;
+  white-space: nowrap;
+  overflow: scroll;
+  width: 100%;
+  font-size: 22px;
   font-weight: 200;
   float: left;
-  padding-bottom: 35px;
+  bottom: -37px;
+  padding-bottom: 10px;
+  margin-bottom: 25px;
 }
 
-.comparison-panel h6 {
+.comparison-title {
+  -ms-overflow-style: none;  /* IE 10+ */
+  overflow: -moz-scrollbars-none;  /* Firefox */
+}
+.comparison-title::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+/*.comparison-panel .year h6 {
+  position: relative;
   font-size: 15px;
   float: right;
-  padding-bottom: 35px;
-}
+  padding: 0;
+}*/
 
 .line-wrapper {
   clear: both;
@@ -59,4 +73,27 @@ div.comparisons-wrapper {
 .line-chart-label {
   /*padding: 0;*/
 
+}
+
+/* ----------- Media Queries ----------- */
+
+/*LARGE*/
+@media screen and (min-width:900px) {
+
+}
+/*MEDUIM*/
+@media screen and (max-width:900px) {
+
+}
+/*SMALL*/
+@media screen and (max-width:650px) {
+  div.comparison-panel {
+    width: 46%;
+  }
+}
+/*TINY*/
+@media screen and (max-width:450px) {
+  div.comparison-panel {
+    width: 96%;
+  }
 }

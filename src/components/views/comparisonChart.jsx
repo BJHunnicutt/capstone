@@ -76,8 +76,8 @@ export default class ComparisonChart extends React.Component {
 
   	return (
       <div className="comparison-panel large-3 medium-3 small-12 end columns">
-        <h5 className="f2">{this.capitalizeFirstLetter(this.props.query)}</h5>
-        <h6 className="f2">{this.props.year}</h6>
+        <h5 className="f2 comparison-title">{this.capitalizeFirstLetter(this.props.query)}</h5>
+        {/* <h6 className="f2 year">{this.props.year}</h6> */}
         <svg className="line-wrapper" viewBox="0 0 400 400" >
           <VictoryLabel x={0} y={-30}
             style={{
@@ -143,7 +143,7 @@ export default class ComparisonChart extends React.Component {
             // cornerRadius={50}
             containerComponent={
               <VictoryContainer
-                title="Unpublished Trials"
+                title="Published Trials: The area represents the number of unpublished trials (relative to all other searches) broken down by trial participants (male, female, both, na)."
                 desc="The area represents the number of unpublished trials (relative to all other searches) broken down by trial participants (male, female, both, na)."
               />}
           />
@@ -184,7 +184,7 @@ export default class ComparisonChart extends React.Component {
             padding={{top: 175-(unpublishedRadiusScale*155), bottom: 175-(unpublishedRadiusScale*155)}} // More scaling = smaller pie
             containerComponent={
               <VictoryContainer
-                title="Published Trials"
+                title="Unpublished Trials: The area represents the number of published trials (relative to all other searches) broken down by trial participants (male, female, both, na)."
                 desc="The area represents the number of published trials (relative to all other searches) broken down by trial participants (male, female, both, na)."
               />}
           />

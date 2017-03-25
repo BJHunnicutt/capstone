@@ -174,7 +174,7 @@ export default class RelationshipsDiagram extends React.Component {
   }
 
   // Node radius is proportional to the number of trials related to a node (to the power of 0.57 as per visual area perception work)
-  node_radius(d) { return Math.pow(20 * d.total, 0.57); }
+  node_radius(d) { return 3 + (d.total/10) }// Math.pow(20 * d.total, 0.57); }
 
 
   renderForceDiagram() {

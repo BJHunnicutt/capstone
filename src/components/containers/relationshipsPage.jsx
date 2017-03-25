@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import '../../styles/relationships.css';
 import d3 from 'd3'
-import allData from '../data/short_filtered.csv'
+import allData from '../data/sponsors_filtered.csv'
 import $ from 'jquery'
 import _ from 'lodash'
 import store from '../../store';
@@ -46,7 +46,7 @@ class RelationshipsPage extends React.Component {
 			if (data[i].has_drug_intervention === "True") {
 				// There can be multiple drugs separated by semicolons, this separates them into an array
 				let drugs = (data[i].drugs).split(/;/).filter(function(n){ return n !== " " });
-				let sponsor = (data[i].lead_sponsor).trim().toLowerCase();
+				let sponsor = (data[i].lead_sponsor).trim(); //.toLowerCase();
 
 				// Set up base values for Sponsors
 				if (!nameNodes[sponsor]) {

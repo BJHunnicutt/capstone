@@ -1,6 +1,6 @@
 # TrialsViewer
 [trialsviewer.com](http://trialsviewer.com/)
-> TrialsViewer is an interactive visualization tool to explore clinical trial data - built for my capstone project at [Ada Developers Academy](adadevelopersacademy.org).  
+> TrialsViewer is an interactive visualization tool to explore clinical trial data - built for my capstone project at [Ada Developers Academy](http://adadevelopersacademy.org).  
 
 
 ### Built with:

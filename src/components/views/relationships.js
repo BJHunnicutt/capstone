@@ -89,6 +89,7 @@ export default class RelationshipsDiagram extends React.Component {
         this.renderButton();
       }
     });
+    console.log(colorScale(0.5*100));
   }
 
   // Show Force diagram
@@ -100,19 +101,35 @@ export default class RelationshipsDiagram extends React.Component {
   // Either highlight selected nodes (d) or deselect all nodes (false)
   toggleNodeHighlight(d = false) {
     var node = this.state.svg.selectAll(".node")
+    var link = this.state.svg.selectAll(".link")
+
     if (d) {
       node.style("stroke", (o) => {
         if (d === o) this.setState({ selectedFilter: o.name });
-        return this.isConnected(o, d) ? colorScale(o.fraction_published*100) : 'rgba(255,255,255,0)';
+        return this.isConnected(o, d) ? colorScale(o.fraction_published*100) : 'darkgray';
       });
+      node.style("stroke-width", (o) => {
+        return this.isConnected(o, d) ? 2 : 1;
+      });
+      link
+        .transition()
+          .duration(250)
+          .style("stroke", (o) => {
+            return o.source === d || o.target === d ? "gray" : "lightgray";
+          });
 
     } else {
       this.setState({ selectedFilter: false })
       node
         .transition()
           .duration(250)
-          .style("stroke", (o) => 'rgba(255,255,255,0)')
+          .style("stroke", (o) => 'darkgray')
           .style("fill", (o) => this.state.nodeColor(o.group))
+      link
+        .transition()
+          .duration(250)
+          .style("stroke", (o) => 'lightgray');
+
     }
   }
 
@@ -143,12 +160,12 @@ export default class RelationshipsDiagram extends React.Component {
         .style("fill", (o) => {
           return this.isConnected(o, d) ? this.state.nodeColor(o.group) : this.state.nodeColorDimmed(o.group) ;
         });
-    link
-      .transition()
-        .duration(250)
-        .style("stroke-opacity", (o) =>{
-          return o.source === d || o.target === d ? 1 : 0.2;
-        });
+    // link
+    //   .transition()
+    //     .duration(250)
+    //     .style("stroke-opacity", (o) =>{
+    //       return o.source === d || o.target === d ? 1 : 0.2;
+    //     });
 
   }
 
@@ -164,9 +181,9 @@ export default class RelationshipsDiagram extends React.Component {
         .duration(250)
           .attr("r", (d) => { return this.node_radius(d)})
           .style("fill", (o) => this.state.nodeColor(o.group))
-      link
-        .transition(250)
-        .style("stroke-opacity", 0.5);
+      // link
+      //   .transition(250)
+      //   .style("stroke-opacity", 0.5);
     }
   }
 
@@ -238,9 +255,9 @@ export default class RelationshipsDiagram extends React.Component {
         .data(graph.links)
         .enter().append("line")
         .attr("class", "link")
-        .style("stroke-color", "red")
+        .style("stroke", "lightgray")
         // Stroke width is proportional to the number of trials between a drug and a sponsor
-        .style("stroke-width", (d) => { return d.value * 1.5});
+        .style("stroke-width", (d) => { return ( 1 + (d.value * .5))});
 
     //Do the same with the circles for the nodes - no
     let node = svg.selectAll(".node")
@@ -250,8 +267,8 @@ export default class RelationshipsDiagram extends React.Component {
         // Node Radius is proportional to the number of trials related to the node
         .attr("r", (d) => {return this.node_radius(d)})
         .style("fill", (d) => {return color(d.group)})
-        .style("stroke-width", 2)
-        .style("stroke", 'rgba(255,255,255,0)')
+        .style("stroke-width", 1)
+        .style("stroke", 'darkgray')
         .call(force.drag)
         .on("click", (d) => this.toggleNodeHighlight(d))
         .on("dblclick", (d) => this.toggleNodeHighlight(false))
@@ -462,15 +479,15 @@ export default class RelationshipsDiagram extends React.Component {
           return !connectedOrSelectedNode;
         });
 
-        unselected.style("opacity", "0");
+        unselected.style("opacity", "0.25");
         var link = this.state.svg.selectAll(".link")
-        link.style("opacity", "0");
+        link.style("opacity", "0.25");
         setTimeout(() => {
           d3.selectAll(".node, .link").transition()
-              .duration(500)
+              .duration(250)
               .style("opacity", 1)
               .style("fill", (o) => this.state.nodeColor(o.group))
-        }, 250); // without this the transition in toggleNodeHighlight() doesn't rerender properly
+        }, 150); // without this the transition in toggleNodeHighlight() doesn't rerender properly
 
         this.toggleNodeHighlight(selected)
     }
@@ -493,7 +510,7 @@ export default class RelationshipsDiagram extends React.Component {
       }
       let selected = node.filter((d) => d.group === selectedVal);
       selected
-        // .style("stroke", 'black');
+        .style("stroke-width", 2)
         .style("stroke", (d) => {
           let fillcolor;
           if (d.group === selectedVal) {
@@ -510,16 +527,17 @@ export default class RelationshipsDiagram extends React.Component {
       var unselected = node.filter(function (d, i) {
           return d.group !== selectedVal;
       });
-      unselected.style("opacity", "0");
-      unselected.style("stroke", 'rgba(255,255,255,0)')
+      unselected.style("opacity", "0.25");
+      unselected.style("stroke", 'darkgray')
+      unselected.style("stroke-width", 1);
 
-      link.style("opacity", "0");
+      link.style("opacity", "0.25");
       setTimeout(() => {
         d3.selectAll(".node, .link").transition()
-            .duration(500)
+            .duration(250)
             .style("opacity", 1)
             .style("fill", (o) => this.state.nodeColor(o.group))
-      }, 250); // without this the node transition below doesn't rerender properly
+      }, 150); // without this the node transition below doesn't rerender properly
     }
 
   }
@@ -585,7 +603,9 @@ class NodeSearch extends React.Component {
   // This + renderMenu (in Autocomplete) will make a custom formatted dropdown menu
   renderItems(items) {
     return items.map((item, index) => {
+      // so you can't scroll when the dropdown menu is open
       $('body').css("overflow", "hidden");
+
       var text = item.props.children
       if (index === 0 || items[index - 1].props.children.charAt(0).toLowerCase() !== text.charAt(0).toLowerCase()) {
         // var style = {
@@ -604,6 +624,10 @@ class NodeSearch extends React.Component {
   }
 
   selectOption(value) {
+
+    console.log(this.props.graph.nodes);
+    value = value.replace(/\(.*\)/, '').trim();
+    console.log(value);
     this.setState({ value })
     _.defer(() => this.props.searchNode());
   }
@@ -620,9 +644,9 @@ class NodeSearch extends React.Component {
           inputProps={{name: "Sponsor Node", id: "node-search"}}
           // wrapperProps={{id: "node-search-list"}}
           items={ this.props.graph.nodes }
-          getItemValue={(item) => item.name}
+          getItemValue={(item) => item.allNames}
           shouldItemRender={matchStateToTerm}
-          sortItems={sortStates}
+          // sortItems={sortStates}
           onMenuVisibilityChange={(isOpen) => {if (!isOpen) {this.deselect()} }}
           onChange={(event, value) => this.setState({ value })}
           onSelect={(value) => this.selectOption(value)}
@@ -631,8 +655,8 @@ class NodeSearch extends React.Component {
           renderItem={(item, isHighlighted) => (
             <div
               style={isHighlighted ? styles.highlightedItem : styles.item}
-              key={item.name}
-            >{item.name}</div>
+              key={item.allNames}
+            >{item.allNames}</div>
           )}
           // renderMenu={(items, value, style) => {
           //   return <div style={{...style, ...this.menuStyle}} children={items}/>

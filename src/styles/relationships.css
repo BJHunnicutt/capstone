@@ -1,4 +1,6 @@
 
+
+
 .explore-relationships-btn {
   align-self: center;
 }
@@ -40,9 +42,7 @@
   padding: 0 5% 0 5%;
   width: 100%;
   height: 40px;
-}
-
-#node-search {
+  border: 1px solid rgb(225, 225, 225);
 }
 
 .relationships-diagram .search-wrapper {
@@ -152,12 +152,12 @@
 
 /* --------------------------Default styling--------------------------------- */
 .node {
-    stroke: #fff;
-    stroke-width: 1.5px;
+  stroke: #fff;
+  /*stroke-width: 1.5px;*/
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
 }
 .link {
-    stroke: #999;
-    stroke-opacity: .6;
+    stroke: lightgray;
 }
 
 /*.relationships-diagram h3 {
@@ -169,14 +169,14 @@
 }*/
 
 .node text {
-stroke:#333;
-cursos:pointer;
+  stroke:#333;
+  cursos:pointer;
 }
 
 .node circle{
-stroke:#fff;
-stroke-width:3px;
-fill:#555;
+  /*stroke:#fff;
+  stroke-width:3px;
+  fill:#555;*/
 }
 
 .force-diagram {

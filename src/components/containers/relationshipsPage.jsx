@@ -105,6 +105,7 @@ class RelationshipsPage extends React.Component {
 				if (!nameNodes[sponsor]) {
 					nameNodes[sponsor] = $.extend(true, {}, baseNode);
 					nameNodes[sponsor].name = sponsor;
+					nameNodes[sponsor].allNames = sponsor; // THis is a lazy way of dealing with displaying multiple drug names sometimes
 					nameNodes[sponsor].group = 2;
 					nameNodes[sponsor].type = 'sponsor';
 				}
@@ -136,6 +137,7 @@ class RelationshipsPage extends React.Component {
 						// Add the brand name to the node info
 						nameNodes[drug].brandName = SSRIs[drug].brandName;
 						nameNodes[drug].actionType = SSRIs[drug].type;
+						nameNodes[drug].allNames = `${drug} (${SSRIs[drug].brandName})`;
 					}
 					// Increment values for new and old
 					if (data[i].is_overdue === "False") nameNodes[drug].published +=1;

@@ -25,7 +25,7 @@ export let styles = {
 
 export function matchStateToTerm (graph, value) {
   return (
-    graph.name.toLowerCase().indexOf(value.toLowerCase()) !== -1
+    graph.allNames.toLowerCase().indexOf(value.toLowerCase()) !== -1
     // ||
     // state.abbr.toLowerCase().indexOf(value.toLowerCase()) !== -1
   )
@@ -40,8 +40,8 @@ export function matchStateToTerm (graph, value) {
  * a search for "or" would return "North Carolina" above "North Dakota".
  */
 export function sortStates (a, b, value) {
-  const aLower = a.name.toLowerCase();
-  const bLower = b.name.toLowerCase();
+  const aLower = a.allNames.toLowerCase();
+  const bLower = b.allNames.toLowerCase();
   const valueLower = value.toLowerCase();
   const queryPosA = aLower.indexOf(valueLower);
   const queryPosB = bLower.indexOf(valueLower);

@@ -80,8 +80,15 @@ export default class RelationshipsDiagram extends React.Component {
   }
 
   componentDidMount() {
-    explore = true;
-    _.defer(() => this.renderButton());
+    _.defer(() => {
+      const data = store.getState().scatterState.graphData
+      if (_.isEmpty(data)) {
+        explore = false;
+      } else {
+        explore = true;
+        this.renderButton();
+      }
+    });
   }
 
   // Show Force diagram
@@ -251,13 +258,22 @@ export default class RelationshipsDiagram extends React.Component {
         .on("mouseover", (d) => {
             this.mouseOverFunction(d); // Neighbor node selection
             div.transition() // Tooltip show
-                .duration(200)
-                .style("visibility", "visible");
-            div.html(`<strong> ${d.group===1 ? 'Drug: ' : 'Sponsor: '} </strong>` + _.startCase(_.toLower(d.name)) + (d.group===1 ? '<br/> <strong> Brand Name: </strong>' : '') + (d.group===1 ? `<i> ${d.brandName} </i>` : '') + `<br/> <p class='percent-published' style=color:${colorScale(d.fraction_published*100)} >` + (d.fraction_published*100).toFixed(0) + "% published</p><p>" + d.total + `${d.total===1 ? ' trial' : ' trials'} </p>`) // Tooltip format
-                // .style("left", (d3.event.pageX - (width * 0.1)) + "px")
-                // .style("top", (d3.event.pageY - (height * 0.35)) + "px");
-                .style("left", (d3.event.pageX + 50 - (window.innerWidth * 0.2)) + "px")
-                .style("top", (d3.event.pageY - 125 + (window.innerWidth * 0.03)) + "px");
+              .duration(200)
+              .style("visibility", "visible");
+            div.html(
+              `<strong> ${d.group===1 ? 'Drug: ' : 'Sponsor: '} </strong>`
+              + _.startCase(_.toLower(d.name))
+              + (d.group===1 ? '<br/> <strong> Brand Name: </strong>' : '')
+              + (d.group===1 ? `<i> ${d.brandName} </i>` : '')
+              + `<br/> <p class='percent-published' style=color:${colorScale(d.fraction_published*100)} >`
+              + (d.fraction_published*100).toFixed(0)
+              + "% published</p><p>" + d.total
+              + `${d.total===1 ? ' trial' : ' trials'} </p>`
+            ) // Tooltip format
+              // .style("left", (d3.event.pageX - (width * 0.1)) + "px")
+              // .style("top", (d3.event.pageY - (height * 0.35)) + "px");
+              .style("left", (d3.event.pageX + 50 - (window.innerWidth * 0.2)) + "px")
+              .style("top", (d3.event.pageY - 125 + (window.innerWidth * 0.03)) + "px");
             })
         .on("mouseout", (d) => {
             this.mouseOutFunction(d); // Neighbor node selection
@@ -518,7 +534,7 @@ export default class RelationshipsDiagram extends React.Component {
 
           {explore ? (
             <div className="filter-wrapper-wrapper">
-              <h4 className="f2 centered filter-title"> Antidepressant Drug Trials and Their Sponsors </h4>
+              <h4 className="f2 centered filter-title"> Explore Antidepressant Drug Trials and Their Sponsors </h4>
 
               <div className="column centered filter-wrapper">
                 <div className="search-wrapper">

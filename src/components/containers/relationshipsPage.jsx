@@ -184,11 +184,11 @@ class RelationshipsPage extends React.Component {
 			}
 		}
 
-		const antideps = _.filter(nameNodes, (node) => node.group === 1);
-		for ( let node of antideps) {
-			console.log(node.name + '(' + node.actionType + ')');
-		}
-		console.log(antideps.length);
+		// const antideps = _.filter(nameNodes, (node) => node.group === 1);
+		// for ( let node of antideps) {
+		// 	console.log(node.name + '(' + node.actionType + ')');
+		// }
+		// console.log(antideps.length);
 		console.log('allLinks', allLinks);
 		// console.log("nameNodes", nameNodes);
 		console.log("trialsData", trialsData);

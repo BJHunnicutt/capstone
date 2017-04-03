@@ -6,6 +6,7 @@ import store from '../../store';
 import Autocomplete from 'react-autocomplete'
 import { sortStates, matchStateToTerm, styles } from '../data/utils.js'
 import _ from 'lodash'
+import $ from 'jquery';
 // import Chart from '../containers/scatter/chart.jsx';
 // import veryImportantGif2 from '../../../public/dory2.gif'
 
@@ -76,6 +77,11 @@ export default class RelationshipsDiagram extends React.Component {
       selectedFilter: false,
     }
     // console.log("constructor props: ", props);
+  }
+
+  componentDidMount() {
+    explore = true;
+    _.defer(() => this.renderButton());
   }
 
   // Show Force diagram
@@ -174,7 +180,7 @@ export default class RelationshipsDiagram extends React.Component {
   }
 
   // Node radius is proportional to the number of trials related to a node (to the power of 0.57 as per visual area perception work)
-  node_radius(d) { return 5 + (d.total/5) }// Math.pow(20 * d.total, 0.57); }
+  node_radius(d) { return 1 + Math.pow(13 * d.total, 0.41); } // 5 + (d.total/5) }
 
 
   renderForceDiagram() {
@@ -424,6 +430,8 @@ export default class RelationshipsDiagram extends React.Component {
   searchNode() {
     // find the node
     var selectedVal = document.getElementById('node-search').value;
+    console.log(selectedVal);
+
     var node = this.state.svg.selectAll(".node");
     this.setState({ selectedFilter: selectedVal })
 
@@ -504,25 +512,24 @@ export default class RelationshipsDiagram extends React.Component {
   render (props) {
     // console.log('render: ', this.props);
     // console.log('constructor: ', this.state.data);
-
     return (
       <div className="relationships-diagram">
         {/* <h3 className="f2 comp-title"> <strong>Under Construction!</strong> ...but feel free to play with the squidies (i.e. clinical trial funder-drug relationships) in the mean time! </h3> */}
 
           {explore ? (
             <div className="filter-wrapper-wrapper">
-              <h4 className="f2 centered filter-title">Explore Relationships Between Drug Trials and Their Sponsors </h4>
+              <h4 className="f2 centered filter-title"> Antidepressant Drug Trials and Their Sponsors </h4>
 
               <div className="column centered filter-wrapper">
                 <div className="search-wrapper">
                   <h7 className="f2 rel-search-label">Select : </h7>
                   <div className="filter-buttons">
-                    <button className="button secondary" onClick={() => this.searchGroup(1)}>Drugs</button>
-                    <button className="button secondary" onClick={() => this.searchGroup(2)}>Sponsors</button>
-                    <button className="button secondary" onClick={() => this.searchGroup('all')}>Both</button>
+                    <button className="button dropdown-button" onClick={() => this.searchGroup(1)}>Drugs</button>
+                    <button className="button" onClick={() => this.searchGroup(2)}>Sponsors</button>
+                    <button className="button" onClick={() => this.searchGroup('all')}>Both</button>
                   </div>
                   <div className="filter-search">
-                    <NodeSearch graph={store.getState().scatterState.graphData}/>
+                    <NodeSearch graph={store.getState().scatterState.graphData} searchNode={this.searchNode.bind(this)} />
                     <button className="button node-search-btn" onClick={() => this.searchNode()}>Search</button>
                   </div>
                 </div>
@@ -556,27 +563,37 @@ class NodeSearch extends React.Component {
   constructor(props){
     super();
     this.state = {
-      value: ''
+      value: props.value
     }
   }
   // This + renderMenu (in Autocomplete) will make a custom formatted dropdown menu
   renderItems(items) {
-    // console.log(items)
     return items.map((item, index) => {
+      $('body').css("overflow", "hidden");
       var text = item.props.children
-      if (index === 0 || items[index - 1].props.children.charAt(0) !== text.charAt(0)) {
-        var style = {
-          background: '#eee',
-          color: '#454545',
-          padding: '2px 6px',
-          fontWeight: 'bold'
-        }
-        return [<div style={style}> {text.charAt(0)} </div>, item]
+      if (index === 0 || items[index - 1].props.children.charAt(0).toLowerCase() !== text.charAt(0).toLowerCase()) {
+        // var style = {
+        //   background: '#eee',
+        //   color: '#454545',
+        //   padding: '2px 6px',
+        //   fontWeight: 'bold'
+        // }
+        // return [<div style={style}> {text.charAt(0).toLowerCase()} </div>, item];
+        return item;
       }
       else {
         return item
       }
     })
+  }
+
+  selectOption(value) {
+    this.setState({ value })
+    _.defer(() => this.props.searchNode());
+  }
+
+  deselect() {
+    $('body').css("overflow", "scroll");
   }
 
   render(props) {
@@ -586,12 +603,14 @@ class NodeSearch extends React.Component {
           value={this.state.value}
           inputProps={{name: "Sponsor Node", id: "node-search"}}
           // wrapperProps={{id: "node-search-list"}}
-          items={this.props.graph.nodes}
+          items={ this.props.graph.nodes }
           getItemValue={(item) => item.name}
           shouldItemRender={matchStateToTerm}
           sortItems={sortStates}
+          onMenuVisibilityChange={(isOpen) => {if (!isOpen) {this.deselect()} }}
           onChange={(event, value) => this.setState({ value })}
-          onSelect={value => this.setState({ value })}
+          onSelect={(value) => this.selectOption(value)}
+          // onBlur={this.deselect()}
           // menuStyle={{width: '50px'}}
           renderItem={(item, isHighlighted) => (
             <div
@@ -608,7 +627,7 @@ class NodeSearch extends React.Component {
                 <div style={{padding: 6}}>Type of the name of a Drug or Trial Sponsor</div>
               ) : items.length === 0 ? (
                 <div style={{padding: 6}}>No matches for {value}</div>
-              ) : this.renderItems(items)}
+              ) : this.renderItems(items) }
             </div>
           )}
         />

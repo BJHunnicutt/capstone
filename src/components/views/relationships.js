@@ -174,7 +174,7 @@ export default class RelationshipsDiagram extends React.Component {
   }
 
   // Node radius is proportional to the number of trials related to a node (to the power of 0.57 as per visual area perception work)
-  node_radius(d) { return 3 + (d.total/10) }// Math.pow(20 * d.total, 0.57); }
+  node_radius(d) { return 5 + (d.total/5) }// Math.pow(20 * d.total, 0.57); }
 
 
   renderForceDiagram() {
@@ -247,7 +247,7 @@ export default class RelationshipsDiagram extends React.Component {
             div.transition() // Tooltip show
                 .duration(200)
                 .style("visibility", "visible");
-            div.html(`<strong> ${d.group===1 ? 'Drug: ' : 'Sponsor: '} </strong>` + _.startCase(_.toLower(d.name)) + `<br/> <p class='percent-published' style=color:${colorScale(d.fraction_published*100)} >` + (d.fraction_published*100).toFixed(0) + "% published</p><p>" + d.total + `${d.total===1 ? ' trial' : ' trials'} </p>`) // Tooltip format
+            div.html(`<strong> ${d.group===1 ? 'Drug: ' : 'Sponsor: '} </strong>` + _.startCase(_.toLower(d.name)) + (d.group===1 ? '<br/> <strong> Brand Name: </strong>' : '') + (d.group===1 ? `<i> ${d.brandName} </i>` : '') + `<br/> <p class='percent-published' style=color:${colorScale(d.fraction_published*100)} >` + (d.fraction_published*100).toFixed(0) + "% published</p><p>" + d.total + `${d.total===1 ? ' trial' : ' trials'} </p>`) // Tooltip format
                 // .style("left", (d3.event.pageX - (width * 0.1)) + "px")
                 // .style("top", (d3.event.pageY - (height * 0.35)) + "px");
                 .style("left", (d3.event.pageX + 50 - (window.innerWidth * 0.2)) + "px")
@@ -533,6 +533,8 @@ export default class RelationshipsDiagram extends React.Component {
               ) : (
                 <label className="f2 rel-current-search"> Current Search : <i>(select a filter above OR click on the diagram below)</i> </label>
               )};
+              {/* <p>{store.getState().scatterState.graphData}</p> */}
+
             </div>
 
           ) : (
@@ -543,7 +545,6 @@ export default class RelationshipsDiagram extends React.Component {
 
         <g className="force-diagram-wrapper" ref="forceDiagram" transform={this.props.translate} onClick={this.canvasClick.bind(this)}></g>
         {/* <button className="button" onClick={this.updateData} /> */}
-
       </div>
     )
   }

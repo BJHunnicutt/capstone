@@ -130,6 +130,7 @@ class Chart extends React.Component{
       searchTitle = total + " Trials found related to: ";
       searchTitle_bold = store.getState().searchState.selectedQuery.query;
     }
+
     // console.log(tooltipVisibility);
     // console.log(store.getState().searchState.selectedQuery.query);
 

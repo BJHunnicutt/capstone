@@ -12,7 +12,7 @@ import {browserHistory} from 'react-router';
 // Adding in redux
 import { connect } from 'react-redux';
 import store from '../../store';
-import { RECEIVE_SEARCH, REQUEST_SEARCH, FILTER_SEARCH, SELECT_SEARCH, GET_RESULTS, GET_DATA_SCATTER, GET_DATA_BAR, SEARCH_TOO_BROAD, FINALIZE_SEARCH, CLEAR_STATE, GET_CUMULATIVE_DATA } from '../../actions/actions'; //FAILED_SEARCH,
+import { RECEIVE_SEARCH, REQUEST_SEARCH, FILTER_SEARCH, SELECT_SEARCH, GET_RESULTS, GET_DATA_SCATTER, GET_DATA_BAR, SEARCH_TOO_BROAD, FINALIZE_SEARCH, CLEAR_STATE, GET_CUMULATIVE_DATA, FAILED_SEARCH } from '../../actions/actions'; //FAILED_SEARCH,
 import { normalize, schema } from 'normalizr';
 
 const maxItems = 5000;
@@ -33,7 +33,8 @@ class SearchPage extends React.Component {
     this.state = {
       items: [],
       totalItems: 0,
-      globalSearch: 'Search By Treatment'
+      globalSearch: 'Search By Treatment',
+      failure: false
     }
   }
 
@@ -91,7 +92,6 @@ class SearchPage extends React.Component {
       // console.log('itemsInSearch: ', itemsInSearch);
       // console.log('itemsAcquired: ', itemsAcquired);
 
-
       // If there are more items to get from the API for this search
       if (itemsInSearch > itemsAcquired) {
 
@@ -109,9 +109,10 @@ class SearchPage extends React.Component {
       // If all items are received, dispatch an action to say so
       } else { // Stop if all items are received, and dispatch an action to say so
         this.finalizeSearchResults(query);
-
         return null;
       }
+
+    // } elseif (query) {
 
     } else { // Fetch the search (this happens on the first call)
       this.fetchSearch(page, query);
@@ -151,10 +152,6 @@ class SearchPage extends React.Component {
 
   fetchSearch(page, query = this.globalSearch.refs.input.value){
     // let query = this.globalSearch.refs.input.value;
-    store.dispatch({
-      type: REQUEST_SEARCH,
-      query: query
-    });
 
     fetch('https://api.opentrials.net/v1/search?q=intervention%3A(' +
             // query + ')%20OR%20public_title%3A(' +
@@ -176,6 +173,25 @@ class SearchPage extends React.Component {
             tooManyResults: true,
           })
         }
+
+        if (response.total_count === 0 ) {
+          console.log('NO RESULTS!!!!');
+          this.setState({failure: query});
+          store.dispatch({
+            type: FAILED_SEARCH,
+            query: query
+          })
+          return null;
+        } else {
+          this.setState({failure: false});
+        }
+
+        //THis should be before the fetch, I'm moving it here because I dont want it called if there are 0 results.
+        store.dispatch({
+          type: REQUEST_SEARCH,
+          query: query
+        });
+
         this.setState({items: response.items});
         this.setState({totalItems: response.total_count});
         // Save the response
@@ -392,6 +408,8 @@ class SearchPage extends React.Component {
                     ref={component => this.globalSearch = component} // THis can also take a callback (here we're setting as the nested class component Input)
                     update={this.update.bind(this)} // update now, not on change
                   />
+                  <label>{this.state.failure ? 'No results found for: ' : ''} <strong> {this.state.failure ? this.state.failure : ''} </strong> </label>
+
 
                   {/* FILTER SEARCH RESULTS */}
                   {/* <label>Filter Search Results</label>

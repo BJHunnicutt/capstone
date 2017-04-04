@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import {
-  SELECT_SEARCH, FINALIZE_SEARCH, REQUEST_SEARCH, RECEIVE_SEARCH, FILTER_SEARCH, GET_RESULTS, SEARCH_TOO_BROAD, CLEAR_STATE, GET_CUMULATIVE_DATA
+  SELECT_SEARCH, FINALIZE_SEARCH, REQUEST_SEARCH, RECEIVE_SEARCH, FAILED_SEARCH, FILTER_SEARCH, GET_RESULTS, SEARCH_TOO_BROAD, CLEAR_STATE, GET_CUMULATIVE_DATA
 } from '../actions/actions'
 
 import merge from 'lodash/merge'
@@ -21,6 +21,24 @@ function selectedQuery(state = {
     case SEARCH_TOO_BROAD:
       return Object.assign({}, state, {
         tooManyResults: action.tooManyResults,
+      })
+    default:
+      return state
+  }
+}
+
+// Save the last search (may change to current viewed)
+function lastSearch(state = {
+  searchFailure: false
+}, action) {
+  switch (action.type) {
+    case FAILED_SEARCH:
+      return Object.assign({}, state, {
+        searchFailure: action.searchFailure,
+      })
+    case FINALIZE_SEARCH:
+      return Object.assign({}, state, {
+        searchFailure: false,
       })
     default:
       return state
@@ -162,7 +180,8 @@ const rootReducer = combineReducers({
   selectedQuery,
   searchedTrials,
   filterSearch,
-  currentResults
+  currentResults,
+  lastSearch
 })
 
 // To reset all default states

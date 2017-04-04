@@ -564,7 +564,6 @@ export default class RelationshipsDiagram extends React.Component {
                 <label className="f2 rel-current-search"> Current Search : <i>(select a filter above OR click on the diagram below)</i> </label>
               )};
               {/* <p>{store.getState().scatterState.graphData}</p> */}
-
             </div>
 
           ) : (
@@ -575,6 +574,8 @@ export default class RelationshipsDiagram extends React.Component {
 
         <g className="force-diagram-wrapper" ref="forceDiagram" transform={this.props.translate} onClick={this.canvasClick.bind(this)}></g>
         {/* <button className="button" onClick={this.updateData} /> */}
+
+        <p className="f2 rel-data-description"> * Data includes only registered trials completed between 2006-2014, curated by <a href="https://github.com/ebmdatalab/trialstracker">TrialsTracker</a> <i>(this will be updated to use data from the <a href="https://fda.opentrials.net/search">OpenTrialsAPI</a> when the full version is released).</i> </p>
       </div>
     )
   }

@@ -23,6 +23,19 @@
   top: -25px;
 }
 
+.rel-data-description {
+  display: inline-block;
+  bottom: -25px;
+  margin: 5% 0 0 0;
+  font-size: 12px;
+  vertical-align: bottom;
+  text-align: center;
+}
+
+.relationships-diagram {
+  text-align: center;
+}
+
 
 /* ---------------------------- Filter --------------------------------- */
 
@@ -79,6 +92,7 @@
 
 .rel-current-search {
   text-align: right;
+  padding-bottom: 5px;
 }
 
 .rel-search-label {

@@ -89,7 +89,6 @@ export default class RelationshipsDiagram extends React.Component {
         this.renderButton();
       }
     });
-    console.log(colorScale(0.5*100));
   }
 
   // Show Force diagram
@@ -145,7 +144,6 @@ export default class RelationshipsDiagram extends React.Component {
     // console.log("mouseOverFunction this: ", this);
     // var circle = this.state.svg.selectAll(".circle")
     var node = this.state.svg.selectAll(".node")
-    var link = this.state.svg.selectAll(".link")
 
     node
       .transition()
@@ -160,12 +158,6 @@ export default class RelationshipsDiagram extends React.Component {
         .style("fill", (o) => {
           return this.isConnected(o, d) ? this.state.nodeColor(o.group) : this.state.nodeColorDimmed(o.group) ;
         });
-    // link
-    //   .transition()
-    //     .duration(250)
-    //     .style("stroke-opacity", (o) =>{
-    //       return o.source === d || o.target === d ? 1 : 0.2;
-    //     });
 
   }
 
@@ -174,16 +166,12 @@ export default class RelationshipsDiagram extends React.Component {
     if (!this.state.highlighting) {
       // var circle = this.state.svg.selectAll(".circle")
       var node = this.state.svg.selectAll(".node")
-      var link = this.state.svg.selectAll(".link")
 
       node
         .transition()
         .duration(250)
           .attr("r", (d) => { return this.node_radius(d)})
           .style("fill", (o) => this.state.nodeColor(o.group))
-      // link
-      //   .transition(250)
-      //   .style("stroke-opacity", 0.5);
     }
   }
 
@@ -278,10 +266,12 @@ export default class RelationshipsDiagram extends React.Component {
               .duration(200)
               .style("visibility", "visible");
             div.html(
-              `<strong> ${d.group===1 ? 'Drug: ' : 'Sponsor: '} </strong>`
+              `<strong> ${d.group===1 ? 'Drug : ' : 'Sponsor: '} </strong>`
               + _.startCase(_.toLower(d.name))
-              + (d.group===1 ? '<br/> <strong> Brand Name: </strong>' : '')
+              + (d.group===1 ? '<br/> <strong> Brand Name : </strong>' : '')
               + (d.group===1 ? `<i> ${d.brandName} </i>` : '')
+              + (d.group===1 ? '<br/> <strong> Drug Type : </strong>' : '')
+              + (d.group===1 ? `${d.actionType}` : '')
               + `<br/> <p class='percent-published' style=color:${colorScale(d.fraction_published*100)} >`
               + (d.fraction_published*100).toFixed(0)
               + "% published</p><p>" + d.total
@@ -463,12 +453,11 @@ export default class RelationshipsDiagram extends React.Component {
   searchNode() {
     // find the node
     var selectedVal = document.getElementById('node-search').value;
-    console.log(selectedVal);
 
     var node = this.state.svg.selectAll(".node");
     this.setState({ selectedFilter: selectedVal })
 
-    if (selectedVal === null) {
+    if (selectedVal === null || selectedVal === '') {
         node.style("stroke", "white").style("stroke-width", "1");
     } else {
         var selected = node.filter((d) => d.name === selectedVal);
@@ -624,10 +613,7 @@ class NodeSearch extends React.Component {
   }
 
   selectOption(value) {
-
-    console.log(this.props.graph.nodes);
     value = value.replace(/\(.*\)/, '').trim();
-    console.log(value);
     this.setState({ value })
     _.defer(() => this.props.searchNode());
   }
@@ -646,7 +632,7 @@ class NodeSearch extends React.Component {
           items={ this.props.graph.nodes }
           getItemValue={(item) => item.allNames}
           shouldItemRender={matchStateToTerm}
-          // sortItems={sortStates}
+          sortItems={sortStates}
           onMenuVisibilityChange={(isOpen) => {if (!isOpen) {this.deselect()} }}
           onChange={(event, value) => this.setState({ value })}
           onSelect={(value) => this.selectOption(value)}
@@ -663,9 +649,9 @@ class NodeSearch extends React.Component {
           // }}
           renderMenu={(items, value, style) => (
             <div className="node-search-list" style={{...styles.menu, ...style}}>
-              {value === '' ? (
-                <div style={{padding: 6}}>Type of the name of a Drug or Trial Sponsor</div>
-              ) : items.length === 0 ? (
+              {/* {value === '' ? (
+                <div style={{padding: 6}}>Type of the name of a Drug or Trial Sponsor</div> */}
+              {items.length === 0 ? (
                 <div style={{padding: 6}}>No matches for {value}</div>
               ) : this.renderItems(items) }
             </div>

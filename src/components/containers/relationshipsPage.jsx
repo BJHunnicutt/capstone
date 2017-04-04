@@ -92,7 +92,7 @@ class RelationshipsPage extends React.Component {
 		let nameNodes = {}
 		let baseNode = {name: '', group: 0, type: '', published: 0, total: 0, fraction_published: 0}
 		let sourceLinks = {}
-		let allLinks = 0;
+		// let allLinks = 0;
 
 		for (var i = 0; i < data.length; i++) {
 			// If this is a drug study
@@ -148,10 +148,10 @@ class RelationshipsPage extends React.Component {
 					if (!sourceLinks[sponsor]) sourceLinks[sponsor] = {};
 					if (!sourceLinks[sponsor][drug]) {
 						sourceLinks[sponsor][drug] = 1;
-						allLinks += 1;
+						// allLinks += 1;
 					}	else {
 						sourceLinks[sponsor][drug] += 1;
-						allLinks += 1;
+						// allLinks += 1;
 					}
 				}
 			}
@@ -191,7 +191,7 @@ class RelationshipsPage extends React.Component {
 		// 	console.log(node.name + '(' + node.actionType + ')');
 		// }
 		// console.log(antideps.length);
-		console.log('allLinks', allLinks);
+		// console.log('allLinks', allLinks);
 		// console.log("nameNodes", nameNodes);
 		console.log("trialsData", trialsData);
 		// console.log("sourceLinks", sourceLinks);

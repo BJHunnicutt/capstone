@@ -193,7 +193,7 @@ class RelationshipsPage extends React.Component {
 		// console.log(antideps.length);
 		// console.log('allLinks', allLinks);
 		// console.log("nameNodes", nameNodes);
-		console.log("trialsData", trialsData);
+		// console.log("trialsData", trialsData);
 		// console.log("sourceLinks", sourceLinks);
 
 

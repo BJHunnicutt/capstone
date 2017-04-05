@@ -80,15 +80,26 @@ export default class RelationshipsDiagram extends React.Component {
   }
 
   componentDidMount() {
-    _.defer(() => {
-      const data = store.getState().scatterState.graphData
-      if (_.isEmpty(data)) {
-        explore = false;
-      } else {
-        explore = true;
-        this.renderButton();
-      }
-    });
+    // Allows a graph render if you click away and click back
+    if ( explore === true) {
+      this.renderButton();
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    // Once relationshipsPage.js passes props with sorted graph data (this != next)
+    // this will render the graph (for slow connections) - explore button shown first
+    if ((this.props.graphData !== nextProps.graphData) && explore === false) {
+      _.defer(() => {
+        const data = store.getState().scatterState.graphData
+        if (_.isEmpty(data)) {
+          explore = false;
+        } else {
+          explore = true;
+          this.renderButton();
+        }
+      });
+    }
   }
 
   // Show Force diagram
@@ -568,7 +579,8 @@ export default class RelationshipsDiagram extends React.Component {
 
           ) : (
             <div className="column explore-btn-wrapper">
-                <button className="button explore-relationships-btn" onClick={this.renderButton.bind(this)}><strong>Explore!</strong></button>
+                {/* <button className="button explore-relationships-btn" onClick={this.renderButton.bind(this)}><strong>Explore!</strong></button> */}
+                <h4 className="f2 loading-notice">Just a second...  </h4>
             </div>
         )}
 

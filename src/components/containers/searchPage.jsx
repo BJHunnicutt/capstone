@@ -7,7 +7,7 @@ import RecentSearches from '../views/recentSearches.jsx'
 import cumulativeSummary from './cumulativeSummary.jsx'
 import $ from 'jquery'
 import _ from 'lodash'
-import {browserHistory} from 'react-router';
+import {hashHistory} from 'react-router';
 
 // Adding in redux
 import { connect } from 'react-redux';
@@ -62,11 +62,13 @@ class SearchPage extends React.Component {
       this.updateSearch(cleanQuery);
 
     } else {
-      console.log("Invalid Search, please enter a treatment or condition");
+      // Displays 'No results found for: ... ' notice
+      this.setState({failure: ' '});
 
       // REDIRECT to the Search page IF they searched while in the homepage (AFTER everything is complete to avoid an error)
       if (this.props.location.pathname === '/') {
-        browserHistory.push('/search/');
+        hashHistory.push('/search/');
+        console.log(this.props.location.pathname)
       }
     }
 
@@ -347,7 +349,7 @@ class SearchPage extends React.Component {
 
       // REDIRECT to the Search page if they searched while on the homepage (AFTER everything is complete to avoid an error)
       if (this.props.location.pathname === '/') {
-        browserHistory.push('/search/');
+        hashHistory.push('/search/');
         console.log(this.props.location.pathname)
       }
 

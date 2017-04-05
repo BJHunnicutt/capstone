@@ -1,5 +1,5 @@
 import React from 'react';
-import { Router, Route, hashHistory, NoMatch, IndexRoute } from 'react-router';
+import { Router, Route, hashHistory, IndexRoute } from 'react-router'; //NoMatch, 
 
 // Layouts
 import App from './App.js';
@@ -34,7 +34,12 @@ export default (
 
       <Route path="/relationships" component={RelationshipsPage} />
     </Route>
+
     {/* This catch-all route will match everything, it must be the last route specified in the child route array. */}
-    <Route path="*" component={NoMatch}/>
+    <Route path="*" component={App}>
+      <Route component={Homepage}>
+        <IndexRoute component={SearchPage} />
+      </Route>
+    </Route>
   </Router>
 );

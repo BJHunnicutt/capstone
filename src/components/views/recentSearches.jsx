@@ -3,7 +3,7 @@ import store from '../../store';
 import $ from 'jquery'
 import _ from 'lodash'
 import { SELECT_SEARCH, GET_RESULTS, GET_DATA_BAR } from '../../actions/actions'; //FAILED_SEARCH,
-import {browserHistory} from 'react-router';
+import {hashHistory} from 'react-router';
 
 
 // NOTE: summarizeSearch() is a helper method, main class at the bottom (just moved this up here to get rid of a linter warning)
@@ -168,7 +168,7 @@ export default (props) => {
 
       // Redirect to the Search page if they click on the homepage
       if (props.location.pathname === '/capstone/') {
-        browserHistory.push('/capstone/search/');
+        hashHistory.push('/capstone/search/');
         console.log(props.location.pathname)
       }
 

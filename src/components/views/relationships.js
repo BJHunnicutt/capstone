@@ -281,7 +281,7 @@ export default class RelationshipsDiagram extends React.Component {
               + _.startCase(_.toLower(d.name))
               + (d.group===1 ? '<br/> <strong> Brand Name : </strong>' : '')
               + (d.group===1 ? `<i> ${d.brandName} </i>` : '')
-              + (d.group===1 ? '<br/> <strong> Drug Type : </strong>' : '')
+              + (d.group===1 ? '<br/> <strong> Type : </strong>' : '')
               + (d.group===1 ? `${d.actionType}` : '')
               + `<br/> <p class='percent-published' style=color:${colorScale(d.fraction_published*100)} >`
               + (d.fraction_published*100).toFixed(0)

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Router, Route, browserHistory, NoMatch, IndexRoute } from 'react-router';
+import { Router, Route, hashHistory, NoMatch, IndexRoute } from 'react-router';
 
 // Layouts
 import App from './App.js';
@@ -14,7 +14,7 @@ import Homepage from './components/views/homepage.jsx'
 // Nested Routes
 export default (
   // *don't use history={hashHistory}, browser history manages the url better
-  <Router history={browserHistory} >
+  <Router history={hashHistory} >
     {/* <IndexRoute component={App} /> */}
     <Route component={App}>
       <Route path="/" component={Homepage}>

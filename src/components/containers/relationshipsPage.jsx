@@ -108,6 +108,25 @@ class RelationshipsPage extends React.Component {
 					nameNodes[sponsor].allNames = sponsor; // THis is a lazy way of dealing with displaying multiple drug names sometimes
 					nameNodes[sponsor].group = 2;
 					nameNodes[sponsor].type = 'sponsor';
+					nameNodes[sponsor].trials = [{
+							nctId: data[i].nct_id,
+							sponsor: sponsor,
+							drug: data[i].drugs,
+							published: !data[i].is_overdue,
+							title: data[i].title,
+							phase: data[i].phase_normalised,
+							date: data[i].completion_date
+					}];
+				} else {
+					nameNodes[sponsor].trials.push({
+							nctId: data[i].nct_id,
+							sponsor: sponsor,
+							drug: data[i].drugs,
+							published: !data[i].is_overdue,
+							title: data[i].title,
+							phase: data[i].phase_normalised,
+							date: data[i].completion_date
+					});
 				}
 				// Increment values for new and old sponsors
 				if (data[i].is_overdue === "False") nameNodes[sponsor].published +=1;
@@ -138,6 +157,25 @@ class RelationshipsPage extends React.Component {
 						nameNodes[drug].brandName = SSRIs[drug].brandName;
 						nameNodes[drug].actionType = SSRIs[drug].type;
 						nameNodes[drug].allNames = `${drug} (${SSRIs[drug].brandName})`;
+						nameNodes[drug].trials = [{
+								nctId: data[i].nct_id,
+								sponsor: sponsor,
+								drug: data[i].drugs,
+								published: !data[i].is_overdue,
+								title: data[i].title,
+								phase: data[i].phase_normalised,
+								date: data[i].completion_date
+						}];
+					} else {
+						nameNodes[drug].trials.push({
+								nctId: data[i].nct_id,
+								sponsor: sponsor,
+								drug: data[i].drugs,
+								published: !data[i].is_overdue,
+								title: data[i].title,
+								phase: data[i].phase_normalised,
+								date: data[i].completion_date
+						});
 					}
 					// Increment values for new and old
 					if (data[i].is_overdue === "False") nameNodes[drug].published +=1;
@@ -193,7 +231,7 @@ class RelationshipsPage extends React.Component {
 		// console.log(antideps.length);
 		// console.log('allLinks', allLinks);
 		// console.log("nameNodes", nameNodes);
-		// console.log("trialsData", trialsData);
+		console.log("trialsData", trialsData);
 		// console.log("sourceLinks", sourceLinks);
 
 

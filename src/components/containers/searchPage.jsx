@@ -116,8 +116,21 @@ class SearchPage extends React.Component {
 
     // } elseif (query) {
 
-    } else { // Fetch the search (this happens on the first call)
+    // Fetch the search if it hasn't been searched before (this happens on the first call)
+    } else if (!_.includes(Object.keys(store.getState().searchState.searchHistory), query)) {
       this.fetchSearch(page, query);
+
+    // Select the previously searched query (this will change the display of the bar chart)
+    } else {
+      // This is kind of hacky, but it was the simplest way to select a previously searched query
+      // ...I put too much functionality in recentSearches.jsx (which controls the button click/ sets current search)
+      const buttons = document.getElementsByClassName('recent-searches-group')[0].children;
+      for (let button of buttons) {
+        if(button.textContent === query) {
+          button.click();
+          break;
+        }
+      }
     }
 
   }

@@ -156,8 +156,8 @@ export default (props) => {
         totalItems: props.searchHistory[query].totalItems,
       });
 
-      let ids = store.getState().searchState.searchHistory[query].items;
-      let trials = store.getState().searchState.searchedTrials.items;
+      let ids = _.cloneDeep(store.getState().searchState.searchHistory[query].items);
+      let trials = _.cloneDeep(store.getState().searchState.searchedTrials.items);
       store.dispatch({
         type: GET_RESULTS,
         query: query,

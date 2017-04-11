@@ -347,7 +347,7 @@ class ComparisonsPage extends React.Component {
         <h3 className="f2 comp-title"> {searchTitle} <strong>{searchTitle_bold}</strong></h3>
 
         <div className="year-slider-wrapper">
-          <h4 className="f2">{this.state.year}</h4>
+          <h4 className="f2"><small>{this.state.startYear}-</small>{this.state.year}</h4>
           <input
             id="typeinp"
             type="range"

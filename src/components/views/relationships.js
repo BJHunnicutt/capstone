@@ -7,7 +7,7 @@ import Autocomplete from 'react-autocomplete'
 import { sortStates, matchStateToTerm, styles } from '../data/utils.js'
 import _ from 'lodash'
 import $ from 'jquery';
-// import Chart from '../containers/scatter/chart.jsx';
+import RelationshipsTable from './relationshipsTable.js';
 // import veryImportantGif2 from '../../../public/dory2.gif'
 
 // The graph:
@@ -473,6 +473,7 @@ export default class RelationshipsDiagram extends React.Component {
     } else {
         var selected = node.filter((d) => d.name === selectedVal);
         selected = selected[0][0].__data__;
+        console.log('selected here', selected);
 
         var unselected = node.filter((d, i) => {
           let connectedOrSelectedNode = this.isConnectedAsSource(d, selected) || this.isConnectedAsTarget(d, selected) || this.isEqual(d, selected);
@@ -544,6 +545,11 @@ export default class RelationshipsDiagram extends React.Component {
 
 
   render (props) {
+    const { svg } = this.state;
+    const { selectedFilter } = this.state;
+    const nodes = selectedFilter ? svg.selectAll(".node") : null;
+    // console.log('render nodes', nodes);
+
     // console.log('render: ', this.props);
     // console.log('constructor: ', this.state.data);
     return (
@@ -569,8 +575,8 @@ export default class RelationshipsDiagram extends React.Component {
                 </div>
 
               </div>
-              {this.state.selectedFilter ? (
-                <label className="f2 rel-current-search"> Current Search : <strong> {this.state.selectedFilter}</strong> </label>
+              {selectedFilter ? (
+                <label className="f2 rel-current-search"> Current Search : <strong> {selectedFilter}</strong> </label>
               ) : (
                 <label className="f2 rel-current-search"> Current Search : <i>(select a filter above OR click on the diagram below)</i> </label>
               )};
@@ -586,7 +592,19 @@ export default class RelationshipsDiagram extends React.Component {
 
         <g className="force-diagram-wrapper" ref="forceDiagram" transform={this.props.translate} onClick={this.canvasClick.bind(this)}></g>
         {/* <button className="button" onClick={this.updateData} /> */}
-
+        <div id="search-table-wrapper">
+          {selectedFilter ? (
+            <div>
+              <label> Clinical Trials For : <strong> {selectedFilter}</strong> </label>
+              <RelationshipsTable nodes={nodes} selectedFilter={selectedFilter}/>
+            </div>
+          ) : (
+            <div>
+              <label> Clinical Trials Related To : <i>(select a filter OR click on the diagram above)</i> </label>
+              <RelationshipsTable nodes={nodes} selectedFilter={selectedFilter}/>
+            </div>
+          )}
+        </div>
         <p className="f2 rel-data-description"> * Data includes only registered trials completed between 2006-2014, curated by <a href="https://github.com/ebmdatalab/trialstracker">TrialsTracker</a> <i>(this will be updated to use data from the <a href="https://fda.opentrials.net/search">OpenTrialsAPI</a> when the full version is released).</i> </p>
       </div>
     )

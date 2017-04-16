@@ -112,7 +112,7 @@ class RelationshipsPage extends React.Component {
 							nctId: data[i].nct_id,
 							sponsor: sponsor,
 							drug: data[i].drugs,
-							published: !data[i].is_overdue,
+							published: data[i].is_overdue === 'True' ? false : true,
 							title: data[i].title,
 							phase: data[i].phase_normalised,
 							date: data[i].completion_date
@@ -122,7 +122,7 @@ class RelationshipsPage extends React.Component {
 							nctId: data[i].nct_id,
 							sponsor: sponsor,
 							drug: data[i].drugs,
-							published: !data[i].is_overdue,
+							published: data[i].is_overdue === 'True' ? false : true,
 							title: data[i].title,
 							phase: data[i].phase_normalised,
 							date: data[i].completion_date
@@ -161,7 +161,7 @@ class RelationshipsPage extends React.Component {
 								nctId: data[i].nct_id,
 								sponsor: sponsor,
 								drug: data[i].drugs,
-								published: !data[i].is_overdue,
+								published: data[i].is_overdue === 'True' ? false : true,
 								title: data[i].title,
 								phase: data[i].phase_normalised,
 								date: data[i].completion_date
@@ -171,7 +171,7 @@ class RelationshipsPage extends React.Component {
 								nctId: data[i].nct_id,
 								sponsor: sponsor,
 								drug: data[i].drugs,
-								published: !data[i].is_overdue,
+								published: data[i].is_overdue === 'True' ? false : true,
 								title: data[i].title,
 								phase: data[i].phase_normalised,
 								date: data[i].completion_date

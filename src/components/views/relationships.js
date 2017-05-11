@@ -118,6 +118,7 @@ export default class RelationshipsDiagram extends React.Component {
         if (d === o) this.setState({ selectedFilter: o.name });
         return this.isConnected(o, d) ? colorScale(o.fraction_published*100) : 'darkgray';
       });
+      // node.style("fill", (o) => 'gold');
       node.style("stroke-width", (o) => {
         return this.isConnected(o, d) ? 2 : 1;
       });
@@ -595,7 +596,7 @@ export default class RelationshipsDiagram extends React.Component {
         <div id="search-table-wrapper">
           {selectedFilter ? (
             <div>
-              <label> Clinical Trials For : <strong> {selectedFilter}</strong> </label>
+              <label> Clinical Trials Related To : <strong> {selectedFilter}</strong> </label>
               <RelationshipsTable nodes={nodes} selectedFilter={selectedFilter}/>
             </div>
           ) : (

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // import { StickyTable, Row, Cell } from 'react-sticky-table';
 import {Table, Column, Cell} from 'fixed-data-table-2';
-// const Dimensions = require('react-dimensions');
+const Dimensions = require('react-dimensions');
 const {StyleSheet, css} = require('aphrodite');
 
 // import { Link } from 'react-router';
@@ -287,7 +287,7 @@ export default class SearchTable extends Component {
 // See react-dimensions for the best way to configure
 // https://github.com/digidem/react-dimensions
 // http://schrodinger.github.io/fixed-data-table-2/example-responsive.html
-// module.exports = Dimensions({
+module.exports = Dimensions({
   // Uncomment the below out if you want the window size alone to dtmn the width
   // getHeight: function(element) {
   //   return window.innerHeight - 200;
@@ -296,7 +296,7 @@ export default class SearchTable extends Component {
   //   var widthOffset = window.innerWidth < 680 ? 0 : 240;
   //   return window.innerWidth - widthOffset;
   // }
-// })(SearchTable);
+})(SearchTable);
 
 // Touch Scroll
 // http://schrodinger.github.io/fixed-data-table-2/example-touch-scroll.html

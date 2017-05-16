@@ -2,6 +2,7 @@
 [trialsviewer.com](http://trialsviewer.com/)
 > TrialsViewer is an interactive visualization tool to explore clinical trial data - built for my capstone project at [Ada Developers Academy](http://adadevelopersacademy.org).  
 
+![TrialsViewer Screenshots](./public/trials_viewer_snapshot.png?raw=true "TrialsViewer screenshots")
 
 ### Built with:
   React/Redux, D3, & Victory.
